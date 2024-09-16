@@ -17,6 +17,18 @@ const Input = forwardRef(
     },
     ref
   ) => {
+       const handleInputChange = (e) => {
+         let inputValue = e.target.value;
+
+         // If the input is of type number, convert the value to a number
+         if (type === 'number') {
+           inputValue = e.target.valueAsNumber || ''; // Ensure empty strings are handled
+         }
+
+         if (onChange) {
+           onChange(inputValue);
+         }
+       };
     const handleDateChange = (dateString) => {
       if (onChange) {
         // Handle null or empty date (date cleared)
@@ -65,7 +77,7 @@ const Input = forwardRef(
             placeholder={placeHolder || ''}
             type={type}
             className={getVariantStyles()}
-            onChange={onChange}
+            onChange={handleInputChange} // Use the custom handler
             readOnly={readOnly}
             value={value || ''}
             {...props}

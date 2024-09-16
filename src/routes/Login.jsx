@@ -7,11 +7,11 @@ import { useLoginMutation } from '../redux/features/auth';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import Button from '../components/shared/Button';
 import { useDispatch } from 'react-redux';
-
 import { useNavigate } from 'react-router-dom';
 import { message, notification } from 'antd';
 import useMediaQuery from '../hooks/useMediaQuery';
 import { setCredentials } from '../redux/slices/user';
+import { useSetCookiesAfterLogin } from '../hooks/useCookies';
 // const loginOptions = {
 //   google: 'google',
 //   facebook: 'facebook',
@@ -32,22 +32,28 @@ function Login() {
   const [visible, setVisible] = useState(false);
 
   const [login, { isLoading, error }] = useLoginMutation();
-
+  const { setCookies, isCookiesSet } = useSetCookiesAfterLogin();
   const onSubmit = async (data) => {
     try {
       const response = await login(data).unwrap();
+      const expires = response.expiry;
+      const expDate = new Date(expires);
       dispatch(
         setCredentials({
           token: response.token,
-          expiry: response.expiry,
+          expiry: expires,
           typeId: response.typeId,
           role: response.role,
           fullName: response.fullName,
         })
       );
-      //   dispatch(setUser({ role: result.role, typeId: result.typeId }));
-      //   dispatch(setToken({ token, expDate: expDate }));
-
+      setCookies({
+        fullName: response.fullName,
+        typeId: response.typeId,
+        token: response.token,
+        role: response.role,
+        expiry: expDate,
+      });
       const userTypeMap = {
         1: 'client',
         2: 'esco',
@@ -57,6 +63,7 @@ function Login() {
       const getUserType = (typeId) => userTypeMap[Number(typeId)];
       const userType = getUserType(response.typeId);
       let url = '';
+      // handle invitaions redirect
       if (userType != null) {
         if (userType === 'client') {
           url = '/';
@@ -128,7 +135,7 @@ function Login() {
                 placeholder="Email / Phone"
               />
               {errors.email && (
-                <p className="text-red-500 text-xs mt-1">
+                <p className="text-red-500 text-base mt-1">
                   {errors.email.message}
                 </p>
               )}
@@ -155,7 +162,7 @@ function Login() {
                 </button>
               </div>
               {errors.password && (
-                <p className="text-red-500 text-xs mt-1">
+                <p className="text-red-500 text-base mt-1">
                   {errors.password.message}
                 </p>
               )}

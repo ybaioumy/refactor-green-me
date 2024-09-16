@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 export const Dropdown = ({
   options,
   placeholder,
@@ -6,13 +7,14 @@ export const Dropdown = ({
   value,
   variant = 'primary',
   multiSelect = false, // Add the multiSelect prop
+  search = false, // Add the search prop
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(multiSelect ? [] : null);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(''); // State for search input
 
   useEffect(() => {
-    if ( value) {
+    if (value) {
       if (multiSelect) {
         const selectedOptions = options.filter((opt) =>
           value.includes(opt.value)
@@ -47,7 +49,13 @@ export const Dropdown = ({
     }
   };
 
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
+  const filteredOptions = options.filter((option) =>
+    option.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const getVariantStyles = () => {
     switch (variant) {
@@ -88,7 +96,10 @@ export const Dropdown = ({
 
   return (
     <div className="relative inline-block w-full md:max-w-sm lg:max-w-[100%]">
-      <button onClick={toggleDropdown} className={`${getVariantStyles()}`}>
+      <button
+        type="button"
+        onClick={toggleDropdown}
+        className={`${getVariantStyles()}`}>
         <div className="truncate">{renderSelectedOption()}</div>
         <span className="ml-2 flex-shrink-0">
           <svg
@@ -107,24 +118,44 @@ export const Dropdown = ({
           </svg>
         </span>
       </button>
-      {isOpen &&  (
-        <ul className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto overflow-x-hidden">
-          {options?.map((option) => (
-            <li
-              key={option.id}
-              className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                multiSelect &&
-                selectedOption.some((opt) => opt.id === option.id)
-                  ? 'bg-gray-200'
-                  : ''
-              }`}
-              onClick={() => handleOptionClick(option)}>
-              {option.name}
-            </li>
-          ))}
-        </ul>
+      {isOpen && (
+        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+          {/* Conditionally render search input based on the `search` prop */}
+          {search && (
+            <div className="p-2">
+              <input
+                autoFocus={isOpen}
+                type="text"
+                value={searchQuery}
+                onChange={handleSearch}
+                placeholder="Search..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+              />
+            </div>
+          )}
+
+          {/* Filtered options */}
+          <ul className="max-h-60 overflow-y-auto overflow-x-hidden">
+            {filteredOptions.length > 0 ? (
+              filteredOptions.map((option) => (
+                <li
+                  key={option.id}
+                  className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                    multiSelect &&
+                    selectedOption.some((opt) => opt.id === option.id)
+                      ? 'bg-gray-200'
+                      : ''
+                  }`}
+                  onClick={() => handleOptionClick(option)}>
+                  {option.name}
+                </li>
+              ))
+            ) : (
+              <li className="px-4 py-2 text-gray-500">No options found</li>
+            )}
+          </ul>
+        </div>
       )}
-     
     </div>
   );
 };

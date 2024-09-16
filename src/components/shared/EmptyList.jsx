@@ -2,9 +2,9 @@ import React from 'react';
 
 function EmptyList({ message }) {
   return (
-    <div class="w-full flex flex-col h-full items-center flex-wrap justify-center gap-10">
+    <div className="w-full flex flex-col h-full items-center flex-wrap justify-center gap-10">
       <svg
-        class="mx-auto"
+        className=""
         xmlns="http://www.w3.org/2000/svg"
         width="128"
         height="124"
@@ -73,8 +73,8 @@ function EmptyList({ message }) {
         <path
           d="M115.161 98.2322L113.152 96.2233M113.554 90.1965C113.554 86.6461 110.676 83.7679 107.125 83.7679C103.575 83.7679 100.697 86.6461 100.697 90.1965C100.697 93.7469 103.575 96.6251 107.125 96.6251C108.893 96.6251 110.495 95.9111 111.657 94.7557C112.829 93.5913 113.554 91.9786 113.554 90.1965Z"
           stroke="#2b6338"
-          stroke-width="1.6"
-          stroke-linecap="round"
+          strokeWidth="1.6"
+          strokeLinecap="round"
         />
         <defs>
           <filter
@@ -84,8 +84,8 @@ function EmptyList({ message }) {
             width="124"
             height="124"
             filterUnits="userSpaceOnUse"
-            color-interpolation-filters="sRGB">
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            colorInterpolationFilters="sRGB">
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feColorMatrix
               in="SourceAlpha"
               type="matrix"
@@ -113,7 +113,7 @@ function EmptyList({ message }) {
           </filter>
         </defs>
       </svg>
-      <h2 class="text-center text-black text-base font-semibold leading-relaxed pb-1">
+      <h2 className="text-center text-black text-base font-semibold leading-relaxed pb-1">
         {message || 'There’s no product here'}
       </h2>
     </div>

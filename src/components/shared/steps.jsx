@@ -3,7 +3,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import Button from './Button';
 import { Link } from 'react-router-dom';
 
-const Steps = ({ steps, hasLink = false }) => {
+const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
   //   {
   //   parentStep: 'generalInfo',
   //   label: 'General Info',
@@ -23,6 +23,7 @@ const Steps = ({ steps, hasLink = false }) => {
   //     },
   //   ],
   // },
+
   const methods = useForm();
   const { trigger } = methods;
 
@@ -95,7 +96,7 @@ const Steps = ({ steps, hasLink = false }) => {
         {/* Child Steps Section */}
 
         <form
-          onSubmit={methods.handleSubmit(onSubmit)}
+          onSubmit={methods.handleSubmit(onSave)}
           className="w-full flex flex-col justify-between min-h-full">
           <div className="h-full w-full my-auto transition-all duration-200">
             {/* {
@@ -145,7 +146,10 @@ const Steps = ({ steps, hasLink = false }) => {
                 <Button
                   variant="secondary"
                   className={'min-w-[150px]'}
-                  type="submit">
+                  type="button"
+                  isLoading={isLoading}
+                  disabled={isLoading}
+                  onClick={methods.handleSubmit(onSave)}>
                   SAVE
                 </Button>
               )}

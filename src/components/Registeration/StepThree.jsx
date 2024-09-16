@@ -1,20 +1,18 @@
 import React from 'react';
 import ProjectOwner from './clientInfo/ClientInfo';
 import ESCODetails from './escoInfo/ESCOInfo';
-import { useGetTypesQuery } from '../../redux/features/auth';
+import {
+  useGetAllCountriesQuery,
+  useGetTypesQuery,
+} from '../../redux/features/auth';
+import Loader from '../shared/Loader';
+import EmptyList from '../shared/EmptyList';
 function StepThree({ registerData }) {
-  const countries = [
-    { id: 1, name: 'United States' },
-    { id: 2, name: 'Canada' },
-    { id: 3, name: 'Germany' },
-    { id: 4, name: 'United Kingdom' },
-    { id: 5, name: 'Australia' },
-    { id: 6, name: 'Brazil' },
-    { id: 7, name: 'India' },
-    { id: 8, name: 'China' },
-    { id: 9, name: 'South Africa' },
-    { id: 10, name: 'Japan' },
-  ];
+  const {
+    data: countries,
+    isLoading: isLoadingCountries,
+    isError: isErrorCountries,
+  } = useGetAllCountriesQuery();
   const sectors = [
     { id: 1, name: 'Technology' },
     { id: 2, name: 'Healthcare' },
@@ -40,8 +38,10 @@ function StepThree({ registerData }) {
   };
   const clientId = getUserTypeIdByName(registerData.typesId, 'client');
   const escoId = getUserTypeIdByName(registerData.typesId, 'esco');
+  if (isLoading || isLoadingCountries) return <Loader />;
+  if (isError || isErrorCountries) return <EmptyList />;
   if (escoId) return <ESCODetails countries={countries} sectors={sectors} />;
-  if (clientId) return <ProjectOwner countries={countries} sectors={sectors} />;
+  if (clientId) return <ProjectOwner countries={countries} sectors={[]} />;
 
   return <div>You did not select User Type at step 1 </div>;
 }

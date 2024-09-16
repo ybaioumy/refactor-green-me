@@ -1,38 +1,46 @@
 import React from 'react';
-import Select from '../components/shared/Select';
 import Steps from '../components/shared/steps';
-import Icon from '../components/shared/Icon';
 import { useState } from 'react';
 import Logo from '../assets/images/greenme.png';
 import GreenMeTitle from '../assets/images/GreenMeTitle.png';
-import { Link, useSearchParams } from 'react-router-dom';
-import { useFormContext } from 'react-hook-form';
-import {
-  useRegisterMutation,
-  useGetRolesQuery,
-  useGetAllCountriesQuery,
-  useGetTypesQuery,
-} from '../redux/features/auth';
-import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import Button from '../components/shared/Button';
-import { useDispatch } from 'react-redux';
-
+import { useSearchParams } from 'react-router-dom';
+import { useRegisterMutation, useGetRolesQuery } from '../redux/features/auth';
 import { useNavigate } from 'react-router-dom';
-import { message, notification } from 'antd';
+import { message } from 'antd';
 import useMediaQuery from '../hooks/useMediaQuery';
-import { setCredentials } from '../redux/slices/user';
 import UserType from '../components/Registeration/StepOne';
 import { useJwt } from 'react-jwt';
 import UserInformation from '../components/Registeration/StepTwo';
-import { Dropdown } from '../components/shared/Dropdown';
 import StepThree from '../components/Registeration/StepThree';
+import Loader from '../components/shared/Loader';
+import EmptyList from '../components/shared/EmptyList';
 function Register() {
+  const {
+    data: roles,
+    isLoading: isLoadingRoles,
+    isError,
+  } = useGetRolesQuery();
+
+  const initialRoleId = roles?.find(
+    (role) => role.name.toLowerCase() === 'admin'
+  ).id;
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
   const { decodedToken, isExpired } = useJwt(token);
-  const [registerData, setRegisterData] = useState({});
+  const [registerData, setRegisterData] = useState({
+    gender: 1,
+    statusId: 1,
+    typesId: 0,
+    clientId: 0,
+    invitationToken: '',
+    invitationStatusId: 0,
+    permissionId: [],
+    roleId: initialRoleId ? initialRoleId : null,
+  });
   const [imagePreview, setImagePreview] = useState(null);
-
+  const [registerMutation, { isLoading, error, isError: isErrorRegister }] =
+    useRegisterMutation();
+  const navigate = useNavigate();
   const handleFileChange = (typesId, event) => {
     const file = event.target.files[0];
     if (file) {
@@ -91,12 +99,22 @@ function Register() {
       ],
     },
   ];
-  const methods = useFormContext();
-
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    const dataToSend = { ...registerData, ...data };
+    try {
+      const response = await registerMutation(dataToSend).unwrap();
+      console.log(response);
+      message.success('Registration successful');
+      setTimeout(() => {
+        navigate('/');
+      }, 200);
+    } catch (error) {
+      console.error(error);
+      message.error('Registration failed');
+    }
   };
-
+  if (isLoadingRoles) return <Loader />;
+  if (isError) return <EmptyList message={'Some Thing Went Wrong'} />;
   return (
     <div
       className={`flex flex-col md:flex-row min-h-screen ${bgColor} py-2 items-center  md:py-0`}>
@@ -149,7 +167,7 @@ function Register() {
             </label>
           </div>
         </div>
-        <Steps steps={steps} hasLink onSave={onSubmit} />
+        <Steps steps={steps} hasLink onSave={onSubmit} isLoading={isLoading} />
       </div>
     </div>
   );

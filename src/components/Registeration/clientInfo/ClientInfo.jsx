@@ -37,6 +37,7 @@ const ProjectOwner = ({ countries, sectors }) => {
         render={({ field }) => (
           <Dropdown
             options={countries}
+            search
             placeholder="Base Country"
             onSelectOption={field.onChange}
             value={field.id}
@@ -81,6 +82,7 @@ const ProjectOwner = ({ countries, sectors }) => {
               options={countries}
               placeholder="Please select locations of other branches (multiple selection allowed)"
               multiSelect
+              search
               onSelectOption={(selectedIds) => {
                 const selectedCountries = countries
                   .filter((country) => selectedIds.includes(country.id))
@@ -134,7 +136,7 @@ const ProjectOwner = ({ countries, sectors }) => {
             <Input
               {...field}
               variant="borderBottom"
-              type="number"
+              
               placeholder="Capital"
             />
           )}

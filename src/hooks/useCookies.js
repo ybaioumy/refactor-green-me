@@ -1,0 +1,65 @@
+import { useState } from 'react';
+import Cookies from 'js-cookie';
+import { useCookies } from 'react-cookie';
+
+const useLogout = () => {
+  const [cookies, setCookie, removeCookie] = useCookies(['userType', 'expiry', 'userToken', 'userName']);
+  const logout = () => {
+    removeCookie('userName', { path: '/' });
+    removeCookie('userType', { path: '/' });
+    removeCookie('token', { path: '/' });
+    removeCookie('expiry', { path: '/' });
+  };
+
+  return logout;
+};
+const useGetToken = () => {
+  const [cookies] = useCookies(['token']);
+  return cookies.token;
+};
+const useTypeId = () => {
+  try {
+    return Cookies.get('typeId');
+  } catch (error) {
+    console.error('Error fetching type id:', error);
+    return null;
+  }
+};
+const useTokenExpiration = () => {
+  return Cookies.get('expiry')
+};
+const useSetCookiesAfterLogin = () => {
+  const [isCookiesSet, setIsCookiesSet] = useState(false);
+
+  const setCookies = ({ fullName, typeId, token, expiry }) => {
+    try {
+      const cookieOptions = {
+        path: '/',
+        expires: new Date(expiry), 
+      };
+
+      Cookies.set('userName', fullName, cookieOptions);
+      Cookies.set('typeId', typeId, cookieOptions);
+      Cookies.set('token', token, cookieOptions);
+      Cookies.set('expiry', expiry, cookieOptions);
+      setIsCookiesSet(true);
+    } catch (error) {
+      console.error('Error setting cookies:', error);
+      setIsCookiesSet(false);
+    }
+  };
+
+  return { setCookies, isCookiesSet };
+};
+const useGetUserName = () => {
+  const [cookies] = useCookies(['userName']);
+  return cookies.userName;
+}
+export {
+  useGetToken,
+  useTokenExpiration,
+  useLogout,
+  useSetCookiesAfterLogin,
+  useTypeId,
+  useGetUserName,
+};

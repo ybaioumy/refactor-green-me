@@ -127,7 +127,7 @@ const Select = ({
     const secondaryClasses =
       'inline-flex justify-between items-center w-full rounded-md px-4 py-1 text-md font-semibold text-[#1E4A28] border border-gray-300 focus:outline-none bg-[#F7F7F7] ';
     const innerShadowClasses =
-      'w-full pt-2.5 pb-1.5 pl-1 md:pl-4 pr-1 bg-[#F7F7F7] [box-shadow:0px_2px_6px_1px_rgba(0,_0,_0,_0.20)_inset] rounded-md justify-between items-center inline-flex focus:outline-none placeholder-[#1E4A28] text-[#1E4A28] hover:outline';
+      'w-full py-1.5 pl-1 md:pl-4 pr-1 bg-[#F7F7F7] [box-shadow:0px_2px_6px_1px_rgba(0,_0,_0,_0.20)_inset] rounded-md justify-between items-center inline-flex focus:outline-none placeholder-[#1E4A28] text-[#1E4A28] hover:outline';
 
     const underLineClasses =
       'w-full text-left px-4 py-2 bg-[#F1F1F1] border-b-2 border-[#8E8E8E] shadow-sm focus:outline-none flex items-center justify-between';
