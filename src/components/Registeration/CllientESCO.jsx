@@ -1,8 +1,9 @@
 import { Controller, useFormContext } from 'react-hook-form';
 import { DatePicker } from 'antd';
 import Input from '../shared/Input';
-import { useState } from 'react';
-function ClientESCO({ registerData, setRegisterData, tokenData }) {
+
+import dayjs from 'dayjs';
+function ClientESCO({ tokenData }) {
   const {
     control,
     formState: { errors },
@@ -79,10 +80,13 @@ function ClientESCO({ registerData, setRegisterData, tokenData }) {
           // defaultValue={registerData.birthDate}
           render={({ field }) => (
             <Input
-              {...field}
               type="date"
               placeHolder="Birth Date"
               className="w-full py-2 border-0 pl-0  border-b-2 border-[#8c8c8c] outline-none hover:border-b-[#77AF00] focus:border-b-[#77AF00] focus:border-b-2 rounded-none bg-[##F1F1F1] focus:border-transparent focus:ring-0"
+              onChange={(date) =>
+                field.onChange(date ? dayjs(date).toISOString() : null)
+              }
+              {...field}
             />
           )}
         />
@@ -138,12 +142,12 @@ function ClientESCO({ registerData, setRegisterData, tokenData }) {
             </p>
           )}
           {tokenData && (
-            <span
+            <p
               className={`text-[#8c8c8c] transition-opacity duration-300 ${
                 tokenData?.Email ? 'opacity-100' : 'opacity-0'
               }`}>
               <p>You can not edit this field</p>
-            </span>
+            </p>
           )}
         </div>
       </label>
@@ -229,7 +233,7 @@ function ClientESCO({ registerData, setRegisterData, tokenData }) {
           }}
           render={({ field }) => (
             <Input
-              id="password"
+              id="Cpassword"
               type="password"
               name="password"
               placeHolder="Confirm Password"

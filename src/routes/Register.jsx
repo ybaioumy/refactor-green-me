@@ -6,7 +6,7 @@ import { useState } from 'react';
 import Logo from '../assets/images/greenme.png';
 import GreenMeTitle from '../assets/images/GreenMeTitle.png';
 import { Link, useSearchParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import {
   useRegisterMutation,
   useGetRolesQuery,
@@ -24,6 +24,8 @@ import { setCredentials } from '../redux/slices/user';
 import UserType from '../components/Registeration/StepOne';
 import { useJwt } from 'react-jwt';
 import UserInformation from '../components/Registeration/StepTwo';
+import { Dropdown } from '../components/shared/Dropdown';
+import StepThree from '../components/Registeration/StepThree';
 function Register() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
@@ -79,25 +81,22 @@ function Register() {
           content: (
             <UserInformation
               registerData={registerData}
-              setRegisterData={setRegisterData}
               tokenData={decodedToken}
             />
-            // <h1>Register</h1>
           ),
         },
         {
-          content: (
-            // <UserInformation
-            //   registerData={registerData}
-            //   setRegisterData={setRegisterData}
-            //   tokenData={decodedToken}
-            // />
-            <h1>Register</h1>
-          ),
+          content: <StepThree registerData={registerData} />,
         },
       ],
     },
   ];
+  const methods = useFormContext();
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
+
   return (
     <div
       className={`flex flex-col md:flex-row min-h-screen ${bgColor} py-2 items-center  md:py-0`}>
@@ -150,13 +149,7 @@ function Register() {
             </label>
           </div>
         </div>
-        <Steps
-          steps={steps}
-          hasLink
-          // onSave={handleSubmit}
-          // data={registerData}
-          // isLoading={isLoading}
-        />
+        <Steps steps={steps} hasLink onSave={onSubmit} />
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, {
   useState,
   useRef,
@@ -8,7 +7,6 @@ import React, {
 } from 'react';
 import { Transition } from '@headlessui/react';
 import Icon from './Icon';
-// Debounce hook to improve search performance
 function useDebounce(value, delay) {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -25,7 +23,6 @@ function useDebounce(value, delay) {
   return debouncedValue;
 }
 
-// eslint-disable-next-line no-undef, react/display-name
 const Option = React.memo(({ option, onClick }) => (
   <button
     title={option.name || option.projectName}
@@ -123,11 +120,6 @@ const Select = ({
     setSearchQuery(e.target.value);
   }, []);
 
-  const optionClasses = useMemo(
-    () =>
-      'block w-full text-left px-4 py-2 text-sm mr-2 text-[#3E3E3E] hover:bg-[#D8F992] truncate',
-    []
-  );
 
   const getVariant = useMemo(() => {
     const defaultClasses =
@@ -135,7 +127,8 @@ const Select = ({
     const secondaryClasses =
       'inline-flex justify-between items-center w-full rounded-md px-4 py-1 text-md font-semibold text-[#1E4A28] border border-gray-300 focus:outline-none bg-[#F7F7F7] ';
     const innerShadowClasses =
-      'w-full py-2.5 px-2 md:pl-9  bg-[#F7F7F7] [box-shadow:0px_2px_6px_1px_rgba(0,_0,_0,_0.20)_inset] rounded-md justify-between items-center inline-flex focus:outline-none placeholder-[#1E4A28] font-abel text-[#1E4A28]';
+      'w-full pt-2.5 pb-1.5 pl-1 md:pl-4 pr-1 bg-[#F7F7F7] [box-shadow:0px_2px_6px_1px_rgba(0,_0,_0,_0.20)_inset] rounded-md justify-between items-center inline-flex focus:outline-none placeholder-[#1E4A28] text-[#1E4A28] hover:outline';
+
     const underLineClasses =
       'w-full text-left px-4 py-2 bg-[#F1F1F1] border-b-2 border-[#8E8E8E] shadow-sm focus:outline-none flex items-center justify-between';
     switch (variant) {

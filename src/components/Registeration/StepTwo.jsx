@@ -1,10 +1,10 @@
 import React from 'react';
 import ClientESCO from './CllientESCO';
 import { useGetTypesQuery } from '../../redux/features/auth';
+import Expert from './Expert';
 
 function UserInformation({
   registerData,
-  setRegisterData,
   tokenData,
   countries,
 }) {
@@ -21,15 +21,9 @@ function UserInformation({
   };
   const expertId = getUserTypeIdByName(registerData.typesId, 'expert');
   const contractorId = getUserTypeIdByName(registerData.typesId, 'contractor');
-  if (expertId || contractorId) return <h1>hii</h1>;
- 
-  return (
-    <ClientESCO
-      registerData={registerData}
-      setRegisterData={setRegisterData}
-      tokenData={tokenData}
-    />
-  );
+  if (expertId || contractorId) return <Expert />;
+
+  return <ClientESCO tokenData={tokenData} />;
 }
 
 export default UserInformation;

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import Button from './Button';
+import { Link } from 'react-router-dom';
 
-const Steps = ({ steps }) => {
+const Steps = ({ steps, hasLink = false }) => {
   //   {
   //   parentStep: 'generalInfo',
   //   label: 'General Info',
@@ -111,40 +112,53 @@ const Steps = ({ steps }) => {
             </div>
           )} */}
           {/* Navigation Buttons */}
-          <div className="flex gap-4 w-full justify-center items-center md:justify-end ">
-            {currentChildIndex > 0 || currentParentIndex > 0 ? (
-              <Button
-                className={'min-w-[150px]'}
-                variant="secondary"
-                type="button"
-                hasIcon
-                iconPosition="left"
-                iconName={'arrow-left'}
-                onClick={handlePrevious}>
-                Previous
-              </Button>
-            ) : null}
 
-            {currentChildIndex <
-              steps[currentParentIndex].children.length - 1 ||
-            currentParentIndex < steps.length - 1 ? (
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={handleNext}
-                hasIcon
-                iconName={'arrow-right'}
-                iconPosition="right"
-                className={'min-w-[150px]'}>
-                Next
-              </Button>
-            ) : (
-              <Button
-                variant="secondary"
-                className={'min-w-[150px]'}
-                type="submit">
-                SAVE
-              </Button>
+          <div className="flex flex-col md:flex-row-reverse mt-4 gap-3 justify-between items-center pb-2">
+            <div className="flex items-center gap-5">
+              {currentChildIndex > 0 || currentParentIndex > 0 ? (
+                <Button
+                  className={'min-w-[150px]'}
+                  variant="secondary"
+                  type="button"
+                  hasIcon
+                  iconPosition="left"
+                  iconName={'arrow-left'}
+                  onClick={handlePrevious}>
+                  Previous
+                </Button>
+              ) : null}
+
+              {currentChildIndex <
+                steps[currentParentIndex].children.length - 1 ||
+              currentParentIndex < steps.length - 1 ? (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={handleNext}
+                  hasIcon
+                  iconName={'arrow-right'}
+                  iconPosition="right"
+                  className={'min-w-[150px]'}>
+                  Next
+                </Button>
+              ) : (
+                <Button
+                  variant="secondary"
+                  className={'min-w-[150px]'}
+                  type="submit">
+                  SAVE
+                </Button>
+              )}
+            </div>
+            {hasLink && (
+              <p className="text-[#809F87]  gap-2 items-center font-abel inline-flex">
+                Already have an account?
+                <Link
+                  className="underline font-semibold text-[#1E4A28] font-abel"
+                  to="/">
+                  Login
+                </Link>
+              </p>
             )}
           </div>
         </form>

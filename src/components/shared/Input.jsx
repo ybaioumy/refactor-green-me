@@ -20,7 +20,7 @@ const Input = forwardRef(
     const handleDateChange = (dateString) => {
       if (onChange) {
         // Handle null or empty date (date cleared)
-        onChange(dateString ? dayjs(dateString) : null); // Pass null if the date is cleared
+        onChange(dateString ? dayjs(dateString).toISOString() : null); // Pass null if the date is cleared
       }
     };
     const [togglePassword, setTogglePassword] = useState(false);
@@ -29,11 +29,11 @@ const Input = forwardRef(
     const secondary =
       'w-full pt-2.5 pb-1.5 pl-2 md:pl-4 pr-1 rounded-md justify-start items-center inline-flex border border-black focus:outline-none placeholder-[#1E4A28] bg-[#BFE0C6]';
     const date =
-      'w-full py-2 border-0 pl-0  border-b-2 border-[#8c8c8c] outline-none custom-date-picker rounded-none bg-[##F1F1F1] focus:border-transparent focus:ring-0';
+      'w-full py-2 border-0 pl-0  border-b-2 border-[#8c8c8c] outline-none custom-date-picker rounded-none bg-[##F1F1F1] focus:border-transparent focus:ring-0 hover:border-b-[#77AF00] focus:border-b-[#77AF00] placeholder-[#1E4A28] text-[#1E4A28]';
     const borderBottom =
       'border-b-2 pb-1.5 border-[#8c8c8c] w-full outline-none hover:border-b-[#77AF00] focus:border-b-[#77AF00]';
     const innerShadowClasses =
-      'w-full py-2.5 px-2 md:pl-9 bg-[#F7F7F7] [box-shadow:0px_2px_6px_1px_rgba(0,_0,_0,_0.20)_inset] rounded-md justify-between items-center inline-flex focus:outline-none placeholder-[#1E4A28] text-[#1E4A28]';
+      'w-full py-2.5 px-2 md:pl-9 bg-[#F7F7F7] [box-shadow:0px_2px_6px_1px_rgba(0,_0,_0,_0.20)_inset] rounded-md justify-between items-center inline-flex focus:outline-none placeholder-[#1E4A28] text-[#1E4A28] hover:outline';
 
     const getVariantStyles = () => {
       switch (variant) {
