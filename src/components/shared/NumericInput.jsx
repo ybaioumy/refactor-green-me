@@ -9,6 +9,7 @@ const NumericInput = ({
   value,
   disabled = false,
   unit = '',
+  decimals = false,
 }) => {
   const increment = () => {
     handleChange(Math.min((value || 0) + 1, maxValu));
@@ -19,7 +20,9 @@ const NumericInput = ({
   };
 
   const handleInputChange = (event) => {
-    const newValue = parseInt(event.target.value, 10);
+    const newValue = decimals
+      ? parseFloat(event.target.value)
+      : parseInt(event.target.value, 10);
     if (isNaN(newValue)) {
       return; // Ignore non-numeric input
     }
@@ -41,6 +44,7 @@ const NumericInput = ({
             disabled ? 'opacity-50 cursor-not-allowed' : ''
           }`}>
           <button
+            type="button"
             onClick={decrement}
             className="focus:outline-none bg-[#D90000] text-white rounded-full p-1"
             disabled={disabled}
@@ -59,8 +63,10 @@ const NumericInput = ({
             } focus:outline-none bg-transparent`}
             disabled={disabled}
             aria-label={label || 'Number input'} // Accessibility
+            step="any"
           />
           <button
+            type="button"
             onClick={increment}
             className="focus:outline-none bg-[#186129] text-white rounded-full p-1"
             disabled={disabled}

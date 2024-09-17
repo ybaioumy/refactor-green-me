@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import Select from '../shared/Select';
 import EmptyList from '../shared/EmptyList';
+
 const ProjectSubmissionDetails = ({ data, isLoading }) => {
   const [selectedProject, setSelectedProject] = useState(null);
+
   useEffect(() => {
     if (data && data.length > 0) {
       setSelectedProject(data[0]);
     }
   }, [data]);
+
   const handleSelectChange = (selectedOption) => {
     setSelectedProject(selectedOption);
   };
+
   return (
-    <div className="flex flex-col lg:flex-row justify-start flex-1 w-full lg:w-1/2 bg-[#F3F3F3] p-2 md:p-5 gap-10 rounded-lg shadow">
-      <div className="flex flex-col gap-5 w-full lg:w-1/2">
-        <div className="max-w-[300px]">
+    <div className="flex flex-col md:flex-row justify-start flex-1 w-full md:w-full lg:w-1/2 bg-[#F3F3F3] p-4 md:p-6 gap-6 md:gap-10 rounded-lg shadow">
+      <div className="flex flex-col gap-5 w-full md:w-1/2">
+        <div className="max-w-[100%] md:max-w-[300px]">
           <Select
             options={data?.data}
             onChange={handleSelectChange}
@@ -52,11 +56,11 @@ const ProjectSubmissionDetails = ({ data, isLoading }) => {
         </div>
       </div>
       <div className="w-full">
-        <label className="block text-[#1E4A28] text-[18px] md:text-[24px] mb-2 font-bold">
+        <label className="block text-[#1E4A28] text-[16px] md:text-[18px] lg:text-[24px] mb-2 font-bold">
           Project Submission Status / Actions Needed
         </label>
         <div
-          className="max-h-[calc(100%-50px)] overflow-y-scroll md:p-2 border-t border-black h-[450px]"
+          className="max-h-[calc(100%-50px)] overflow-y-scroll md:p-2 border-t border-black h-[250px] md:h-[450px]"
           role="region"
           aria-label="Project submission status and actions needed">
           {/* {selectedProject.flagsCount.map((item) => (
@@ -69,7 +73,8 @@ const ProjectSubmissionDetails = ({ data, isLoading }) => {
                 }`,
               }}
               role="article"
-              aria-labelledby={`status-${item.id}`}>
+              aria-labelledby={`status-${item.id}`}
+            >
               <p id={`status-${item.id}`}>Status: {item.status}</p>
               <p>Date: {item.date}</p>
             </div>
@@ -85,7 +90,7 @@ export default ProjectSubmissionDetails;
 
 const ProjectPipelineCard = ({ totalProjects }) => {
   return (
-    <div className="bg-[#1e4a28] rounded-lg p-4 shadow-md flex items-center relative overflow-hidden max-w-[300px]">
+    <div className="bg-[#1e4a28] rounded-lg p-4 shadow-md flex items-center relative overflow-hidden max-w-[100%] md:max-w-[300px]">
       <div className="flex-grow">
         <div className="flex items-end justify-end w-full">
           <div className="flex-shrink-0 absolute -left-10 -top-[50px] rotate-90">
@@ -102,12 +107,13 @@ const ProjectPipelineCard = ({ totalProjects }) => {
     </div>
   );
 };
+
 const ProgressBarItem = ({ label, current, total, color }) => {
   const percentage = (current / total) * 100;
 
   return (
-    <div className="mb-1 max-w-[300px]">
-      <div className="flex flex-col justify-between text-[#7a7a7a] mb-1 ">
+    <div className="mb-1 max-w-full md:max-w-[300px]">
+      <div className="flex flex-col justify-between text-[#7a7a7a] mb-1">
         <span>{label}</span>
         <span className={`text-[14px]`}>
           <span style={{ color: color }}>{current}</span>/{total}
@@ -119,7 +125,7 @@ const ProgressBarItem = ({ label, current, total, color }) => {
           style={{
             width: `${percentage}%`,
             background: color,
-            transition: 'width 0.5s ease-in-out', // Adding transition to width
+            transition: 'width 0.5s ease-in-out',
           }}></div>
       </div>
     </div>

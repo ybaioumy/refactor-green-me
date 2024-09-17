@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import Button from './Button';
+import { Link } from 'react-router-dom';
 
-const ProjectSubmission = ({ steps }) => {
+const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
   //   {
   //   parentStep: 'generalInfo',
   //   label: 'General Info',
@@ -22,14 +23,21 @@ const ProjectSubmission = ({ steps }) => {
   //     },
   //   ],
   // },
+
   const methods = useForm();
-  const { trigger } = methods;
+  const {
+    trigger,
+    formState: { errors },
+  } = methods;
 
   const [currentParentIndex, setCurrentParentIndex] = useState(0);
   const [currentChildIndex, setCurrentChildIndex] = useState(0);
 
   const handleNext = async () => {
     const isValid = await trigger();
+    if (!isValid) {
+      alertValidationMessage(errors);
+    }
     if (isValid) {
       if (currentChildIndex < steps[currentParentIndex].children.length - 1) {
         setCurrentChildIndex(currentChildIndex + 1);
@@ -52,13 +60,38 @@ const ProjectSubmission = ({ steps }) => {
   const onSubmit = (data) => {
     console.log(data);
   };
+  // const methods = useForm({
+  //   mode: 'onSubmit', // Errors will only show on submit
+  // });
+  // const {
+  //   trigger,
+  //   formState: { errors },
+  // } = methods;
+  const alertValidationMessage = (errors) => {
+    // Create an array to hold all the messages
+    const messages = [];
 
+    // Iterate over the error object
+    for (const key in errors) {
+      if (errors[key].message) {
+        // Add each message to the messages array
+        messages.push(errors[key].message);
+      }
+    }
+
+    // Join all messages into a single string, separated by new lines
+    const combinedMessage = messages.join('\n');
+
+    // Show the combined message in a single alert
+    if (combinedMessage) {
+      alert(combinedMessage);
+    }
+  };
   return (
     <FormProvider {...methods}>
-      <div className="w-full">
-        <div className="flex h-full">
-          {/* Parent Steps Sidebar */}
-          {/* <div className="flex w-1/4 h-full p-4">
+      <div className="w-full h-full">
+        {/* Parent Steps Sidebar */}
+        {/* <div className="flex w-1/4 h-full p-4">
             <ul className="w-full flex flex-col gap-5 border-r border-black pr-4 h-[95vh]">
               {steps.map((parentStep, index) => (
                 <React.Fragment key={index}>
@@ -85,54 +118,83 @@ const ProjectSubmission = ({ steps }) => {
             </ul>
           </div> */}
 
-          {/* Child Steps Section */}
-          <div className="flex w-full p-4">
-            <form onSubmit={methods.handleSubmit(onSubmit)} className="w-full">
-              <div className="h-full w-full transition-all duration-200">
-                {/* {
+        {/* Child Steps Section */}
+
+        <form
+          onSubmit={methods.handleSubmit(onSave)}
+          className="w-full flex flex-col justify-between min-h-full">
+          <div className="h-full min-h-[70vh] w-full my-auto transition-all duration-200">
+            {/* {
                   steps[currentParentIndex].children[currentChildIndex]
                     .stepLabel
                 } */}
-                {steps[currentParentIndex].children[currentChildIndex].content}
-              </div>
-
-              {/* Navigation Buttons */}
-              <div className="flex gap-4 w-full justify-end border-t mt-4 pt-2">
-                {currentChildIndex > 0 || currentParentIndex > 0 ? (
-                  <Button
-                    className={'min-w-[150px]'}
-                    variant="secondary"
-                    type="button"
-                    onClick={handlePrevious}>
-                    Previous
-                  </Button>
-                ) : null}
-
-                {currentChildIndex <
-                  steps[currentParentIndex].children.length - 1 ||
-                currentParentIndex < steps.length - 1 ? (
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={handleNext}
-                    className={'min-w-[150px]'}>
-                    Save & Next
-                  </Button>
-                ) : (
-                  <Button
-                    variant="secondary"
-                    className={'min-w-[150px]'}
-                    type="submit">
-                    SAVE
-                  </Button>
-                )}
-              </div>
-            </form>
+            {steps[currentParentIndex]?.children[currentChildIndex]?.content ||
+              null}
           </div>
-        </div>
+          {/* {errors && (
+            <div className="text-red-500">
+              {Object.keys(errors).length > 0 && (
+                <span>Please fix the errors before proceeding.</span>
+              )}
+            </div>
+          )} */}
+          {/* Navigation Buttons */}
+
+          <div className="flex flex-col md:flex-row-reverse mt-4 gap-3 justify-between items-center pb-2">
+            <div className="flex items-center gap-5">
+              {currentChildIndex > 0 || currentParentIndex > 0 ? (
+                <Button
+                  className={'min-w-[150px]'}
+                  variant="secondary"
+                  type="button"
+                  hasIcon
+                  iconPosition="left"
+                  iconName={'arrow-left'}
+                  onClick={handlePrevious}>
+                  Previous
+                </Button>
+              ) : null}
+
+              {currentChildIndex <
+                steps[currentParentIndex].children.length - 1 ||
+              currentParentIndex < steps.length - 1 ? (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={handleNext}
+                  hasIcon
+                  iconName={'arrow-right'}
+                  iconPosition="right"
+                  className={'min-w-[150px]'}>
+                  Next
+                </Button>
+              ) : (
+                <Button
+                  variant="secondary"
+                  className={'min-w-[150px]'}
+                  type="button"
+                  isLoading={isLoading}
+                  disabled={isLoading}
+                  onClick={methods.handleSubmit(onSave)}>
+                  SAVE
+                </Button>
+              )}
+            </div>
+            {hasLink && (
+              <p className="text-[#809F87]  gap-2 items-center font-abel inline-flex">
+                Already have an account?
+                <Link
+                  className="underline font-semibold text-[#1E4A28] font-abel"
+                  to="/">
+                  Login
+                </Link>
+              </p>
+            )}
+          </div>
+        </form>
       </div>
     </FormProvider>
   );
 };
 
-export default ProjectSubmission;
+export default Steps;

@@ -53,3 +53,13 @@ export const getTimeAgo = (time) => {
         return `${seconds} second${seconds > 1 ? 's' : ''} ago`;
     }
 };
+
+
+
+export function findIdByName(name, dataArray) {
+    // Find the object in the array where the name matches
+    const foundItem = dataArray.find(item => item.name === name);
+
+    // If an item is found, return its id; otherwise, return null or undefined
+    return foundItem ? foundItem.id : null;
+}

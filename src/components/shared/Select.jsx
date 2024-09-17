@@ -25,6 +25,7 @@ function useDebounce(value, delay) {
 
 const Option = React.memo(({ option, onClick }) => (
   <button
+    type='button'
     title={option.name || option.projectName}
     onClick={() => onClick(option)}
     className="block w-full text-left px-4 py-2 text-sm mr-2 text-[#3E3E3E] hover:bg-[#D8F992] truncate">

@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Cookies from 'js-cookie';
+import { setCredentials } from '../slices/user';
+import { REHYDRATE } from 'redux-persist';
 
 export const authApi = createApi({
     baseQuery: fetchBaseQuery({
@@ -22,6 +24,23 @@ export const authApi = createApi({
                 method: 'POST',
                 body: credentials,
             }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    // Dispatch setUser action with user info
+                    dispatch(
+                        setCredentials({
+                            token: data.token,
+                            expiry: data.expiry,
+                            typeId: data.typeId,
+                            role: data.role,
+                            fullName: data.fullName,
+                        })
+                    );
+                } catch (err) {
+                    console.error('Login failed:', err);
+                }
+            }
         }),
         register: builder.mutation({
             query: (userData) => ({
@@ -43,6 +62,11 @@ export const authApi = createApi({
             query: () => 'Country'
         })
     }),
+    extractRehydrationInfo(action, { reducerPath }) {
+        if (action.type === REHYDRATE) {
+            return action.payload?.[reducerPath];
+        }
+    },
 });
 
 export const { useLoginMutation, useRegisterMutation, useGetTypesQuery, useGetMyUsersQuery, useGetRolesQuery, useGetAllCountriesQuery } = authApi;

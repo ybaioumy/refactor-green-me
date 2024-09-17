@@ -66,11 +66,11 @@ function ESCODetails({ sectors, countries }) {
             control={control}
             render={({ field }) => (
               <Select
+                {...field}
                 removeMaxWidth
                 search
                 variant="innerShadow"
                 options={countries}
-                {...field}
                 onChange={(value) => handleChange('countryId', value.id)}
               />
             )}
@@ -128,11 +128,11 @@ function ESCODetails({ sectors, countries }) {
               control={control}
               render={({ field }) => (
                 <Select
+                {...field}
                   removeMaxWidth
                   search
                   variant="secondary"
                   options={countries}
-                  {...field}
                   onChange={(value) => handleCountryChange(index, value.id)}
                 />
               )}
@@ -208,9 +208,7 @@ function ESCODetails({ sectors, countries }) {
 
 const EscoOwnershipSection = () => {
   const { control, setValue, getValues } = useFormContext();
-  const [shareholders, setShareholders] = useState([
-    { name: '', share: 0, value: 0 },
-  ]);
+  const [shareholders, setShareholders] = useState([]);
 
   const addShareholder = () => {
     const newShareholder = { name: '', share: 0, value: 0 };
@@ -297,10 +295,11 @@ const EscoOwnershipSection = () => {
             render={({ field: { value, onChange, ...field } }) => (
               <Input
                 {...field}
+                type="text"
                 value={value}
                 placeHolder={`Owner ${index + 1}`}
                 onChange={(e) => {
-                  const newValue = e.target.value;
+                  const newValue = e;
                   onChange(newValue);
                   handleShareholderChange(index, 'name', newValue);
                 }}
@@ -316,9 +315,8 @@ const EscoOwnershipSection = () => {
                 {...field}
                 value={value}
                 placeHolder={`Share %`}
-                type="number"
                 onChange={(e) => {
-                  const newValue = e.target.value;
+                  const newValue = e;
                   onChange(newValue);
                   handleShareholderChange(index, 'share', newValue);
                 }}
@@ -337,7 +335,7 @@ const EscoOwnershipSection = () => {
                 placeHolder={`Value`}
                 type="number"
                 onChange={(e) => {
-                  const newValue = e.target.value;
+                  const newValue = e;
                   onChange(newValue);
                   handleShareholderChange(index, 'value', newValue);
                 }}
@@ -426,7 +424,7 @@ const EscoActivitiesSection = () => {
                 value={value}
                 placeHolder={`Activity Name`}
                 onChange={(e) => {
-                  const newValue = e.target.value;
+                  const newValue = e;
                   onChange(newValue);
                   handleActivityChange(index, 'activityName', newValue);
                 }}
@@ -442,7 +440,7 @@ const EscoActivitiesSection = () => {
                 value={value}
                 placeHolder={`Description`}
                 onChange={(e) => {
-                  const newValue = e.target.value;
+                  const newValue = e;
                   onChange(newValue);
                   handleActivityChange(index, 'description', value);
                 }}
@@ -511,7 +509,7 @@ const EscoManagementSection = () => {
                 value={value}
                 placeHolder={`Name`}
                 onChange={(e) => {
-                  const newValue = e.target.value;
+                  const newValue = e;
                   onChange(newValue);
                   handleManagementChange(index, 'name', newValue);
                 }}
@@ -527,7 +525,7 @@ const EscoManagementSection = () => {
                 value={value}
                 placeHolder={`Role`}
                 onChange={(e) => {
-                  const newValue = e.target.value;
+                  const newValue = e;
                   onChange(newValue);
                   handleManagementChange(index, 'role', newValue);
                 }}

@@ -80,13 +80,13 @@ function ClientESCO({ tokenData }) {
           // defaultValue={registerData.birthDate}
           render={({ field }) => (
             <Input
+              {...field}
               type="date"
               placeHolder="Birth Date"
               className="w-full py-2 border-0 pl-0  border-b-2 border-[#8c8c8c] outline-none hover:border-b-[#77AF00] focus:border-b-[#77AF00] focus:border-b-2 rounded-none bg-[##F1F1F1] focus:border-transparent focus:ring-0"
               onChange={(date) =>
                 field.onChange(date ? dayjs(date).toISOString() : null)
               }
-              {...field}
             />
           )}
         />
@@ -163,6 +163,7 @@ function ClientESCO({ tokenData }) {
               type="tel"
               placeHolder="Phone"
               variant="borderBottom"
+              autoComplete="tel"
             />
           )}
         />
@@ -184,31 +185,31 @@ function ClientESCO({ tokenData }) {
         <Controller
           name="password"
           control={control}
-          // defaultValue={registerData.password}
           render={({ field }) => (
             <Input
+              {...field}
               id="password"
               type="password"
               name="password"
               placeHolder="Password"
               variant="borderBottom"
+              autoComplete={'new-password'}
               {...register('password', {
                 required: 'Please enter your password',
                 pattern: {
-                  value:
-                    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                  value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&_]{8,}$/,
                   message:
-                    'Password must be at least 8 characters, include at least one letter, one number, and one special character.',
+                    'Password must be at least 8 characters, include at least one letter and one number.',
                 },
                 minLength: {
                   value: 8,
                   message: 'Password must Minimum eight characters',
                 },
               })}
-              {...field}
             />
           )}
         />
+
         <div className="h-2">
           {errors?.password && (
             <p
@@ -233,12 +234,13 @@ function ClientESCO({ tokenData }) {
           }}
           render={({ field }) => (
             <Input
+              {...field}
               id="Cpassword"
               type="password"
               name="password"
               placeHolder="Confirm Password"
               variant="borderBottom"
-              {...field}
+              autoComplete={'new-password'}
             />
           )}
         />

@@ -1,5 +1,5 @@
 import React from 'react';
-import Steps from '../components/shared/steps';
+import Steps from '../components/shared/Steps';
 import { useState } from 'react';
 import Logo from '../assets/images/greenme.png';
 import GreenMeTitle from '../assets/images/GreenMeTitle.png';
@@ -30,12 +30,12 @@ function Register() {
   const [registerData, setRegisterData] = useState({
     gender: 1,
     statusId: 1,
-    typesId: 0,
-    clientId: 0,
+    typesId: null,
+    clientId: null,
     invitationToken: '',
     invitationStatusId: 0,
     permissionId: [],
-    roleId: initialRoleId ? initialRoleId : null,
+    roleId: initialRoleId,
   });
   const [imagePreview, setImagePreview] = useState(null);
   const [registerMutation, { isLoading, error, isError: isErrorRegister }] =

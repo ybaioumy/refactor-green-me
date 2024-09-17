@@ -38,15 +38,15 @@ function Login() {
       const response = await login(data).unwrap();
       const expires = response.expiry;
       const expDate = new Date(expires);
-      dispatch(
-        setCredentials({
-          token: response.token,
-          expiry: expires,
-          typeId: response.typeId,
-          role: response.role,
-          fullName: response.fullName,
-        })
-      );
+      // dispatch(
+      //   setCredentials({
+      //     token: response.token,
+      //     expiry: expires,
+      //     typeId: response.typeId,
+      //     role: response.role,
+      //     fullName: response.fullName,
+      //   })
+      // );
       setCookies({
         fullName: response.fullName,
         typeId: response.typeId,
@@ -133,6 +133,7 @@ function Login() {
                   },
                 })}
                 placeholder="Email / Phone"
+                autoComplete='email'
               />
               {errors.email && (
                 <p className="text-red-500 text-base mt-1">
@@ -153,6 +154,7 @@ function Login() {
                   })}
                   placeholder="Password"
                   className="w-full focus:outline-none p-2"
+                  autoComplete='current-password'
                 />
                 <button
                   onClick={handlePasswordVisibilityToggle}

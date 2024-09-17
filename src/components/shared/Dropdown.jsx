@@ -27,7 +27,10 @@ export const Dropdown = ({
     }
   }, [value, options, multiSelect]);
 
-  const toggleDropdown = () => setIsOpen(!isOpen);
+  const toggleDropdown = () => {
+    setIsOpen(prev => !prev)
+    setSearchQuery('')
+  };
 
   const handleOptionClick = (option) => {
     if (multiSelect) {

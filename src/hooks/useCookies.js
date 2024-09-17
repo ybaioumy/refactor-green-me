@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import Cookies from 'js-cookie';
 import { useCookies } from 'react-cookie';
-
+import { useDispatch } from 'react-redux';
+import { projectApi } from '../redux/features/project';
 const useLogout = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(['userType', 'expiry', 'userToken', 'userName']);
+  const dispatch = useDispatch();
+  const [cookies, setCookie, removeCookie] = useCookies(['typeId', 'expiry', 'token', 'userName']);
   const logout = () => {
+    dispatch(projectApi.util.resetApiState());
     removeCookie('userName', { path: '/' });
-    removeCookie('userType', { path: '/' });
+    removeCookie('typeId', { path: '/' });
     removeCookie('token', { path: '/' });
     removeCookie('expiry', { path: '/' });
   };
@@ -35,7 +38,7 @@ const useSetCookiesAfterLogin = () => {
     try {
       const cookieOptions = {
         path: '/',
-        expires: new Date(expiry), 
+        expires: new Date(expiry),
       };
 
       Cookies.set('userName', fullName, cookieOptions);

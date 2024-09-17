@@ -14,7 +14,10 @@ import ProjectListing from './components/shared/ProjectListing';
 import Dashboard from './components/client/Dashboard';
 import Profile from './routes/Profile';
 import Register from './routes/Register';
-
+import Project from './components/client/Project';
+import NewProject from './routes/NewProject';
+import EligibilityTest from './routes/EligibilityTest';
+import Proposals from './components/client/Proposals';
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
   const token = useGetToken();
@@ -63,11 +66,31 @@ const clientRouter = createBrowserRouter([
             index: true,
             element: <ProjectListing />,
           },
-          // Add more project-related routes...
+          {
+            path: 'eligible/:id',
+            element: <Project />,
+          },
         ],
       },
       {
-        path: 'profile',
+        path: 'new-project',
+        children: [
+          {
+            index: true,
+            element: <NewProject />,
+          },
+          {
+            path: ':id',
+            element: <EligibilityTest />,
+          },
+        ],
+      },
+      {
+        path: 'proposals/:id',
+        element: <Proposals />,
+      },
+      {
+        path: 'esco/:id',
         element: <Profile />,
       },
     ],
@@ -126,17 +149,17 @@ function App() {
   // Handle the routing based on user type
   const handleRouter = (userType) => {
     if (!userType || !token) {
-      return AuthRouter; 
+      return AuthRouter;
     }
     switch (userType) {
       case 'client':
         return clientRouter;
       case 'esco':
-        return escoRouter; 
+        return escoRouter;
       case 'expert':
-        return expertRouter; 
+        return expertRouter;
       default:
-        return AuthRouter; 
+        return AuthRouter;
     }
   };
 

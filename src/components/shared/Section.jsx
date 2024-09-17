@@ -33,7 +33,7 @@ const ItemRow = ({
       <div className="w-full flex flex-row gap-4 md:gap-5">
         {children}
         {canEdit && (
-          <button onClick={onRemove} className="">
+          <button onClick={onRemove} className="" type='button'>
             <Icon name={'remove'} />
           </button>
         )}
