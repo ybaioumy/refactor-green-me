@@ -14,9 +14,7 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         setCredentials: (state, action) => {
-            const { token, expiry, typeId, role, fullName } = action.payload;
-
-            // Store token securely in cookies
+            const { token, expiry, typeId, role, fullName } = action.payload; 
             Cookies.set('token', token, {
                 expires: new Date(expiry),
                 secure: true,   // Use only HTTPS

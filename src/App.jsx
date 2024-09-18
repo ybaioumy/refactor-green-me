@@ -93,6 +93,10 @@ const clientRouter = createBrowserRouter([
         path: 'esco/:id',
         element: <Profile />,
       },
+      {
+        path: 'profile/',
+        element: <Profile />,
+      }
     ],
   },
 ]);

@@ -1,19 +1,18 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; 
-import { REHYDRATE } from 'redux-persist';
+import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
 import { authApi } from './redux/features/auth';
-import authReducer from './redux/slices/user'; // Updated name
+import authReducer from './redux/slices/user'; 
 import { projectApi } from './redux/features/project';
 import { lookingForApi } from './redux/features/eligibility';
 import searchReducer from './redux/slices/filtersSlice';
-
+import eligibilityReducer from './redux/slices/eligbility'
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['auth'] // Persist only the 'auth' slice
+    whitelist: ['auth']
 };
 
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
@@ -25,11 +24,12 @@ export const store = configureStore({
         [lookingForApi.reducerPath]: lookingForApi.reducer,
         auth: persistedAuthReducer,
         search: searchReducer,
+        eligibility: eligibilityReducer, 
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {
-                ignoredActions: [REHYDRATE],
+                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER], // Add these actions to ignore list
             },
         }).concat(authApi.middleware, projectApi.middleware, lookingForApi.middleware),
 });

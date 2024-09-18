@@ -3,6 +3,11 @@ import Cookies from 'js-cookie';
 import { setCredentials } from '../slices/user';
 import { REHYDRATE } from 'redux-persist';
 
+// Helper function to check for REHYDRATE action
+function isHydrateAction(action) {
+    return action.type === REHYDRATE;
+}
+
 export const authApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: process.env.REACT_APP_API_BASE,
@@ -17,6 +22,11 @@ export const authApi = createApi({
             return headers;
         },
     }),
+    extractRehydrationInfo(action, { reducerPath }) {
+        if (isHydrateAction(action)) {
+            return action.payload?.[reducerPath]; // Rehydrate RTK Query state if present in payload
+        }
+    },
     endpoints: (builder) => ({
         login: builder.mutation({
             query: (credentials) => ({
@@ -62,11 +72,7 @@ export const authApi = createApi({
             query: () => 'Country'
         })
     }),
-    extractRehydrationInfo(action, { reducerPath }) {
-        if (action.type === REHYDRATE) {
-            return action.payload?.[reducerPath];
-        }
-    },
+  
 });
 
 export const { useLoginMutation, useRegisterMutation, useGetTypesQuery, useGetMyUsersQuery, useGetRolesQuery, useGetAllCountriesQuery } = authApi;

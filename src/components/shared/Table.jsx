@@ -39,7 +39,7 @@ const ProjectTable = ({ data, isLoading, error, isOpportunitiesRoute }) => {
   const navigate = useNavigate();
   const gridRef = useRef();
     const userType = useTypeId();
-    console.log( userType);
+   
   const clientToFilterItems = [
     { label: 'Project Category', data: category, key: 'categoryId' },
     {
