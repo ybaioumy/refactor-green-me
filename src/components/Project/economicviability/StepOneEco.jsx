@@ -8,6 +8,7 @@ import Button from '../../shared/Button';
 import Loader from '../../shared/Loader';
 import EmptyList from '../../shared/EmptyList';
 import Input from '../../shared/Input';
+
 function StepOneCapex() {
   const {
     data: dropDowns,
@@ -37,19 +38,18 @@ function StepOneCapex() {
     itemTotalCost: 0,
     remarks: '',
   };
-  console.log(watch('economicViabilty.totalCapexvalue'));
-  useEffect(() => {
-    console.log('run for length: ' + totalCapexvalue);
-    setValue('economicViabilty.totalCapexitems', currentLength);
-  }, [currentLength, setValue, totalCapexvalue]);
 
   useEffect(() => {
-    console.log('use Effect run for update');
+    setValue('economicViabilty.totalCapexitems', currentLength);
+  }, [currentLength, setValue]);
+
+  useEffect(() => {
     setValue('economicViabilty.totalCapexvalue', totalCapexvalue);
-  }, [totalCapexvalue, setValue, currentLength]);
+  }, [totalCapexvalue, setValue]);
 
   if (isLoadingDropDowns) return <Loader />;
   if (isErrorLoadingDropDowns) return <EmptyList />;
+
   return (
     <div className="flex flex-col">
       <div className="flex flex-col gap-6">
@@ -128,11 +128,13 @@ function StepOneCapex() {
                             label="Item Qty"
                             value={field.value}
                             onChange={(value) => {
-                              console.log(value, 'value');
                               field.onChange(value);
                               setValue(
                                 `economicViabilty.capexes[${index}].itemTotalCost`,
-                                value * capex.unitPrice
+                                value *
+                                  watch(
+                                    `economicViabilty.capexes[${index}].unitPrice`
+                                  )
                               );
                             }}
                           />
@@ -150,7 +152,9 @@ function StepOneCapex() {
                               field.onChange(value);
                               setValue(
                                 `economicViabilty.capexes[${index}].itemTotalCost`,
-                                capex.qty * value
+                                watch(
+                                  `economicViabilty.capexes[${index}].qty`
+                                ) * value
                               );
                             }}
                           />
@@ -162,7 +166,9 @@ function StepOneCapex() {
                           Item total Cost (AED)
                         </p>
                         <div className="w-full flex justify-center items-center rounded-[15px] border border-dashed border-[#1e4a28] h-[50px] bg-[#e1f1dc]">
-                          {capex.itemTotalCost}
+                          {watch(
+                            `economicViabilty.capexes[${index}].itemTotalCost`
+                          )}
                         </div>
                       </div>
                     </div>
@@ -173,7 +179,7 @@ function StepOneCapex() {
                     name={`economicViabilty.capexes[${index}].remarks`}
                     render={({ field }) => (
                       <Input
-                        label={'item Remarks'}
+                        label={'Item Remarks'}
                         type="textarea"
                         {...field}
                         maxLength={120}

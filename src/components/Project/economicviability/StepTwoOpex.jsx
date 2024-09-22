@@ -106,27 +106,30 @@ function StepTwoOpex() {
                     control={control}
                     defaultValue={opex.frequencyId || 1}
                     render={({ field }) => (
-                      <div className="md:flex gap-20 border-b border-[#000] pb-4">
-                        {dropDowns?.opexItemFrequency?.map((x) => (
-                          <RadioButton
-                            key={x?.id}
-                            label={x?.name}
-                            checked={field.value === x?.id}
-                            onChange={(e) => {
-                              field.onChange(Number(e.target.value));
-                              setValue(
-                                `economicViabilty.opexes[${index}].itemTotalCost`,
-                                getNumberOfMonth[e.target.value] *
-                                  opex?.unitPrice
-                              );
-                            }}
-                            id={x?.name}
-                            value={x?.id}
-                            name={opex?.name}
-                            variant="green"
-                          />
-                        ))}
-                      </div>
+                      <>
+                        <p>Item Frequnect</p>
+                        <div className="md:flex  gap-20 border-b border-[#000] pb-4">
+                          {dropDowns?.opexItemFrequency?.map((x) => (
+                            <RadioButton
+                              key={x?.id}
+                              label={x?.name}
+                              checked={field.value === x?.id}
+                              onChange={(e) => {
+                                field.onChange(Number(e.target.value));
+                                setValue(
+                                  `economicViabilty.opexes[${index}].itemTotalCost`,
+                                  getNumberOfMonth[e.target.value] *
+                                    opex?.unitPrice
+                                );
+                              }}
+                              id={x?.name}
+                              value={x?.id}
+                              name={opex?.name}
+                              variant="green"
+                            />
+                          ))}
+                        </div>
+                      </>
                     )}
                   />
                   <div className="flex justify-between items-center">
