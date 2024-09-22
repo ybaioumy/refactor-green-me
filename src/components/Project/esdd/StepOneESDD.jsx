@@ -3,18 +3,53 @@ import QuestionBox from '../../shared/QuestionBox';
 import { useFormContext, Controller } from 'react-hook-form';
 import { IoMdAdd } from 'react-icons/io';
 import { InboxOutlined } from '@ant-design/icons';
-import { Upload } from 'antd';
+import { Upload, message } from 'antd';
 import { MdDelete } from 'react-icons/md';
 import Icon from '../../shared/Icon';
-function StepOneESDD({
-  title,
-  project,
-  updateProjectEsdd,
-  handleOnChange,
-  dispatch,
-  ChangeInProjectDocumentSections,
-}) {
-  const { control } = useFormContext();
+import NumericInput from '../../shared/NumericInput';
+import { ChangeInProjectDocumentSections } from '../../../redux/slices/project';
+import { useDispatch } from 'react-redux';
+function StepOneESDD({ title, project, updateProjectEsdd }) {
+  const { control, watch, setValue } = useFormContext();
+  const esdd = watch('esdd');
+  const documentSections = watch('documentSections');
+  const documents = project.documentSections;
+  console.log(documents);
+  console.log(documentSections);
+  const dispatch = useDispatch();
+  const handleFileChange = (info, name) => {
+    if (info.file.status === 'done') {
+      message.success('File Uploaded Successfully');
+      console.log(`${info.file.name} file uploaded successfully`);
+
+      // Find the relevant section by name and append the file to its documentFiles array
+      const updatedDocumentSections = documentSections.map((section) => {
+        if (section.name === name) {
+          return {
+            ...section,
+            documentFiles: [
+              ...section.documentFiles,
+              info.file.response?.fullPath, // Append the new file path
+            ],
+          };
+        }
+        return section;
+      });
+
+      // Dispatch the action to update the Redux store
+      dispatch(
+        ChangeInProjectDocumentSections({
+          indicator: 'plus',
+          object: { name: name, filePath: info.file.response?.fullPath },
+        })
+      );
+
+      // Update form state to reflect the changes
+      setValue('documentSections', updatedDocumentSections);
+    } else if (info.file.status === 'error') {
+      console.log(`${info.file.name} file upload failed.`);
+    }
+  };
   return (
     <QuestionBox title={'Energy and Resource Efficiency'}>
       <div className="question-box">
@@ -34,13 +69,6 @@ function StepOneESDD({
                   <input
                     {...field}
                     className="w-full lg:w-[50%] rounded py-2 px-1"
-                    // onChange={(e) => {
-                    //   field.onChange(e);
-                    //   updateProjectEsdd(
-                    //     'doesEnergyResourceEfficiency',
-                    //     e.target.value
-                    //   );
-                    // }}
                   />
                 )}
               />
@@ -50,49 +78,11 @@ function StepOneESDD({
                 Please quantify the energy/resource efficiency that your
                 proposed project
               </p>
-              <div className="flex w-full relative md:w-[250px] bg-[#FDFFFD] rounded-[7px] h-[25px] justify-between items-center px-[10px]">
-                <button
-                  onClick={() => {
-                    updateProjectEsdd(
-                      'quantifyEnergyResourceEfficiency',
-                      (project?.esdd?.quantifyEnergyResourceEfficiency || 0) + 1
-                    );
-                  }}
-                  disabled={false}>
-                  <Icon name={'plusIcon'} />
-                </button>
-                <Controller
-                  name="quantifyEnergyResourceEfficiency"
-                  control={control}
-                  defaultValue={
-                    project?.esdd?.quantifyEnergyResourceEfficiency || 0
-                  }
-                  render={({ field }) => (
-                    <input
-                      {...field}
-                      className="text-center"
-                      onChange={(e) => {
-                        field.onChange(e);
-                        updateProjectEsdd(
-                          'quantifyEnergyResourceEfficiency',
-                          Number(e.target.value)
-                        );
-                      }}
-                    />
-                  )}
-                />
-                <button
-                  onClick={() => {
-                    updateProjectEsdd(
-                      'quantifyEnergyResourceEfficiency',
-                      (project?.esdd?.quantifyEnergyResourceEfficiency || 0) - 1
-                    );
-                  }}
-                  disabled={false}>
-                  <Icon name={'minusIcon'} />
-                </button>
-                <p className="absolute right-[-20px]">%</p>
-              </div>
+              <Controller
+                control={control}
+                name="esdd.quantifyEnergyResourceEfficiency"
+                render={({ field }) => <NumericInput {...field} />}
+              />
             </div>
           </div>
           <div className="flex flex-col gap-10 lg:w-[45%]">
@@ -106,22 +96,12 @@ function StepOneESDD({
               <Controller
                 name="esdd.explainEnergyResourceEfficiency"
                 control={control}
-                // defaultValue={
-                //   project?.esdd?.explainEnergyResourceEfficiency || ''
-                // }
                 render={({ field }) => (
                   <textarea
                     {...field}
                     maxLength={120}
                     className="w-full border border-[#000] rounded-md py-[25px] px-[24px]"
                     placeholder="(txt/input)"
-                    // onChange={(e) => {
-                    //   field.onChange(e);
-                    //   updateProjectEsdd(
-                    //     'explainEnergyResourceEfficiency',
-                    //     e.target.value
-                    //   );
-                    // }}
                   />
                 )}
               />
@@ -135,24 +115,17 @@ function StepOneESDD({
               </p>
               <div className="w-full lg:w-[50%] bg-[#BFE0C6] p-6 flex flex-col gap-8 rounded-[11px] border border-dashed border-[#bfe0c6]">
                 <div className="flex w-full items-center justify-center">
-                  <Controller
-                    name="Energy-and-Resource-Efficiency-Upload"
-                    control={control}
-                    render={({ field }) => (
-                      <Upload
-                        showUploadList={false}
-                        name="file"
-                        action={`${process.env.REACT_APP_API_BASE}FileUpload/upload`}
-                        onChange={(e) => {
-                          handleOnChange(e, 'Energy-and-Resource-Efficiency');
-                          field.onChange(e);
-                        }}>
-                        <div className="bg-[#D8F992] p-5 rounded-full">
-                          <IoMdAdd />
-                        </div>
-                      </Upload>
-                    )}
-                  />
+                  <Upload
+                    showUploadList={false}
+                    name="file"
+                    action={`${process.env.REACT_APP_API_BASE}FileUpload/upload`}
+                    onChange={(e) => {
+                      handleFileChange(e, 'Energy-and-Resource-Efficiency');
+                    }}>
+                    <div className="bg-[#D8F992] p-5 rounded-full">
+                      <IoMdAdd />
+                    </div>
+                  </Upload>
                 </div>
                 {project?.documentSections
                   ?.filter(

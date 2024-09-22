@@ -79,7 +79,6 @@ const ProjectOverView = ({ steps }) => {
         <div className="h-full min-h-[70vh] w-full my-auto pb-4 transition-all duration-200">
           <div className="flex flex-col gap-2 mb-4">
             {' '}
-            {steps[currentParentIndex]?.children[currentChildIndex].stepLabel}
             <div className="flex gap-2 w-fit">
               {Array.from({ length: childrenLength }).map((_, index) => (
                 <span
@@ -89,6 +88,7 @@ const ProjectOverView = ({ steps }) => {
                   }`}></span>
               ))}
             </div>
+            {steps[currentParentIndex]?.children[currentChildIndex].stepLabel}
           </div>
           {steps[currentParentIndex]?.children[currentChildIndex]?.content ||
             null}

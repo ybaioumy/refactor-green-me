@@ -229,7 +229,7 @@ const ProjectTable = ({ data, isLoading, error, isOpportunitiesRoute }) => {
       minWidth: 210,
     },
   };
-  console.log(selectes);
+  // console.log(selectes);
 
   // if (isLoading) return <Loader />;
   // if (error) return <EmptyList message={'Something went wrong'} />;

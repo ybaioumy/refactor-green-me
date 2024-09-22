@@ -29,17 +29,24 @@ export const FileUploader = ({
         handleFileChange({ fileList });
       }
     },
-    onRemove(file) {},
+    onRemove(file) {
+      const newFileList = data.filter((item) => item.filePath !== file.url);
+      handleFileChange({
+        fileList: newFileList.map((file) => ({ filePath: file.url })),
+      });
+    },
     disabled: disabled,
   };
   return (
     <div className="my-10">
       <Upload
         {...props}
-        fileList={data?.map((item, index) => ({
-          name: `${index + 1} - ${label}`,
-          url: item.filePath,
-        }))}>
+        fileList={
+          data?.map((item, index) => ({
+            name: `${index + 1} - ${label}`,
+            url: item.filePath,
+          })) || []
+        }>
         <label className="font-bold text-[#1E4A28] text-lg lg:text-xl">
           {label || null}
         </label>

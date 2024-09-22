@@ -14,6 +14,11 @@ import TechnicalStepOne from '../Project/technicalInfo/TechnicalInfoStepOne';
 import TechnicalStepTwo from '../Project/technicalInfo/TechnicalInfoStepTwo';
 import TechnicalStepThree from '../Project/technicalInfo/TechnicalStepThree';
 import StepOneESDD from '../Project/esdd/StepOneESDD';
+import { useSelector } from 'react-redux';
+import StepTwoESDD from '../Project/esdd/StepTwoESDD';
+import StepThree from '../Project/esdd/StepThreeESDD';
+import StepFour from '../Project/esdd/StepFourESDD';
+import StepFive from '../Project/esdd/StepFiveESDD';
 function Project() {
   const { id } = useParams();
   const {
@@ -36,7 +41,7 @@ function Project() {
       reset(projectData);
     }
   }, [projectData, reset]);
-
+  const { projectObject } = useSelector((state) => state.project);
   const steps = [
     {
       parentStep: 'generalInfo',
@@ -82,24 +87,31 @@ function Project() {
       icon: <Icon name={'esdd'} />,
       children: [
         {
-          stepLabel: 'Questions on E&S aspects of the proposed project',
-          content: <StepOneESDD />,
+          stepLabel: (
+            <p className="py-2 border-y border-[#54A967] mb-4 text-[#1E4A28] text-[20px] font-bold">
+              Questions on E&S aspects of the proposed project
+            </p>
+          ),
+          content: <StepOneESDD project={projectObject} />,
         },
         {
-          stepLabel: 'Step 2',
-          content: <div>General Info - Step 2 content here</div>,
+          stepLabel: (
+            <p className="py-2 border-y border-[#54A967] mb-4 text-[#1E4A28] text-[20px] font-bold">
+              General questions
+            </p>
+          ),
+          content: <StepTwoESDD />,
         },
         {
-          stepLabel: 'Step 2',
-          content: <div>General Info - Step 2 content here</div>,
+          // stepLabel: 'Step 2',
+          content: <StepThree />,
         },
         {
-          stepLabel: 'Step 2',
-          content: <div>General Info - Step 2 content here</div>,
+          content: <StepFour />,
         },
         {
-          stepLabel: 'Step 2',
-          content: <div>General Info - Step 2 content here</div>,
+          // stepLabel: 'Step 2',
+          content: <StepFive />,
         },
       ],
     },

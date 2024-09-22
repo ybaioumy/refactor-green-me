@@ -4,7 +4,7 @@ import GreenBuilding from './stepthree/GreenBuilding';
 function TechnicalStepThree() {
   const { watch } = useFormContext();
   const categoryId = watch('categoryId');
-  console.log(categoryId, 'fdsf');
+
   switch (categoryId) {
     case 1:
       return <GreenBuilding />;

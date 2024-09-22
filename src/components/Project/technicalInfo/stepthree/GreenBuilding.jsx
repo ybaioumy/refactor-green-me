@@ -24,17 +24,22 @@ function GreenBuilding() {
   const handleChange =
     (sectionTitle) =>
     ({ fileList }) => {
-      const filesData = fileList.map((file) => ({
-        filePath: file?.response?.fullPath || file.url || null, // Fallback to file.url if fullPath is missing
-      }));
-      console.log(filesData);
+      const existingSection =
+        docs.find((doc) => doc.name === sectionTitle.replace(/\s+/g, '-')) ||
+        {};
+      const updatedFiles = [
+        ...(existingSection.documentFiles || []),
+        ...fileList.map((file) => ({
+          filePath: file?.response?.fullPath || file.url || null,
+        })),
+      ];
+
       const updatedSection = {
-        name: sectionTitle.replace(/\s+/g, '-'), // Replace spaces with hyphens
+        name: sectionTitle.replace(/\s+/g, '-'),
         isapproved: true,
-        documentFiles: filesData,
+        documentFiles: updatedFiles, // Combine existing and new files
       };
 
-      // Update the document sections array with the new section
       setValue(
         'documentSections',
         docs.some((doc) => doc.name === updatedSection.name)
@@ -43,8 +48,6 @@ function GreenBuilding() {
             )
           : [...docs, updatedSection]
       );
-
-      // console.log(updatedSection);
     };
 
   return (
