@@ -156,6 +156,7 @@ export default function MapComponent({
   const handleSetPosition = (newPosition) => {
     setPosition(newPosition);
     if (setProjectPosition) {
+      console.log(newPosition);
       setProjectPosition(newPosition);
     }
   };

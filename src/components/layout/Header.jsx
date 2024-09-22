@@ -87,7 +87,7 @@ export default function Header() {
       <div
         className={`${
           isProfile
-            ? 'bg-[#E0E0E0] flex items-center justify-center h-[60px] gap-2'
+            ? 'bg-[#E0E0E0] flex items-center justify-center min-h-[60px] max-h-[60px]  gap-2'
             : ' bgGreenMe'
         }`}>
         <div

@@ -39,7 +39,7 @@ const EligibilityStatus = ({ isEligible, id }) => {
           </p>
           <div className="flex flex-col justify-center gap-5">
             <Button
-              onClick={() => handleNavigation('/new-project/eligible/' + id)}
+              onClick={() => handleNavigation('/new-eligible/eligible/' + id)}
               variant="transparent"
               className="text-[#1E4A28] px-4 py-2 border-2 border-[#1E4A28] hover:bg-[#1E4A28] hover:text-white transition">
               Project Submission
@@ -77,7 +77,7 @@ const EligibilityStatus = ({ isEligible, id }) => {
           <Button
             onClick={() => handleNavigation('/new-project')}
             variant="secondary"
-            className=" bg-gray-200 text-gray-700 px-4 py-2 transition border w-full ">
+            className="bg-gray-200 text-gray-700 px-4 py-2 transition-all duration-300 border w-full shadow-sm hover:shadow-md hover:bg-gray-300">
             Start Over
           </Button>
         </div>

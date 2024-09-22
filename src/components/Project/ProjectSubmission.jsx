@@ -1,29 +1,16 @@
 import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import Button from './Button';
+import Button from '../shared/Button';
 import { Link } from 'react-router-dom';
+import EmptyList from '../shared/EmptyList';
 
-const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
-  //   {
-  //   parentStep: 'generalInfo',
-  //   label: 'General Info',
-  //   icon: <RenderIcon name={'generalInfo'} />, // Add icons from react-icons or any other source
-  //   children: [
-  //     {
-  //       stepLabel: 'Step 1',
-  //       content: (
-  //         <div className="font-abel font-bold">
-  //           General Info - Step 1 content here
-  //         </div>
-  //       ),
-  //     },
-  //     {
-  //       stepLabel: 'Step 2',
-  //       content: <div>General Info - Step 2 content here</div>,
-  //     },
-  //   ],
-  // },
-
+const NewProjectSubmission = ({
+  steps,
+  hasLink = false,
+  onSave,
+  isLoading = false,
+}) => {
+ 
   const methods = useForm();
   const {
     trigger,
@@ -60,13 +47,7 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
   const onSubmit = (data) => {
     console.log(data);
   };
-  // const methods = useForm({
-  //   mode: 'onSubmit', // Errors will only show on submit
-  // });
-  // const {
-  //   trigger,
-  //   formState: { errors },
-  // } = methods;
+
   const alertValidationMessage = (errors) => {
     // Create an array to hold all the messages
     const messages = [];
@@ -87,42 +68,44 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
       alert(combinedMessage);
     }
   };
+  if (!steps) return <EmptyList message={'No Project Details found'} />;
   return (
     <FormProvider {...methods}>
-      <div className="w-full h-full">
+      <div className="w-full h-full flex flex-col md:flex-row md:p-4 p-2 overflow-hidden">
         {/* Parent Steps Sidebar */}
-        {/* <div className="flex w-1/4 h-full p-4">
-            <ul className="w-full flex flex-col gap-5 border-r border-black pr-4 h-[95vh]">
-              {steps.map((parentStep, index) => (
-                <React.Fragment key={index}>
-                  <li key={index}>
-                    <button
-                      onClick={() => {
-                        setCurrentParentIndex(index);
-                        setCurrentChildIndex(0);
-                      }}
-                      className={`text-white h-[100px] w-[90%] relative flex card-green-gradient transition-opacity duration-150 items-center gap-4 text-left px-4 py-2 font-bold bg-black rounded-[12px] ${
-                        index === currentParentIndex
-                          ? '  border-[5px] border-[#cbff5e]'
-                          : 'opacity-50  border-[5px]'
-                      }`}>
-                      {parentStep.icon}
-                      {parentStep.label}
-                      {currentParentIndex === index && (
-                        <div className="hidden md:block absolute right-[-20px] top-1/2 transform -translate-y-1/2 w-[30px] h-[40px] bg-[#132f19] active-eligible-container" />
-                      )}
-                    </button>
-                  </li>
-                </React.Fragment>
-              ))}
-            </ul>
-          </div> */}
+        <div className="flex flex-col md:flex-row w-full h-fit md:h-full md:p-4 flex-1">
+          <ul className="w-full md:w-auto flex md:flex-col md:gap-5 gap-2 md:border-r border-black pr-4 md:h-[95vh] overflow-x-scroll md:overflow-y-scroll no-scrollbar">
+            {steps.map((parentStep, index) => (
+              <React.Fragment key={index}>
+                <li className="h-fit">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentParentIndex(index);
+                      setCurrentChildIndex(0);
+                    }}
+                    className={`text-white w-full md:h-[100px] relative flex sm:min-w-[150px] items-center gap-4 text-left px-4 py-2 font-bold rounded-[12px] card-green-gradient transition-opacity duration-150 ${
+                      index === currentParentIndex
+                        ? 'border-[3px] md:border-[5px] border-[#cbff5e]'
+                        : 'opacity-50 border-[3px] md:border-[5px]'
+                    }`}>
+                    {parentStep.icon}
+                    {parentStep.label}
+                    {currentParentIndex === index && (
+                      <div className="hidden md:block absolute right-[-20px] top-1/2 transform -translate-y-1/2 w-[30px] h-[40px] bg-[#122c18] active-eligible-container" />
+                    )}
+                  </button>
+                </li>
+              </React.Fragment>
+            ))}
+          </ul>
+        </div>
 
         {/* Child Steps Section */}
 
         <form
           onSubmit={methods.handleSubmit(onSave)}
-          className="w-full flex flex-col justify-between min-h-full">
+          className="w-full flex flex-col justify-between min-h-full flex-1 md:p-4 p-2">
           <div className="h-full min-h-[70vh] w-full my-auto transition-all duration-200">
             {/* {
                   steps[currentParentIndex].children[currentChildIndex]
@@ -197,4 +180,4 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
   );
 };
 
-export default Steps;
+export default NewProjectSubmission;

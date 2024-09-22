@@ -1,22 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import Button from './Button';
 import { Link } from 'react-router-dom';
-
+import Title from './Title';
+import { useLocation } from 'react-router-dom';
+import alertValidationMessage from '../../utilits/alertMessage';
 const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
   const methods = useForm();
+  const location = useLocation();
   const {
     trigger,
+    getValues,
     formState: { errors },
   } = methods;
 
   const [currentParentIndex, setCurrentParentIndex] = useState(0);
   const [currentChildIndex, setCurrentChildIndex] = useState(0);
+  useEffect(() => {
+    console.warn(
+      'checking validations for step ' +
+        currentParentIndex +
+        ' at ' +
+        location.pathname
+    );
+    if (Object.keys(errors).length > 0) {
+      console.error(
+        errors,
+        'errors at ' + location.pathname + currentParentIndex
+      );
+      alertValidationMessage(errors); // Automatically calls alert function when there are errors
+    }
+  }, [currentParentIndex, errors, location.pathname]); // Listen for changes in the `errors` object
 
   const handleNext = async () => {
     const isValid = await trigger();
     if (!isValid) {
-      alertValidationMessage(errors); // Display validation errors
+      alertValidationMessage(errors);
     } else {
       // Move to the next child step or parent step
       if (currentChildIndex < steps[currentParentIndex].children.length - 1) {
@@ -27,7 +46,6 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
       }
     }
   };
-
   const handlePrevious = () => {
     if (currentChildIndex > 0) {
       setCurrentChildIndex(currentChildIndex - 1);
@@ -37,24 +55,6 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
     }
   };
 
-  const alertValidationMessage = (errors) => {
-    const messages = [];
-
-    // Iterate over the error object and extract messages
-    for (const key in errors) {
-      if (errors[key]?.message) {
-        messages.push(errors[key].message);
-      }
-    }
-
-    const combinedMessage = messages.join('\n');
-
-    if (combinedMessage) {
-      alert(combinedMessage); // Show alert for validation errors
-    }
-  };
-
-
   const onSubmit = async (data) => {
     const isValid = await trigger(); // Validate form before saving
     if (!isValid) {
@@ -63,13 +63,48 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
       onSave(data); // Call the onSave function if the form is valid
     }
   };
+  const childrenLength = steps[currentParentIndex]?.children?.length || 0;
 
   return (
     <FormProvider {...methods}>
-      <div className="w-full h-full">
+      <div className="w-full h-full ">
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-between">
+            {' '}
+            <Title
+              text={steps[currentParentIndex]?.label}
+              type="h3"
+              className={'font-bold text-[24px]'}
+            />
+            {steps[currentParentIndex]?.icon}
+          </div>
+          <div className="flex gap-2 w-fit">
+            {Array.from({ length: childrenLength }).map((_, index) => (
+              <span
+                key={index}
+                className={`h-1 w-10 rounded-lg ${
+                  currentChildIndex === index ? 'stepsSpan' : 'bg-gray-300'
+                }`}></span>
+            ))}
+          </div>
+        </div>
         <form
           onSubmit={methods.handleSubmit(onSubmit)}
-          className="w-full flex flex-col justify-between min-h-full">
+          className="w-full flex flex-col justify-between min-h-full mt-2">
+          {steps[currentParentIndex]?.children[currentChildIndex]
+            ?.childLabel && (
+            <div className="bg-card rounded-lg py-2 px-5 mb-5 mt-5">
+              <Title
+                text={
+                  steps[currentParentIndex]?.children[currentChildIndex]
+                    ?.childLabel || ''
+                }
+                type="h3"
+                className={'font-bold text-[20px]'}
+              />
+            </div>
+          )}
+
           <div className="h-full min-h-[70vh] w-full my-auto transition-all duration-200">
             {steps[currentParentIndex]?.children[currentChildIndex]?.content ||
               null}

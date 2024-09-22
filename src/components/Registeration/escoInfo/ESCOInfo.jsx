@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import Select from '../../shared/Select';
 import Icon from '../../shared/Icon';
-import { FileUploader } from '../../shared/Upload';
 import { message } from 'antd';
 import Button from '../../shared/Button';
 import Input from '../../shared/Input';

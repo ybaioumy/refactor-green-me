@@ -1,61 +1,53 @@
-import Icon from './Icon';
+import React, { useState } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 import { message, Upload } from 'antd';
+import { authHeader } from '../../utilits/authHeader';
+import Icon from './Icon';
 
 export const FileUploader = ({
   label,
   handleFileChange,
-  fileList,
+  data,
   disabled,
+  onRemove,
 }) => {
   const props = {
     name: 'file',
     multiple: true,
     action: `${process.env.REACT_APP_API_BASE}FileUpload/upload`,
     headers: {
-      //   Authorization: authHeader(),
+      // Authorization: authHeader(),
     },
     onChange(info) {
       const { file, fileList } = info;
-
       if (file.status === 'done') {
-        if (file.response?.success) {
-          message.success(`${file.name} file uploaded successfully`);
-          handleFileChange({ fileList });
-        } else {
-          message.error(
-            `${file.name} file upload failed: ${
-              file.response?.message || 'Unknown error'
-            }`
-          );
-        }
+        message.success(`${file.name} file uploaded successfully`);
+        handleFileChange({ fileList });
       } else if (file.status === 'error') {
         message.error(`${file.name} file upload failed.`);
       } else {
         handleFileChange({ fileList });
       }
     },
-    onRemove(file) {
-      const index = fileList.indexOf(file);
-      const newFileList = fileList.slice();
-      newFileList.splice(index, 1);
-      handleFileChange({ fileList: newFileList });
-    },
+    onRemove(file) {},
     disabled: disabled,
   };
-
-  const handleDeleteAll = () => {
-    handleFileChange({ fileList: [] });
-  };
-
   return (
-    <div className="my-10 relative">
-      <Upload {...props} fileList={fileList}>
-        <label className="text-[#1E4A28] text-[20px] font-semibold">
-          {label}
+    <div className="my-10">
+      <Upload
+        {...props}
+        fileList={data?.map((item, index) => ({
+          name: `${index + 1} - ${label}`,
+          url: item.filePath,
+        }))}>
+        <label className="font-bold text-[#1E4A28] text-lg lg:text-xl">
+          {label || null}
         </label>
-        <div className="w-full bg-[#E2E2E2] border-dashed border border-[#99BAA0] flex md:flex-row justify-between items-center p-4 rounded mt-2">
+        <div className="w-full bg-[#E2E2E2] border-dashed border border-[#99BAA0] flex md:flex-row justify-between items-center p-4 rounded my-4 relative">
           <div className="mb-4 md:mb-0">
-            <button className="flex flex-col items-center justify-center bg-[#D8F992] w-16 h-16 lg:w-20 lg:h-20 shadow-lg rounded-full">
+            <button
+              type="button"
+              className="flex flex-col items-center justify-center bg-[#D8F992] w-16 h-16 lg:w-20 lg:h-20 shadow-lg rounded-full">
               <input id="file-input" type="file" className="hidden" />
               <AddSvg />
               <span className="text-[#1E4A28] text-sm lg:text-base font-abel">
@@ -63,20 +55,19 @@ export const FileUploader = ({
               </span>
             </button>
           </div>
-          <div className="flex flex-col items-center justify-center mb-4 md:mb-0 absolute left-[50%] -translate-x-[50%]">
+          <div className="flex flex-col items-center justify-center mb-4 absolute right-[50%] top-[50%] -translate-y-[50%] translate-x-[50%]">
             <Icon name={'upload'} />
             <span className="text-[#ABABAB] text-sm lg:text-base">
               Upload files here
             </span>
           </div>
-          {fileList?.length > 0 && (
+          {/* {fileList?.documentFiles?.length > 0 && (
             <button
-              title="delete all"
-              onClick={handleDeleteAll}
+              type="button"
               className="flex flex-col items-center justify-center bg-[#D8F992] w-16 h-16 lg:w-20 lg:h-20 shadow-lg rounded-full">
               <Icon name={'delete'} />
             </button>
-          )}
+          )} */}
         </div>
       </Upload>
     </div>

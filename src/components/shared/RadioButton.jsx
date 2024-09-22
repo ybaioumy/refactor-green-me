@@ -23,7 +23,7 @@ const RadioButton = ({
   return (
     <label
       key={label}
-      className={`inline-flex items-center cursor-pointer w-fit capitalize mr-4 ${
+      className={`inline-flex items-center cursor-pointer w-fit capitalize mr-4   ${
         disabled ? 'opacity-50 cursor-not-allowed' : ''
       }`}
       aria-label={label}
@@ -50,7 +50,9 @@ const RadioButton = ({
             }`}></div>
         </div>
       </div>
-      <span className="ml-2 min-w-[25px]">{label}</span>
+      <span className="ml-2 min-w-[25px] line-clamp-3 overflow-hidden">
+        {label}
+      </span>
     </label>
   );
 };

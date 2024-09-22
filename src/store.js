@@ -4,11 +4,12 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import storage from 'redux-persist/lib/storage';
 
 import { authApi } from './redux/features/auth';
-import authReducer from './redux/slices/user'; 
+import authReducer from './redux/slices/user';
 import { projectApi } from './redux/features/project';
 import { lookingForApi } from './redux/features/eligibility';
 import searchReducer from './redux/slices/filtersSlice';
 import eligibilityReducer from './redux/slices/eligbility'
+import project from './redux/slices/project';
 const persistConfig = {
     key: 'root',
     storage,
@@ -24,7 +25,8 @@ export const store = configureStore({
         [lookingForApi.reducerPath]: lookingForApi.reducer,
         auth: persistedAuthReducer,
         search: searchReducer,
-        eligibility: eligibilityReducer, 
+        eligibility: eligibilityReducer,
+        project: project,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

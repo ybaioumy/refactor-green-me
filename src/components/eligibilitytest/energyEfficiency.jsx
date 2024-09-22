@@ -10,14 +10,17 @@ const AccordionItem = ({
   control,
   setValue,
   watch,
+  getValues,
   selectedCriteriaId,
 }) => {
   const isOpen = selectedCriteriaId === item.id;
-  const { categoryId, criteriaId } = useSelector((state) => state.eligibility);
-  console.log(criteriaId);
+
   const toggleAccordion = () => {
-    setValue('criteriaId', isOpen ? criteriaId : item.id); // Toggle accordion open/close
+    setValue('criteriaId', isOpen ? item.children[0].id : item.id); // Toggle accordion open/close
   };
+
+  const selectedCriteria = watch('criteriaId');
+  const selectedCategory = watch('categoryId');
 
   return (
     <div className="accordion-item border-t-2 border-[#CDCDCD] w-full">
@@ -84,31 +87,30 @@ function EnergyEfficiency({ categories, contractingData, projectTypeId }) {
   const {
     control,
     reset,
+    setValue,
     watch,
     formState: { errors },
   } = useFormContext({
     defaultValues: {
       categoryId: 1,
       criteriaId: 0,
-      contractingModelId: 0,
       SubCriteriaId: 0,
-      eligibility: {
-        reductionRate: '',
-        exclusions: '',
-        totalGenerationCapacity: 0,
-        alignedToTheIfcperformance: '',
-        projectStandardsCertification: '',
-        energyDemand: '',
-        carbonIntensity: '',
-        improvementActivitiesFossilFuel: '',
-        involvedInTheExplorationExtraction: '',
-        products: [],
-      },
     },
   });
   const selectedCategoryId = watch('categoryId');
   const selectedCriteriaId = watch('criteriaId');
   const isDisabled = (id) => selectedCategoryId !== id;
+
+  const handleCategoryChange = (e, categoryId) => {
+    setValue('categoryId', categoryId); // Update category
+    const selectedCategory = categories.find((cat) => cat.id === categoryId);
+
+    const initialCriteriaId = selectedCategory?.crietria?.[0]?.id || 0;
+    setValue('criteriaId', initialCriteriaId);
+    setValue('SubCriteriaId', 0); // Reset SubCriteriaId
+    dispatch(setCategoryId(categoryId)); // Dispatch categoryId change
+  };
+
   return (
     <>
       {projectTypeId === 2 ? (
@@ -131,7 +133,7 @@ function EnergyEfficiency({ categories, contractingData, projectTypeId }) {
                   control={control}
                   render={({ field }) => (
                     <RadioButton
-                      className={'text-[#1E4A28] font-bold flex items-center'}
+                      className={'text-[#1E4A28] font-bold flex items-center cursor-pointer'}
                       variant="green"
                       label={item.name}
                       value={`${item.id}`}
@@ -158,7 +160,7 @@ function EnergyEfficiency({ categories, contractingData, projectTypeId }) {
         </div>
       ) : null}
 
-      <div className="flex flex-wrap justify-between gap-10 bg-card rounded-lg p-5 min-h-[400px] w-full">
+      <div className="flex flex-wrap  sm:gap-4 md:gap-10 bg-card rounded-lg p-5 min-h-[400px] w-full">
         {categories.map((item) => (
           <div
             className={`flex flex-col gap-2 w-full sm:w-[48%] md:w-[32%] lg:w-[24%] my-2 ${
@@ -176,29 +178,9 @@ function EnergyEfficiency({ categories, contractingData, projectTypeId }) {
                   label={item.name}
                   value={`${item.id}`}
                   checked={field.value === item.id}
-                  onChange={(e) => {
-                    field.onChange(Number(e.target.value));
-                    dispatch(setCategoryId(Number(e.target.value))); // Dispatch categoryId change
-
-                    // Reset criteria and eligibility when category changes
-                    reset({
-                      categoryId: Number(e.target.value),
-                      criteriaId: 0,
-                      SubCriteriaId: 0,
-                      eligibility: {
-                        reductionRate: '',
-                        exclusions: '',
-                        totalGenerationCapacity: 0,
-                        alignedToTheIfcperformance: '',
-                        projectStandardsCertification: '',
-                        energyDemand: '',
-                        carbonIntensity: '',
-                        improvementActivitiesFossilFuel: '',
-                        involvedInTheExplorationExtraction: '',
-                        products: [],
-                      },
-                    });
-                  }}
+                  onChange={(e) =>
+                    handleCategoryChange(e, Number(e.target.value))
+                  }
                 />
               )}
             />
@@ -207,9 +189,11 @@ function EnergyEfficiency({ categories, contractingData, projectTypeId }) {
               {item.crietria.map((child) => (
                 <div className="item-list" key={child.id}>
                   <Controller
-                    disabled={isDisabled(child.id)}
                     name="criteriaId"
                     control={control}
+                    rules={{
+                      required: 'Select Criteria',
+                    }}
                     render={({ field }) => (
                       <RadioButton
                         label={child.name}
@@ -217,25 +201,6 @@ function EnergyEfficiency({ categories, contractingData, projectTypeId }) {
                         checked={field.value === child.id}
                         onChange={(e) => {
                           field.onChange(Number(e.target.value));
-                          dispatch(setCriteriaId(Number(e.target.value)));
-                          // Reset SubCriteriaId and eligibility values when criteria changes
-                          reset({
-                            categoryId: selectedCategoryId,
-                            criteriaId: Number(e.target.value),
-                            SubCriteriaId: 0,
-                            eligibility: {
-                              reductionRate: '',
-                              exclusions: '',
-                              totalGenerationCapacity: 0,
-                              alignedToTheIfcperformance: '',
-                              projectStandardsCertification: '',
-                              energyDemand: '',
-                              carbonIntensity: '',
-                              improvementActivitiesFossilFuel: '',
-                              involvedInTheExplorationExtraction: '',
-                              products: [],
-                            },
-                          });
                         }}
                         disabled={isDisabled(item.id)}
                       />
@@ -254,23 +219,30 @@ function EnergyEfficiency({ categories, contractingData, projectTypeId }) {
 export default EnergyEfficiency;
 
 export const Criteria = ({ categories }) => {
-  const { watch, setValue, control, getValues } = useFormContext();
-  const categoryId = watch('categoryId'); // Watch the categoryId from the form state
-  const crietriaId = watch('criteriaId');
+  const { watch, setValue, control } = useFormContext();
+  //TODO: Toggle accordion auto for the criteriaId
+  // Watch 'categoryId' and 'criteriaId' from the form state
+  const categoryId = watch('categoryId');
+  const criteriaId = watch('criteriaId');
+
+  // Find the selected category based on categoryId
   const selectedCategory = categories.find(
     (category) => category.id === categoryId
   );
-  console.log(crietriaId);
+
+  // If no category is selected or there are no criteria, show nothing
+  if (!selectedCategory || !selectedCategory.crietria) return null;
+
   return (
     <>
-      {selectedCategory?.crietria.map((subCategory) => (
+      {selectedCategory.crietria.map((subCategory) => (
         <AccordionItem
           control={control}
           key={subCategory.id}
           item={subCategory}
-          watch={watch}
           setValue={setValue}
-          selectedCriteriaId={crietriaId}
+          watch={watch}
+          selectedCriteriaId={criteriaId} // Pass criteriaId to track the selected one
         />
       ))}
     </>
@@ -288,15 +260,18 @@ export const ReductionRate = ({ options }) => {
         {options.map((option, index) => (
           <div key={index} className="m-4">
             <Controller
-              name="eligibility.reductionRate"
+              name="eligibility.reductionRate" // Form field path
               control={control}
+              rules={{
+                required: 'Reduction Rate is required',
+              }}
               render={({ field }) => (
                 <RadioButton
                   id={`reduction-rate-${index}`}
-                  name="reduction-rate"
+                  name="reductionRate" // All radios in the group should share the same name
                   value={option.value}
                   checked={field.value === option.value}
-                  onChange={(e) => field.onChange(e.target.value)}
+                  onChange={(e) => field.onChange(e.target.value)} // Update form state
                   label={option.label}
                 />
               )}
@@ -307,11 +282,12 @@ export const ReductionRate = ({ options }) => {
     </div>
   );
 };
+
 export const Exclusions = ({ options }) => {
   const { control } = useFormContext(); // Access form control
 
   return (
-    <div className="p-4 bg-[#E8F5EB] border rounded-lg min-h-[400px] ">
+    <div className="p-4 bg-[#E8F5EB] border rounded-lg min-h-[400px]">
       <h2 className="text-lg font-bold">Exclusions</h2>
       <p>Relation to fossil fuel production</p>
       <div className="mt-4 bg-white rounded-md p-10 min-h-[250px]">
@@ -322,15 +298,18 @@ export const Exclusions = ({ options }) => {
         {options.map((option, index) => (
           <div key={index} className="my-4">
             <Controller
-              name="eligibility.exclusions"
+              name="eligibility.exclusions" // Form field path
               control={control}
+              rules={{
+                required: 'Exclusions is required',
+              }}
               render={({ field }) => (
                 <RadioButton
                   id={`exclusions-${index}`}
-                  name="exclusions"
+                  name="exclusions" // All radios in the group should share the same name
                   value={option.value}
                   checked={field.value === option.value}
-                  onChange={(e) => field.onChange(e.target.value)}
+                  onChange={(e) => field.onChange(e.target.value)} // Update form state
                   label={option.label}
                 />
               )}

@@ -18,6 +18,9 @@ import Project from './components/client/Project';
 import NewProject from './routes/NewProject';
 import EligibilityTest from './routes/EligibilityTest';
 import Proposals from './components/client/Proposals';
+import { OnlineStatusProvider } from './context/onlineConnectionContext';
+import ConnectionStatusNotification from './components/shared/ConnectionNotification';
+import ProjectOverView from './components/Project/ProjectOverView';
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
   const token = useGetToken();
@@ -96,7 +99,7 @@ const clientRouter = createBrowserRouter([
       {
         path: 'profile/',
         element: <Profile />,
-      }
+      },
     ],
   },
 ]);
@@ -166,9 +169,13 @@ function App() {
         return AuthRouter;
     }
   };
-
+  return (
+    <OnlineStatusProvider provider>
+      <ConnectionStatusNotification />
+      <RouterProvider router={handleRouter(userType)} />
+    </OnlineStatusProvider>
+  );
   // Use the appropriate router based on the user type
-  return <RouterProvider router={handleRouter(userType)} />;
 }
 
 export default App;

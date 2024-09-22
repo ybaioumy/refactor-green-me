@@ -34,14 +34,24 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
     watch,
     setValue,
     formState: { errors },
-  } = useFormContext();
-  const consumptionData = watch(`consumption`); // Watch the consumption state
-  const isEnabled = consumptionData?.[type]; // Check if the toggle for this type is enabled
+  } = useFormContext({
+    defaultValues: {
+      consumption: {},
+    },
+  });
+  const consumptionData = watch('consumption');
+  const isEnabled = consumptionData?.[type];
   const handleSwitchChange = (type) => {
     const isToggledOn = !consumptionData?.[type];
-    setValue(`consumption.${type}`, isToggledOn); // Toggle the state
+
+    const updatedConsumption = {
+      ...consumptionData,
+      [type]: isToggledOn,
+    };
+
+    setValue('consumption', updatedConsumption);
+
     if (!isToggledOn) {
-      // Reset values to 0 when the toggle is turned off
       setValue(`consumption.${type}AnnualConsumptionExPost`, 0);
       setValue(`consumption.${type}AverageTariffCostExPost`, 0);
       setValue(`consumption.${type}AnnualConsumptionBenchmark`, 0);
@@ -54,7 +64,7 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
     <div
       className={`flex flex-col md:flex-row items-center p-4 rounded-lg w-full relative mt-3`}>
       <div
-        className={`flex flex-1 items-center mb-1 md:mb-0 mr-0 md:-mr-[3rem] md:px-4 md:py-[1.2rem] rounded-[38px] gap-4 md:min-w-[210px] w-full justify-between ${
+        className={`flex flex-1 items-center mb-1 md:mb-0 mr-0 md:-mr-[3rem] md:px-4 md:py-[12px] rounded-[25px] gap-4 md:min-w-[210px] w-full justify-between ${
           isEnabled ? 'opacity-100 md:border' : 'opacity-75'
         }`}>
         <div className="flex flex-col">
@@ -89,52 +99,45 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
           <div className="flex items-center gap-4 justify-center w-full md:w-auto">
             {/* Ex-Post Annual Consumption */}
             <Controller
-              defaultValue={0}
               name={`consumption.${type}AnnualConsumptionExPost`}
               control={control}
-              rules={
-                isEnabled ?? {
-                  required: `consumption.${type}AnnualConsumptionExPost`,
-                }
-              }
-              render={({ field }) => (
-                <NumericInput
-                  {...field}
-                  disabled={!isEnabled}
-                  // handleChange={(e) =>
-                  //   handleInputChange(
-                  //     `consumption.${type}AnnualConsumptionExPost`,
-                  //     e
-                  //   )
-                  // }
-                />
+              rules={{
+                required: isEnabled ? 'This field is required' : false,
+                validate: (value) =>
+                  !isEnabled ||
+                  value > 0 ||
+                  `Since you Enabled ${type} Annual Consumption Ex-Post: value must be greater than 0`,
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <>
+                  <NumericInput {...field} disabled={!isEnabled} />
+                </>
               )}
             />
+
             <div className="text-center md:text-left w-full md:w-auto">
               <div>Annual Consumption (MWh/year)</div>
             </div>
             {/* Benchmark Annual Consumption */}
             <Controller
-              defaultValue={0}
               name={`consumption.${type}AnnualConsumptionBenchmark`}
               control={control}
-              rules={isEnabled ?? { required: 'Required' }}
-              render={({ field }) => (
-                <NumericInput
-                  {...field}
-                  disabled={!isEnabled}
-                  // handleChange={(e) =>
-                  //   handleInputChange(
-                  //     `consumption.${type}AnnualConsumptionBenchmark`,
-                  //     e
-                  //   )
-                  // }
-                />
+              rules={{
+                required: isEnabled ? 'This field is required' : false,
+                validate: (value) =>
+                  !isEnabled ||
+                  value > 0 ||
+                  `Since You Enabled ${type} Annual Consumption Bench Mark: Value must be greater than 0`,
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <NumericInput {...field} disabled={!isEnabled} />
               )}
             />
           </div>
         </div>
-        <hr className={`m-3 hr-transition ${isEnabled ? 'active' : ''}`} />
+        <hr
+          className={`ml-4 my-1 hr-transition ${isEnabled ? 'active' : ''}`}
+        />
 
         {/* Average Tariff Cost Section */}
         <div className="flex flex-wrap justify-center items-center gap-4 py-3">
@@ -150,18 +153,15 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
               defaultValue={0}
               name={`consumption.${type}AverageTariffCostExPost`}
               control={control}
-              rules={isEnabled ?? { required: 'Required' }}
+              rules={{
+                required: isEnabled ? 'This field is required' : false,
+                validate: (value) =>
+                  !isEnabled ||
+                  value > 0 ||
+                  `Since You Enabled ${type} Average Tariff Const Ex-Post: value must be greater than 0`,
+              }}
               render={({ field }) => (
-                <NumericInput
-                  {...field}
-                  disabled={!isEnabled}
-                  // handleChange={(e) =>
-                  //   handleInputChange(
-                  //     `consumption.${type}AverageTariffCostExPost`,
-                  //     e
-                  //   )
-                  // }
-                />
+                <NumericInput {...field} disabled={!isEnabled} />
               )}
             />
             <div className="text-center md:text-left w-full md:w-auto">
@@ -172,18 +172,15 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
               defaultValue={0}
               name={`consumption.${type}AverageTariffCostBenchmark`}
               control={control}
-              rules={isEnabled ?? { required: 'Required' }}
+              rules={{
+                required: isEnabled ? 'This field is required' : false,
+                validate: (value) =>
+                  !isEnabled ||
+                  value > 0 ||
+                  `Since you Enabled ${type} Average Tariff Const Bench Mark: Value must be greater than 0`,
+              }}
               render={({ field }) => (
-                <NumericInput
-                  {...field}
-                  disabled={!isEnabled}
-                  // handleChange={(e) =>
-                  //   handleInputChange(
-                  //     `consumption.${type}AverageTariffCostBenchmark`,
-                  //     e
-                  //   )
-                  // }
-                />
+                <NumericInput {...field} disabled={!isEnabled} />
               )}
             />
           </div>
@@ -207,7 +204,7 @@ const SeconedStep = () => {
         <label className="block text-[#1E4A28] text-[24px] mb-2 font-bold md:w-1/2">
           Building Consumption
         </label>
-        <div className='md:w-[70%]'>
+        <div className="md:w-[70%]">
           <ConsumptionComponent type="electricity" isFirstItem />
           <ConsumptionComponent type="water" />
           <ConsumptionComponent type="naturalGas" />
@@ -345,4 +342,4 @@ const LightingSystemTypes = () => {
   );
 };
 
-export { LightingSystemTypes,ConsumptionComponent };
+export { LightingSystemTypes, ConsumptionComponent };

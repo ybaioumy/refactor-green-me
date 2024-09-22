@@ -48,6 +48,8 @@ const Select = forwardRef(
       removeMaxWidth = false,
       search = false,
       clearSearch,
+      labelStyle,
+      description,
       ...props
     },
     ref
@@ -153,20 +155,39 @@ const Select = forwardRef(
 
     const disabledClasses = 'cursor-not-allowed opacity-70 ';
 
+    const defaultLabelStyle = {
+      color: '#1E4A28',
+      fontSize: '16px',
+      textTransform: 'capitalize',
+      marginLeft: 1,
+    };
+
     return (
       <div
-        className={`relative inline-block text-left w-full min-w-[250px] ${
-          !removeMaxWidth ? 'max-w-[400px]' : ''
+        className={`relative inline-block text-left w-full  md:min-w-[250px] max-w-[300px] ${
+          !removeMaxWidth ? 'md:max-w-[400px]' : ''
         }`}
         onBlur={handleBlur}
         ref={ref || dropdownRef} // Use forwarded ref here
       >
         <div className="flex flex-col gap-1 relative">
-          {label && (
-            <label className="text-base text-[#1E4A28] font-semibold ml-1 truncate">
-              {label || null}
-            </label>
+          {(label || description) && (
+            <div className="flex justify-between items-center">
+              {label && (
+                <label
+                  style={{ ...defaultLabelStyle, ...labelStyle }}
+                  className="flex-1 font-semibold truncate">
+                  {label}
+                </label>
+              )}
+              {description && (
+                <span className="text-[#7E7E7E] text-[12px] font-[400] truncate flex-1 self-end">
+                  {description}
+                </span>
+              )}
+            </div>
           )}
+
           <button
             onMouseEnter={() => setShowClear(true)}
             onMouseLeave={() => setShowClear(false)}

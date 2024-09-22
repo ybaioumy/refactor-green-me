@@ -8,21 +8,24 @@ const DynamicInputs = ({
   setEligibilityTestData,
   disabled = false,
 }) => {
+  // Ensure eligibilityTestData and eligibilty are defined
+  const products = eligibilityTestData?.eligibilty?.products || [];
+
   useEffect(() => {
-    if (eligibilityTestData.eligibilty.products.length === 0) {
+    if (products.length === 0) {
       setEligibilityTestData((prevState) => ({
         ...prevState,
         eligibilty: {
-          ...prevState.eligibilty,
+          ...prevState?.eligibilty,
           products: [{ id: 0, name: '' }],
         },
       }));
     }
-  }, []);
+  }, [products.length, setEligibilityTestData]);
+
   const handleAddProduct = () => {
     setEligibilityTestData((prevState) => {
-      // Get the highest current ID and increment it for the new product
-      const highestId = prevState.eligibilty.products.reduce(
+      const highestId = products.reduce(
         (maxId, product) => Math.max(maxId, product.id),
         -1
       );
@@ -33,23 +36,20 @@ const DynamicInputs = ({
       return {
         ...prevState,
         eligibilty: {
-          ...prevState.eligibilty,
-          products: [...prevState.eligibilty.products, newProduct],
+          ...prevState?.eligibilty,
+          products: [...products, newProduct],
         },
       };
     });
   };
 
   const handleRemoveProduct = (id) => {
-    if (eligibilityTestData.eligibilty.products.length === 1) {
-      message.warning('at least one product is required');
+    if (products.length === 1) {
+      message.warning('At least one product is required');
       return;
     }
     setEligibilityTestData((prevState) => {
-      const filteredProducts = prevState.eligibilty.products.filter(
-        (product) => product.id !== id
-      );
-      // Update the ids to be sequential again
+      const filteredProducts = products.filter((product) => product.id !== id);
       const updatedProducts = filteredProducts.map((product, index) => ({
         ...product,
         id: index,
@@ -57,7 +57,7 @@ const DynamicInputs = ({
       return {
         ...prevState,
         eligibilty: {
-          ...prevState.eligibilty,
+          ...prevState?.eligibilty,
           products: updatedProducts,
         },
       };
@@ -68,8 +68,8 @@ const DynamicInputs = ({
     setEligibilityTestData((prevState) => ({
       ...prevState,
       eligibilty: {
-        ...prevState.eligibilty,
-        products: prevState.eligibilty.products.map((product) =>
+        ...prevState?.eligibilty,
+        products: products.map((product) =>
           product.id === id ? { ...product, name: value } : product
         ),
       },
@@ -78,7 +78,7 @@ const DynamicInputs = ({
 
   return (
     <div className="space-y-4 px-2">
-      {eligibilityTestData.eligibilty.products.map((product, index) => (
+      {products.map((product, index) => (
         <div key={product.id} className="flex flex-col items-start">
           <label>{`${label} ${index + 1}`}</label>
           <input
@@ -98,7 +98,7 @@ const DynamicInputs = ({
             <button
               disabled={disabled}
               onClick={() => handleRemoveProduct(product.id)}
-              className="text-white p-2 ">
+              className="text-white p-2">
               <MinusCircleFilled style={{ color: '#D90000', fontSize: 20 }} />
             </button>
           </div>

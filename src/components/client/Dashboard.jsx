@@ -18,10 +18,19 @@ const ClientDashBoard = () => {
     useGetAllProjectsQuery(initialSearchObject);
 
   if (isLoading) return <Loader />;
-  if (isError) return <EmptyList />;
+  if (isError || !data)
+    return (
+      <EmptyList
+        message={'Check your network connections or try again later'}
+      />
+    );
   return (
     <div className="flex flex-col md:flex-row justify-between gap-5 lg:gap-20 p-5 lg:p-10">
-      <ProjectSubmissionDetails data={data} isLoading={isLoading} />
+      <ProjectSubmissionDetails
+        data={data}
+        isLoading={isLoading}
+        isError={isError}
+      />
       <div className="md:w-1/3">
         <ProjectsPipline slidePerView={2} />
       </div>

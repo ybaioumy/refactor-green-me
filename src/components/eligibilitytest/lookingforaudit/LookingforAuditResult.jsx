@@ -13,8 +13,8 @@ const AuditResult = ({ data, isLoading, isError }) => {
         text={'Initial Indicators'}
       />
       <div className="flex flex-col md:flex-row gap-10">
-        <div>
-          <p className="text-[24px] font-bold text-[#1E4A28] mb-2">
+        <div >
+          <p className="text-[24px] font-bold text-[#1E4A28] mb-2 w-full">
             Carbon Footprint Calculator
           </p>
           <div className="bg-[#BFE0C6] rounded-lg flex flex-col items-center justify-center py-[32px] px-[105px] h-[200px]">
@@ -29,7 +29,7 @@ const AuditResult = ({ data, isLoading, isError }) => {
             <span className="text-[#135D28]">tons of CO2 per year</span>
           </div>
         </div>
-        <div>
+        <div className=''>
           <p className="text-[24px] font-bold text-[#1E4A28] mb-2">
             Initial Potential Savings
           </p>
@@ -37,11 +37,9 @@ const AuditResult = ({ data, isLoading, isError }) => {
             <span className="text-[#135D28] text-[20px]">
               Estimated Projected Savings
             </span>
-            <Title
-              type={'h1'}
-              className="text-[50px] font-bold my-4 text-[#1E4A28]"
-              text={`${data.initialPotentialSavings}%`}
-            />
+            <p className="text-[50px] font-bold my-4 text-[#1E4A28] ">
+              {`${data.initialPotentialSavings}%`}
+            </p>
           </div>
         </div>
       </div>

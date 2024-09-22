@@ -74,7 +74,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   );
 };
 
-const MainForm = ({ setEligibilityTestData }) => {
+const MainForm = () => {
   const { control, setValue } = useFormContext();
   const { data, error, isLoading } = useGetProjectDropDownsQuery('generalInfo');
   const { city, economicSector, servedCountry, siteType } = data || [];
@@ -83,13 +83,13 @@ const MainForm = ({ setEligibilityTestData }) => {
     setValue(name, newValue);
   };
 
-  const handlePositionChange = (newPosition) => {
-    setEligibilityTestData((prevState) => ({
-      ...prevState,
-      lat: String(newPosition.lat),
-      long: String(newPosition.lng),
-    }));
-  };
+  // const handlePositionChange = (newPosition) => {
+  //   setEligibilityTestData((prevState) => ({
+  //     ...prevState,
+  //     lat: String(newPosition.lat),
+  //     long: String(newPosition.lng),
+  //   }));
+  // };
   const showCities = useWatch({
     control,
     name: 'servedCountryId',
@@ -248,7 +248,23 @@ const MainForm = ({ setEligibilityTestData }) => {
             />
           </div>
         </div>
-        <MapComponent setProjectPosition={handlePositionChange} />
+        <Controller
+          name="position"
+          control={control}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <MapComponent
+              setProjectPosition={({ lat, lng }) => {
+                // onChange(lat); // Update the lat value in the form state
+                // // Optionally you can set the long value if needed
+                // onChange(lng); // This might require handling lng separately
+                onChange({
+                  lat: lat,
+                  long: lng,
+                });
+              }}
+            />
+          )}
+        />
         <div className="mb-6">
           <label className="block text-[#1E4A28] text-[24px] mb-2 font-bold">
             Building Orientation
@@ -353,7 +369,7 @@ const MainForm = ({ setEligibilityTestData }) => {
   );
 };
 
-const LookingForAudit = ({ setEligibilityTestData, eligibilityTestData }) => {
+const LookingForAudit = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -374,13 +390,7 @@ const LookingForAudit = ({ setEligibilityTestData, eligibilityTestData }) => {
   return (
     <div className="flex w-full">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-
-      <MainForm
-        isSidebarOpen={isSidebarOpen}
-        setEligibilityTestData={setEligibilityTestData}
-        eligibilityTestData={eligibilityTestData}
-        toggleSidebar={toggleSidebar}
-      />
+      <MainForm />
     </div>
   );
 };

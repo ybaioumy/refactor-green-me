@@ -40,7 +40,7 @@ function StepThree({ registerData }) {
   const escoId = getUserTypeIdByName(registerData.typesId, 'esco');
   if (isLoading || isLoadingCountries) return <Loader />;
   if (isError || isErrorCountries) return <EmptyList />;
-  if (escoId) return <ESCODetails countries={countries} sectors={sectors} />;
+  if (escoId) return <ESCODetails countries={countries} sectors={[]} />;
   if (clientId) return <ProjectOwner countries={countries} sectors={[]} />;
 
   return <div>You did not select User Type at step 1 </div>;

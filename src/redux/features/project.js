@@ -1,6 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { authHeader } from '../../utilits/authHeader';
 import { useSelector } from 'react-redux';
+import { setProject } from '../slices/project';
+import _ from 'lodash';
 // Custom base query to handle 204 No Content
 const baseQuery = fetchBaseQuery({
     baseUrl: process.env.REACT_APP_API_BASE,
@@ -14,9 +16,16 @@ const baseQuery = fetchBaseQuery({
 
 const customBaseQuery = async (args, api, extraOptions) => {
     const result = await baseQuery(args, api, extraOptions);
+    //handle empty list
     if (result.error && result.error.status === 204) {
         return { data: null };
     }
+    // Handle other errors and return a message
+    if (result.error) {
+        const errorMessage = result.error.data?.message || 'Something went wrong';
+        return { error: { message: errorMessage, status: result.error.status } };
+    }
+
     return { data: result.data, totalRecords: result.total };
 };
 
@@ -43,12 +52,29 @@ export const projectApi = createApi({
         }),
         getProjectById: builder.query({
             query: (id) => `Project/${id}`,
+            async onQueryStarted(id, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    dispatch(setProject(_.cloneDeep(data)));
+                } catch (error) {
+                    console.error('Error fetching item by ID:', error);
+                }
+            },
+        }),
+        updateProjectById: builder.mutation({
+            query: ({ id, data }) => ({
+                url: `Project/${id}`,
+                method: 'PUT',
+                body: JSON.stringify(data),
+            }),
+
         }),
         getProjectUsers: builder.query({
             query: (id) => `ProjectUser/${id}`
         }),
         getAllCategoriesWithCrietria: builder.query({
             query: () => 'Category/GetAllCategoriesWithCrietria',
+            keepUnusedDataFor: 3000,
         }),
         getProjectDropDowns: builder.query({
             query: (identifier) => `Project/GetDropDowns?identifier=${identifier}`,
@@ -80,4 +106,4 @@ export const projectApi = createApi({
     }),
 });
 
-export const { useGetAllProjectsQuery, useGetAllOpportunitiesQuery, useGetProjectByIdQuery, useGetProjectUsersQuery, useGetAllCategoriesWithCrietriaQuery, useGetProjectDropDownsQuery, useGetProjectsFiltersQuery, useGetProjectStatusQuery, useLazyGetProjectEligibilityQuery, useGetUsersQuery, useGetProjectEnergyAuditQuery, useGetProjectFinancialModelQuery, useGetProjectImpactViabilityQuery } = projectApi;
+export const { useGetAllProjectsQuery, useGetAllOpportunitiesQuery, useGetProjectByIdQuery, useGetProjectUsersQuery, useGetAllCategoriesWithCrietriaQuery, useGetProjectDropDownsQuery, useGetProjectsFiltersQuery, useGetProjectStatusQuery, useLazyGetProjectEligibilityQuery, useGetUsersQuery, useGetProjectEnergyAuditQuery, useGetProjectFinancialModelQuery, useGetProjectImpactViabilityQuery, useUpdateProjectByIdMutation } = projectApi;

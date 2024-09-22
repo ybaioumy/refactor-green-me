@@ -30,7 +30,7 @@ function Title({ text, type, ...props }) {
 
     default:
       return (
-        <h1 className="text-[#1E4A28]" {...props}>
+        <h1 className="text-[#1E4A28] " {...props}>
           {text}
         </h1>
       );

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Select from '../shared/Select';
 import EmptyList from '../shared/EmptyList';
+import SkeltonLoader from '../shared/SkeltonLoader';
 
-const ProjectSubmissionDetails = ({ data, isLoading }) => {
+const ProjectSubmissionDetails = ({ data, isLoading, isError }) => {
   const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
-    if (data && data.length > 0) {
+    if (data && data?.length > 0) {
       setSelectedProject(data[0]);
     }
   }, [data]);
@@ -14,7 +15,9 @@ const ProjectSubmissionDetails = ({ data, isLoading }) => {
   const handleSelectChange = (selectedOption) => {
     setSelectedProject(selectedOption);
   };
-
+  if (isLoading) return <SkeltonLoader />;
+  if (isError || !data || data.length === 0)
+    return <EmptyList message={'Some thing went wrong'} />;
   return (
     <div className="flex flex-col md:flex-row justify-start flex-1 w-full md:w-full lg:w-1/2 bg-[#F3F3F3] p-4 md:p-6 gap-6 md:gap-10 rounded-lg shadow">
       <div className="flex flex-col gap-5 w-full md:w-1/2">
@@ -27,7 +30,7 @@ const ProjectSubmissionDetails = ({ data, isLoading }) => {
             disabled={isLoading}
           />
         </div>
-        <ProjectPipelineCard totalProjects={data.data.length || 0} />
+        <ProjectPipelineCard totalProjects={data?.data?.length || 0} />
         <div>
           <ProgressBarItem
             label="Pending Documents"

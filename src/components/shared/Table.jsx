@@ -38,8 +38,8 @@ const ProjectTable = ({ data, isLoading, error, isOpportunitiesRoute }) => {
     filters || {};
   const navigate = useNavigate();
   const gridRef = useRef();
-    const userType = useTypeId();
-   
+  const userType = useTypeId();
+
   const clientToFilterItems = [
     { label: 'Project Category', data: category, key: 'categoryId' },
     {

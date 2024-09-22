@@ -90,120 +90,93 @@ const EligibilityTest = () => {
   const intialProjectStatusId = projectStatus?.find(
     (project) => project.name === 'Inquiry Received'
   )?.id;
-  const [eligibilityTestData, setEligibilityTestData] = useState({
-    projectName: '',
-    description: '',
-    servedCountryId: null,
-    cityId: null,
-    economicSectorId: null,
-    buildingOrientation: 0,
-    buildingTypicalOccupancy: 0,
-    buildingIsOccupied: 0,
-    lightsAreOn: 0,
-    fenestration: 0,
-    landArea: 0,
-    grossArea: 0,
-    noOfFloor: 0,
-    consumption: {
-      electricityAnnualConsumptionExPost: 0,
-      electricityAverageTariffCostExPost: 0,
-      naturalGasAnnualConsumptionExPost: 0,
-      naturalGasAverageTariffCostExPost: 0,
-      dieselAnnualConsumptionExPost: 0,
-      dieselAverageTariffCostExPost: 0,
-      gasolineAnnualConsumptionExPost: 0,
-      gasolineAverageTariffCostExPost: 0,
-      waterAnnualConsumptionExPost: 0,
-      waterAverageTariffCostExPost: 0,
-      electricity: false,
-      water: false,
-      naturalGas: false,
-      diesel: false,
-      gasoline: false,
-    },
-    technicalInfo: {
-      buildingFunctionId: null,
-    },
-    buildingFacadeTypesIds: [],
-    lightingSystemTypesIds: [],
-    lookingForId: Number(id),
-    categoryId: 1,
-    SubCriteriaId: null,
-    criteriaId: 1,
-    eligibiltyStatusId: 3, //intialEligibilityStatusId?.id,
-    projectStatusId: 1,
-    contractingModelId: null,
-    lat: '',
-    long: '',
-    eligibilty: {
-      reductionRate: '',
-      exclusions: '',
-      totalGenerationCapacity: 0,
-      alignedToTheIfcperformance: '',
-      projectStandardsCertification: '',
-      energyDemand: '',
-      carbonIntensity: '',
-      improvementActivitiesFossilFuel: '',
-      involvedInTheExplorationExtraction: '',
-      products: [],
-    },
-  });
+  // const [eligibilityTestData, setEligibilityTestData] = useState({
+  //   projectName: '',
+  //   description: '',
+  //   servedCountryId: null,
+  //   cityId: null,
+  //   economicSectorId: null,
+  //   buildingOrientation: 0,
+  //   buildingTypicalOccupancy: 0,
+  //   buildingIsOccupied: 0,
+  //   lightsAreOn: 0,
+  //   fenestration: 0,
+  //   landArea: 0,
+  //   grossArea: 0,
+  //   noOfFloor: 0,
+  //   consumption: {
+  //     electricityAnnualConsumptionExPost: 0,
+  //     electricityAverageTariffCostExPost: 0,
+  //     naturalGasAnnualConsumptionExPost: 0,
+  //     naturalGasAverageTariffCostExPost: 0,
+  //     dieselAnnualConsumptionExPost: 0,
+  //     dieselAverageTariffCostExPost: 0,
+  //     gasolineAnnualConsumptionExPost: 0,
+  //     gasolineAverageTariffCostExPost: 0,
+  //     waterAnnualConsumptionExPost: 0,
+  //     waterAverageTariffCostExPost: 0,
+  //     electricity: false,
+  //     water: false,
+  //     naturalGas: false,
+  //     diesel: false,
+  //     gasoline: false,
+  //   },
+  //   technicalInfo: {
+  //     buildingFunctionId: null,
+  //   },
+  //   buildingFacadeTypesIds: [],
+  //   lightingSystemTypesIds: [],
+  //   lookingForId: Number(id),
+  //   categoryId: 1,
+  //   SubCriteriaId: null,
+  //   criteriaId: 1,
+  //   eligibiltyStatusId: 3, //intialEligibilityStatusId?.id,
+  //   projectStatusId: 1,
+  //   contractingModelId: null,
+  //   lat: '',
+  //   long: '',
+  //   eligibilty: {
+  //     reductionRate: '',
+  //     exclusions: '',
+  //     totalGenerationCapacity: 0,
+  //     alignedToTheIfcperformance: '',
+  //     projectStandardsCertification: '',
+  //     energyDemand: '',
+  //     carbonIntensity: '',
+  //     improvementActivitiesFossilFuel: '',
+  //     involvedInTheExplorationExtraction: '',
+  //     products: [],
+  //   },
+  // });
 
   if (isLoading) return <Loader />;
   if (!data) return <EmptyList message={'Emty Options'} />;
 
   const renderSecondStep = {
-    1: (
-      <Criteria
-        eligibilityTestData={eligibilityTestData}
-        setEligibilityTestData={setEligibilityTestData}
-        categories={data}
-      />
-    ),
-    2: (
-      <RenewableEnergy
-        categories={data[1]?.crietria}
-        setEligibilityTestData={setEligibilityTestData}
-        eligibilityTestData={eligibilityTestData}
-      />
-    ),
-    3: (
-      <GreenBuildings
-        categories={data[2]?.crietria}
-        setEligibilityTestData={setEligibilityTestData}
-        eligibilityTestData={eligibilityTestData}
-      />
-    ),
+    1: <Criteria categories={data} />,
+    2: <RenewableEnergy categories={data[1]?.crietria} />,
+    3: <GreenBuildings categories={data[2]?.crietria} />,
   };
 
   const renderThirdStep = {
     1: (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <ReductionRate
-          options={reductionRateOptions}
-          eligibilityTestData={eligibilityTestData}
-          setEligibilityTestData={setEligibilityTestData}
-        />
-        <Exclusions
-          options={exclusionsOptions}
-          eligibilityTestData={eligibilityTestData}
-          setEligibilityTestData={setEligibilityTestData}
-        />
+        <ReductionRate options={reductionRateOptions} />
+        <Exclusions options={exclusionsOptions} />
       </div>
     ),
 
-    3: (
-      <ProjectStandards
-        eligibilityTestData={eligibilityTestData}
-        setEligibilityTestData={setEligibilityTestData}
-      />
-    ),
+    3: <ProjectStandards />,
   };
   const lookingFor = Number(id);
   let steps = [
     {
+      label: 'New Project Submission ',
+      icon: <ChatButton />, // Example icon, replace with what you need
       children: [
         {
+          parentStep: 'energyEfficiency',
+          childLabel: 'Select Project Category',
           content: (
             <EnergyEfficiency
               categories={data}
@@ -213,6 +186,7 @@ const EligibilityTest = () => {
           ),
         },
         {
+          childLabel: 'Select Project Criteria',
           content: <>{renderSecondStep[categoryId]}</>,
         },
       ],
@@ -221,18 +195,10 @@ const EligibilityTest = () => {
   if (lookingFor === 1) {
     steps = [
       {
-        parentStep: 'lookingForAudit',
-        label: 'Looking For Audit',
-        // icon: <FaSearch />, // Example icon, replace with what you need
         children: [
           {
             stepLabel: 'Step 1',
-            content: (
-              <LookingForAudit
-                setEligibilityTestData={setEligibilityTestData}
-                eligibilityTestData={eligibilityTestData}
-              />
-            ),
+            content: <LookingForAudit />,
           },
           {
             stepLabel: 'Step 2',
@@ -242,17 +208,12 @@ const EligibilityTest = () => {
       },
     ];
   }
-  if (categoryId!== 2 && lookingFor !== 1) {
+  if (categoryId !== 2 && lookingFor !== 1) {
     steps.push({
-      parentStep: 'additionalInfo',
-      label: 'Additional Info',
-      icon: <Icon name={'addProjectGreen'} />, // Example icon, replace with what you need
       children: [
         {
-          stepLabel: 'Step 3',
-          content: (
-            <>{renderThirdStep[categoryId] || null}</>
-          ),
+          // childLabel: 'Select Project Criteria',
+          content: <>{renderThirdStep[categoryId] || null}</>,
         },
       ],
     });
@@ -269,7 +230,8 @@ const EligibilityTest = () => {
         'Project created successfully with id ' + createdProjectId
       );
 
-      return createdProjectId;
+      // return createdProjectId;
+      console.log(data);
     } catch (error) {
       message.error('Failed to create a new project');
       console.error('Error posting project:', error);
@@ -329,7 +291,6 @@ const EligibilityTest = () => {
             type="h1"
             style={{ color: '#202020', fontSize: 24 }}
           /> */}
-          <ChatButton />
         </div>
         <Steps
           steps={steps}
