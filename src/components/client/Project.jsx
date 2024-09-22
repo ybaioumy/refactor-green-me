@@ -19,6 +19,10 @@ import StepTwoESDD from '../Project/esdd/StepTwoESDD';
 import StepThree from '../Project/esdd/StepThreeESDD';
 import StepFour from '../Project/esdd/StepFourESDD';
 import StepFive from '../Project/esdd/StepFiveESDD';
+import StepOneCapex from '../Project/economicviability/StepOneEco';
+import StepTwoOpex from '../Project/economicviability/StepTwoOpex';
+import StepThreeEconomic from '../Project/economicviability/StepThreeEconomic';
+import StepFourEconomic from '../Project/economicviability/StepFourEconomic';
 function Project() {
   const { id } = useParams();
   const {
@@ -121,16 +125,16 @@ function Project() {
       icon: <Icon name={'economic'} />,
       children: [
         {
-          stepLabel: 'Step 1',
-          content: (
-            <div className="font-abel font-bold">
-              General Info - Step 1 content here
-            </div>
-          ),
+          content: <StepOneCapex />,
         },
         {
-          stepLabel: 'Step 2',
-          content: <div>General Info - Step 2 content here</div>,
+          content: <StepTwoOpex />,
+        },
+        {
+          content: <StepThreeEconomic />,
+        },
+        {
+          content: <StepFourEconomic />,
         },
       ],
     },

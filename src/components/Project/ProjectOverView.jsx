@@ -17,6 +17,7 @@ const ProjectOverView = ({ steps }) => {
     setCurrentChildIndex,
     setCurrentParentIndex,
     isLoading,
+    onSubmit,
   } = useStep();
 
   const methods = useForm({
@@ -26,19 +27,6 @@ const ProjectOverView = ({ steps }) => {
   const { trigger, getValues } = methods;
 
   // Function to handle form submission
-  const onSubmit = async (data) => {
-    const isValid = await trigger();
-    const currentData = getValues();
-    if (!isValid) return;
-
-    try {
-      await updateProjectById({ id, data: currentData }).unwrap();
-      alert('Project updated successfully!');
-    } catch (error) {
-      console.error('Failed to update project: ', error);
-      alert('Failed to update the project. Please try again.');
-    }
-  };
 
   const childrenLength = steps[currentParentIndex]?.children?.length || 0;
   //TODO: Disable parent tabs if not category selected

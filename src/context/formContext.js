@@ -10,11 +10,15 @@ const StepContext = createContext();
 export const StepProvider = ({ children, steps }) => {
     const dispatch = useDispatch();
     const { id } = useParams()
+
     const [currentParentIndex, setCurrentParentIndex] = useState(0);
     const [currentChildIndex, setCurrentChildIndex] = useState(0);
-    const { trigger, getValues, formState: {
+    const { trigger, getValues, watch, formState: {
         errors
-    } } = useFormContext();
+    } } = useFormContext({
+
+    });
+
     const [updateProjectById, { isLoading }] = useUpdateProjectByIdMutation();
     const handleNext = async () => {
         const isValid = await trigger();
@@ -24,12 +28,12 @@ export const StepProvider = ({ children, steps }) => {
         }
 
         const currentData = getValues();
-
+        const updatedDocumentSections = currentData.documentSections || [];
         try {
             // Update the project by sending the current data
-            await updateProjectById({ id, data: currentData }).unwrap();
-            dispatch(setProject(currentData));
-
+            await updateProjectById({ id, data: { ...currentData, documentSections: updatedDocumentSections } }).unwrap();
+            dispatch(setProject({ ...currentData, documentSections: updatedDocumentSections }));
+            // Continue with navigation
             // Navigate to the next step
             if (currentChildIndex < steps[currentParentIndex].children.length - 1) {
                 setCurrentChildIndex(currentChildIndex + 1);
@@ -52,6 +56,20 @@ export const StepProvider = ({ children, steps }) => {
             setCurrentChildIndex(steps[currentParentIndex - 1].children.length - 1);
         }
     };
+    const onSubmit = async (data) => {
+        console.log('object submitted');
+        const isValid = await trigger();
+        const currentData = getValues();
+        if (!isValid) return;
+
+        try {
+            await updateProjectById({ id, data: currentData }).unwrap();
+            alert('Project updated successfully!');
+        } catch (error) {
+            console.error('Failed to update project: ', error);
+            alert('Failed to update the project. Please try again.');
+        }
+    };
 
 
     return (
@@ -64,7 +82,8 @@ export const StepProvider = ({ children, steps }) => {
                 setCurrentChildIndex,
                 setCurrentParentIndex,
                 steps,
-                isLoading
+                isLoading,
+                onSubmit
             }}>
             {children}
         </StepContext.Provider>

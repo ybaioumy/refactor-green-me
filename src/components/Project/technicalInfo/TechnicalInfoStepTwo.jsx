@@ -2,6 +2,7 @@ import React from 'react';
 import GreenBuilding from './steptwo/GreenBuilding';
 import { useFormContext } from 'react-hook-form';
 import EmptyList from '../../shared/EmptyList';
+import RenewableEnergy from './steptwo/RenewableEnergy';
 function TechnicalStepTwo() {
   const { watch } = useFormContext();
   const categoryId = watch('categoryId');
@@ -11,7 +12,7 @@ function TechnicalStepTwo() {
     case 1:
       return <GreenBuilding />;
     case 2:
-      return <div>Category 2</div>;
+      return <RenewableEnergy />;
     case 3:
       return <div>Category 2</div>;
     default:

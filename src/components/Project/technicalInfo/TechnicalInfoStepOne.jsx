@@ -2,6 +2,7 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import EmptyList from '../../shared/EmptyList';
 import GreenBuilding from './stepone/GreenBuilding';
+import RenewableEnergy from './stepone/RenewableEnergy';
 
 function TechnicalStepOne() {
   const { watch } = useFormContext();
@@ -12,7 +13,7 @@ function TechnicalStepOne() {
     case 1:
       return <GreenBuilding />;
     case 2:
-      return <div>Category 2</div>;
+      return <RenewableEnergy />;
     default:
       return <EmptyList message={'Seems Like you did not select a category'} />;
   }
