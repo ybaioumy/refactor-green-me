@@ -218,10 +218,8 @@ const EligibilityTest = () => {
       ],
     });
   }
-  // Function 1: Create the project and return the ID
   const createProject = async (data) => {
     try {
-      // console.log(data,'create');
       // Create the project and get the response with the project ID
       const response = await eligibilityTest(data).unwrap();
       const createdProjectId = response.id;
@@ -230,27 +228,30 @@ const EligibilityTest = () => {
         'Project created successfully with id ' + createdProjectId
       );
 
-      // return createdProjectId;
-      console.log(data);
+      // Explicitly return the createdProjectId
+      return createdProjectId;
     } catch (error) {
       message.error('Failed to create a new project');
       console.error('Error posting project:', error);
-      throw error; // Propagate the error
+      return null; // Return null on failure to ensure downstream logic handles it
     }
   };
 
   const handleAuditOrEligibility = async (createdProjectId) => {
     try {
+      if (!createdProjectId) {
+        throw new Error(
+          'Invalid project ID: Cannot proceed with audit or eligibility check.'
+        );
+      }
+
       if (lookingFor === 1) {
-        // Fetch the energy audit data
         console.log(auditResult);
-        // Do something with the energy audit result if needed
       } else {
-        // Check eligibility if lookingFor is not 1
         const eligibilityResult = await triggerGetProjectEligibility(
           createdProjectId
         ).unwrap();
-        setIsEligible(eligibilityResult);
+        setIsEligible(eligibilityResult || false);
         console.log(isEligible);
       }
     } catch (error) {
@@ -262,13 +263,19 @@ const EligibilityTest = () => {
   // Main handleSave function: Calls the two separate functions
   const handleSave = async (data) => {
     try {
-      const createdProjectId = await createProject(data); // Call the first function to create the project
-      await handleAuditOrEligibility(createdProjectId); // Call the second function to fetch audit/eligibility
+      const createdProjectId = await createProject(data); // Create the project
+      if (!createdProjectId) {
+        message.error('Project creation failed, cannot proceed further.');
+        return; // Stop the flow if the project ID is null
+      }
+      await handleAuditOrEligibility(createdProjectId); // Fetch audit/eligibility data
     } catch (error) {
       // Handle any errors that propagate from either function
       console.error('Error during save process:', error);
     }
   };
+
+  // Render logic
   if (lookingFor === 1 && auditResult != null && auditResult !== undefined) {
     // If lookingFor is 1, show ThirdStep component
     return (
@@ -279,9 +286,11 @@ const EligibilityTest = () => {
       />
     );
   }
+
   if (isEligible !== null) {
     return <EligibilityStatus isEligible={isEligible} id={createdProjectId} />;
   }
+
   return (
     <div className="flex flex-col p-2 md:p-5 gap-4">
       <>

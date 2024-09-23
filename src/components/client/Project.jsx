@@ -1,28 +1,28 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Icon from '../shared/Icon';
-import ProjectOverView from '../Project/ProjectOverView';
-import GeneralInfoStepOne from '../Project/generalInfo/StepOne';
-import GeneralInfoStepTwo from '../Project/generalInfo/StepTwo';
-import ProjectSummary from '../Project/generalInfo/StepThree';
 import { FormProvider, useForm } from 'react-hook-form';
 import { StepProvider } from '../../context/formContext';
 import { useGetProjectByIdQuery } from '../../redux/features/project';
 import Loader from '../shared/Loader';
 import EmptyList from '../shared/EmptyList';
+import ProjectOverView from '../Project/ProjectOverView';
+import GeneralInfoStepOne from '../Project/generalInfo/StepOne';
+import GeneralInfoStepTwo from '../Project/generalInfo/StepTwo';
+import ProjectSummary from '../Project/generalInfo/StepThree';
 import TechnicalStepOne from '../Project/technicalInfo/TechnicalInfoStepOne';
 import TechnicalStepTwo from '../Project/technicalInfo/TechnicalInfoStepTwo';
 import TechnicalStepThree from '../Project/technicalInfo/TechnicalStepThree';
 import StepOneESDD from '../Project/esdd/StepOneESDD';
-import { useSelector } from 'react-redux';
 import StepTwoESDD from '../Project/esdd/StepTwoESDD';
 import StepThree from '../Project/esdd/StepThreeESDD';
 import StepFour from '../Project/esdd/StepFourESDD';
 import StepFive from '../Project/esdd/StepFiveESDD';
-import StepOneCapex from '../Project/economicviability/StepOneEco';
-import StepTwoOpex from '../Project/economicviability/StepTwoOpex';
-import StepThreeEconomic from '../Project/economicviability/StepThreeEconomic';
-import StepFourEconomic from '../Project/economicviability/StepFourEconomic';
+import StepOneECO from '../Project/economicViability/StepOneEco';
+import StepTwoECO from '../Project/economicViability/StepTwoEco';
+import StepThreeEconomic from '../Project/economicViability/StepThreeEco';
+import StepFourEconomic from '../Project/economicViability/StepFourEco';
 function Project() {
   const { id } = useParams();
   const {
@@ -53,15 +53,15 @@ function Project() {
       icon: <Icon name={'generalInfo'} />,
       children: [
         {
-          stepLabel: 'Project Overview',
+          stepLabel:<p className='mb-4 text-[#1E4A28] text-[22px] font-bold mt-4'>Project Overview</p>,
           content: <GeneralInfoStepOne />,
         },
         {
-          stepLabel: 'Project Overview',
+          stepLabel:<p className='mb-4 text-[#1E4A28] text-[22px] font-bold'>Project Overview</p>,
           content: <GeneralInfoStepTwo />,
         },
         {
-          stepLabel: 'Project Overview',
+          stepLabel:<p className='mb-4 text-[#1E4A28] text-[22px] font-bold'>Project Summary</p>,
           content: <ProjectSummary />,
         },
       ],
@@ -125,10 +125,10 @@ function Project() {
       icon: <Icon name={'economic'} />,
       children: [
         {
-          content: <StepOneCapex />,
+          content: <StepOneECO />,
         },
         {
-          content: <StepTwoOpex />,
+          content: <StepTwoECO />,
         },
         {
           content: <StepThreeEconomic />,

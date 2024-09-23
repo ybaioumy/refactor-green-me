@@ -18,7 +18,7 @@ const ClientDashBoard = () => {
     useGetAllProjectsQuery(initialSearchObject);
 
   if (isLoading) return <Loader />;
-  if (isError || !data)
+  if (isError)
     return (
       <EmptyList
         message={'Check your network connections or try again later'}

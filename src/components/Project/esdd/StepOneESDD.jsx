@@ -101,6 +101,7 @@ function StepOneESDD({ title, project, updateProjectEsdd }) {
                         value?.length || 0
                       }/120 character)`}</span>
                       <textarea
+                        value={value}
                         maxLength={120}
                         className="w-full border border-[#000] rounded-md py-[25px] px-[24px]"
                         placeholder="(txt/input)"

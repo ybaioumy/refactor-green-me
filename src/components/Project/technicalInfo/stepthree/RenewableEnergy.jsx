@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { FileUploader } from '../../../shared/Upload';
+import { useFormContext, Controller } from 'react-hook-form';
 
 function RenewableEnergy() {
-  const [fileList, setFileList] = useState([]);
+  const { setValue } = useFormContext(); // Use setValue from react-hook-form
+
   const sections = [
     {
       title: 'Energy Yield Report',
@@ -13,19 +15,47 @@ function RenewableEnergy() {
       content: 'Select and upload multiple files at once.',
     },
   ];
-  const handleChange = ({ fileList }) => setFileList(fileList);
-  const filesData = fileList.map((file) => ({
-    filePath: file?.response?.fullPath,
-  }));
-  console.log(filesData);
+
   return (
-    <>
-      {sections.map((section) => (
-        <React.Fragment key={section.title}>
-          <FileUploader label={section.title} handleFileChange={handleChange} data={fileList}/>
-        </React.Fragment>
+    <div>
+      {sections.map((section, index) => (
+        <Controller
+          key={index}
+          name={`documentSections.${index}.documentFiles`}
+          render={({ field: { onChange, value } }) => {
+            const handleFileChange = ({ fileList = [] }) => {
+              // Ensure fileList is always an array
+              const updatedFiles = Array.isArray(fileList)
+                ? fileList.map((file) => ({
+                    filePath: file?.response?.fullPath || file.url || null,
+                  }))
+                : [];
+
+              // Update the section's document files
+              onChange(updatedFiles);
+            };
+
+            const handleDeleteAllFiles = () => {
+              // Set the entire documentFiles field to undefined, effectively removing it
+              setValue(`documentSections.${index}.documentFiles`, undefined);
+            };
+
+            return (
+              <div>
+                <FileUploader
+                  label={section.title}
+                  disabled={false}
+                  handleFileChange={handleFileChange}
+                  data={value || []}
+                  value={value}
+                  onRemove={handleDeleteAllFiles}
+                />
+              </div>
+            );
+          }}
+        />
       ))}
-    </>
+    </div>
   );
 }
 

@@ -16,7 +16,7 @@ const ProjectsPipline = ({ slidePerView }) => {
     useGetAllProjectsQuery(initialSearchObject);
 
   return (
-    <div className="flex flex-col w-full h-full">
+    <div className="flex flex-col w-full h-full flex-1">
       <label className="block text-[#1E4A28] text-[24px] mb-2 font-bold">
         Projects pipeline
       </label>

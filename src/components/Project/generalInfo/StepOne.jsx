@@ -14,8 +14,10 @@ import { useSelector } from 'react-redux';
 import Icon from '../../shared/Icon';
 import MapComponent from '../../shared/Map';
 function GeneralInfoStepOne() {
-  const { control, watch, setValue } = useFormContext();
   const { projectObject } = useSelector((state) => state.project);
+  const { control, watch, setValue } = useFormContext({
+    defaultValues: projectObject,
+  });
 
   const [editCategory, setEditCategory] = useState(true);
   const [editCriteria, setEditCritiria] = useState(true);
@@ -71,6 +73,10 @@ function GeneralInfoStepOne() {
             <Controller
               name="categoryId"
               control={control}
+              rules={{
+                required: 'Category is required',
+
+              }}
               render={({ field }) => (
                 <Select
                   {...field}
@@ -88,6 +94,9 @@ function GeneralInfoStepOne() {
           <DetailsRow onEdit={() => setEditCritiria((prev) => !prev)} noBorder>
             <Controller
               name="criteriaId"
+              rules={{
+                required: 'Criteria is required',
+              }}
               control={control}
               render={({ field }) => (
                 <Select
@@ -120,6 +129,9 @@ function GeneralInfoStepOne() {
           </DetailsRow>
           <Controller
             name="economicSectorId"
+            rules={{
+              required: 'Economic Sector is required',
+            }}
             control={control}
             render={({ field }) => (
               <div className="flex">
@@ -141,6 +153,9 @@ function GeneralInfoStepOne() {
           <Controller
             name="servedCountryId"
             control={control}
+            rules={{
+              required: 'Select Building Location',
+            }}
             render={({ field }) => (
               <Select
                 {...field}

@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { setProject } from '../redux/slices/project';
 import { useParams } from 'react-router-dom';
 import alertValidationMessage from '../utilits/alertMessage'
+import { message } from 'antd';
 const StepContext = createContext();
 
 export const StepProvider = ({ children, steps }) => {
@@ -64,7 +65,7 @@ export const StepProvider = ({ children, steps }) => {
 
         try {
             await updateProjectById({ id, data: currentData }).unwrap();
-            alert('Project updated successfully!');
+            message.success('Project Updated Successfully!');
         } catch (error) {
             console.error('Failed to update project: ', error);
             alert('Failed to update the project. Please try again.');

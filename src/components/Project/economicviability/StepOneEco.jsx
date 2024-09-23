@@ -9,13 +9,24 @@ import Loader from '../../shared/Loader';
 import EmptyList from '../../shared/EmptyList';
 import Input from '../../shared/Input';
 
-function StepOneCapex() {
+function StepOneECO() {
   const {
     data: dropDowns,
     isLoading: isLoadingDropDowns,
     isError: isErrorLoadingDropDowns,
   } = useGetProjectDropDownsQuery('economicviability');
-  const { control, setValue, watch } = useFormContext();
+  const { control, setValue, watch } = useFormContext({
+    defaultValues: {
+      economicViabilty: {
+        capexes: [],
+        opexes: [],
+        totalCapexitems: 0,
+        totalCapexvalue: 0,
+        totalOpexitems: 0,
+        totalOpexvalue: 0,
+      },
+    },
+  });
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -69,7 +80,7 @@ function StepOneCapex() {
         <div className="lg:flex w-full">
           <div className="flex flex-col md:w-[80%] gap-24">
             {fields.map((capex, index) => (
-              <div key={capex.id} className="px-[20px]">
+              <div key={capex.id} className="pr-[20px]">
                 <div className="flex items-center justify-between">
                   <p className="text-[#1E4A28] text-[18px] font-bold uppercase pl-4">
                     {capex.name}
@@ -216,4 +227,4 @@ function StepOneCapex() {
   );
 }
 
-export default StepOneCapex;
+export default StepOneECO;

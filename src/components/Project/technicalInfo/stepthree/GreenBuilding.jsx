@@ -1,8 +1,11 @@
 import React from 'react';
 import { FileUploader } from '../../../shared/Upload';
 import { useFormContext, Controller } from 'react-hook-form';
+import Icon from '../../../shared/Icon';
 
 function GreenBuilding() {
+  const { setValue } = useFormContext(); // Use setValue from react-hook-form
+
   const sections = [
     {
       title: 'Proof of Green Building Certifications',
@@ -23,9 +26,8 @@ function GreenBuilding() {
       {sections.map((section, index) => (
         <Controller
           key={index}
-          name={`documentSections.${index}.documentFiles`} 
+          name={`documentSections.${index}.documentFiles`}
           render={({ field: { onChange, value } }) => {
-            console.log(value);
             const handleFileChange = ({ fileList = [] }) => {
               // Ensure fileList is always an array
               const updatedFiles = Array.isArray(fileList)
@@ -34,17 +36,26 @@ function GreenBuilding() {
                   }))
                 : [];
 
-              // Merge new files into the existing section
+              // Update the section's document files
               onChange(updatedFiles);
             };
 
+            const handleDeleteAllFiles = () => {
+              // Set the entire documentFiles field to undefined, effectively removing it
+              setValue(`documentSections.${index}.documentFiles`, undefined);
+            };
+
             return (
-              <FileUploader
-                label={section.title}
-                disabled={false}
-                handleFileChange={handleFileChange} // Pass the section title to handleFileChange
-                data={value || []} // Initial value from form state
-              />
+              <div>
+                <FileUploader
+                  label={section.title}
+                  disabled={false}
+                  handleFileChange={handleFileChange} 
+                  data={value || []} 
+                  value={value}
+                  onRemove={handleDeleteAllFiles}
+                />
+              </div>
             );
           }}
         />
