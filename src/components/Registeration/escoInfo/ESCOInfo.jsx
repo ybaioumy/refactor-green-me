@@ -10,7 +10,15 @@ import DisbursedPie from '../../shared/PieChart';
 import dayjs from 'dayjs';
 
 function ESCODetails({ sectors, countries }) {
-  const { control, setValue, watch, getValues } = useFormContext();
+  const { control, setValue, watch, getValues } = useFormContext({
+    defaultValues: {
+      escoName: '',
+      escoLegalName: '',
+      escoType: null,
+      escoCountriesServeds: [],
+
+    },
+  });
   const [countriesServed, setCountriesServed] = useState([{ countryId: 0 }]);
 
   const addCountry = () => {
@@ -62,6 +70,9 @@ function ESCODetails({ sectors, countries }) {
         <ItemRow label={'Base Country'}>
           <Controller
             name="countryId"
+            rules={{
+              required: 'Base Country is required',
+            }}
             control={control}
             render={({ field }) => (
               <Select

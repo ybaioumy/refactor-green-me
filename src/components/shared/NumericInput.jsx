@@ -50,7 +50,7 @@ const NumericInput = forwardRef(
             <button
               type="button"
               onClick={decrement}
-              className="focus:outline-none bg-[#D90000] text-white rounded-full p-1"
+              className="focus:outline bg-[#D90000] text-white rounded-full p-1"
               disabled={disabled}
               aria-label="Decrease value" // Accessibility
             >
@@ -73,7 +73,7 @@ const NumericInput = forwardRef(
             <button
               type="button"
               onClick={increment}
-              className="focus:outline-none bg-[#186129] text-white rounded-full p-1"
+              className="focus:outline bg-[#186129] text-white rounded-full p-1"
               disabled={disabled}
               aria-label="Increase value" // Accessibility
             >

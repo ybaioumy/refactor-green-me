@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 
 import Title from '../shared/Title';
 import { useStep, StepProvider } from '../../context/formContext';
+import ScrollToTop from '../shared/ScrollToTop';
 const ProjectOverView = ({ steps }) => {
   const { id } = useParams();
   const [updateProjectById] = useUpdateProjectByIdMutation();
@@ -36,26 +37,26 @@ const ProjectOverView = ({ steps }) => {
         <ul className="w-full flex md:flex-col md:gap-5 gap-2 md:border-r border-black pr-4 md:h-[95vh] overflow-x-scroll no-scrollbar">
           {steps.map((parentStep, index) => (
             <li key={index} className="h-fit">
-              <button
-                type="button"
-                onClick={() => {
-                  setCurrentParentIndex(index);
-                  setCurrentChildIndex(0);
-                }}
-                className={`text-white md:h-[100px] h-[100px] w-fit  md:w-[90%] relative flex min-w-[220px] md:min-w-[120px] items-center gap-4 text-left px-4 py-2 font-bold  rounded-[12px] card-green-gradient transition-opacity duration-150  ${
-                  index === currentParentIndex
-                    ? 'border-[3px]  md:border-[5px] border-[#cbff5e] '
-                    : 'opacity-50  border-[3px] md:border-[5px]'
-                }`}>
-                <span>{parentStep.icon}</span>
-                <p className="font-bold capitalize sm:hidden md:hidden lg:block  text-[20px] w-1/2 text-wrap leading-tight">
-                  {' '}
-                  {parentStep.label}
-                </p>
-                {currentParentIndex === index && (
-                  <div className="hidden  md:block absolute right-[-20px] top-1/2 transform -translate-y-1/2 w-[30px] h-[40px] bg-[#122c18] active-eligible-container" />
-                )}
-              </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCurrentParentIndex(index);
+                    setCurrentChildIndex(0);
+                  }}
+                  className={`text-white md:h-[100px] h-[100px] w-fit transition-all  md:w-[90%] relative flex justify-center sm:justify-start min-w-[220px] md:min-w-[120px] items-center gap-4 text-left px-4 py-2 font-bold  rounded-[12px] card-green-gradient  duration-150  ${
+                    index === currentParentIndex
+                      ? 'border-[3px]  md:border-[5px] border-[#cbff5e] '
+                      : 'opacity-50  border-[3px] md:border-[5px]'
+                  }`}>
+                  <span>{parentStep.icon}</span>
+                  <p className="font-bold capitalize block  text-[20px]  text-wrap leading-tight truncate">
+                    {' '}
+                    {parentStep.label}
+                  </p>
+                  {currentParentIndex === index && (
+                    <div className="hidden md:block absolute right-[-20px] top-1/2 transform -translate-y-1/2 w-[30px] h-[40px]  active-eligible-container" />
+                  )}
+                </button>
             </li>
           ))}
         </ul>
@@ -67,14 +68,19 @@ const ProjectOverView = ({ steps }) => {
         <div className="h-full min-h-[70vh] w-full my-auto pb-4 transition-all duration-200">
           <div className="flex flex-col gap-2 mb-4">
             {' '}
-            <div className="flex gap-2 w-fit">
-              {Array.from({ length: childrenLength }).map((_, index) => (
-                <span
-                  key={index}
-                  className={`h-1 w-10 rounded-lg ${
-                    currentChildIndex === index ? 'stepsSpan' : 'bg-gray-300'
-                  }`}></span>
-              ))}
+            <div className="flex gap-2 w-full justify-between">
+              <div className='flex gap-2 w-fit'>
+                {Array.from({ length: childrenLength }).map((_, index) => (
+                  <span
+                    key={index}
+                    className={`h-1 w-10 rounded-lg ${
+                      currentChildIndex === index ? 'stepsSpan' : 'bg-gray-300'
+                    }`}></span>
+                ))}
+              </div>
+              {steps[currentParentIndex]?.children[currentChildIndex]
+                .stepIcon || null}
+              {/* <button>Proposals</button> */}
             </div>
             {steps[currentParentIndex]?.children[currentChildIndex].stepLabel}
           </div>
@@ -121,6 +127,7 @@ const ProjectOverView = ({ steps }) => {
           )}
         </div>
       </form>
+      <ScrollToTop />
     </div>
   );
 };

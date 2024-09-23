@@ -1,8 +1,9 @@
 import React from 'react';
-import GreenBuilding from './steptwo/GreenBuilding';
 import { useFormContext } from 'react-hook-form';
 import EmptyList from '../../shared/EmptyList';
+import GreenBuilding from './steptwo/GreenBuilding';
 import RenewableEnergy from './steptwo/RenewableEnergy';
+import EnergyEfficiency from './steptwo/EnergyEffciency';
 function TechnicalStepTwo() {
   const { watch } = useFormContext();
   const categoryId = watch('categoryId');
@@ -14,7 +15,7 @@ function TechnicalStepTwo() {
     case 2:
       return <RenewableEnergy />;
     case 3:
-      return <div>Category 2</div>;
+      return <EnergyEfficiency/>;
     default:
       return <EmptyList message={'Seems Like you did not select a category'} />;
   }

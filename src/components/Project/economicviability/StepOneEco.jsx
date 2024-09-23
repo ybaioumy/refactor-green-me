@@ -119,7 +119,7 @@ function StepOneECO() {
                         type="textarea"
                         {...field}
                         maxLength={120}
-                        placeholder="Remarks"
+                        placeHolder="Item Description"
                       />
                     )}
                   />

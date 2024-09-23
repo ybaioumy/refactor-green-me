@@ -36,6 +36,7 @@ function Register() {
     invitationStatusId: 0,
     permissionId: [],
     roleId: initialRoleId,
+    escotypeId: null,
   });
   const [imagePreview, setImagePreview] = useState(null);
   const [registerMutation, { isLoading, error, isError: isErrorRegister }] =
@@ -110,7 +111,7 @@ function Register() {
       }, 200);
     } catch (error) {
       console.error(error);
-      message.error('Registration failed');
+      message.error(error.data.message||'Registration failed');
     }
   };
   if (isLoadingRoles) return <Loader />;

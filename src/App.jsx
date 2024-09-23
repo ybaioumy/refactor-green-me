@@ -17,10 +17,16 @@ import Register from './routes/Register';
 import Project from './components/client/Project';
 import NewProject from './routes/NewProject';
 import EligibilityTest from './routes/EligibilityTest';
-import Proposals from './components/client/Proposals';
+import ProposalsPage from './routes/Proposals';
 import { OnlineStatusProvider } from './context/onlineConnectionContext';
 import ConnectionStatusNotification from './components/shared/ConnectionNotification';
 import ProjectOverView from './components/Project/ProjectOverView';
+import SubmitOffer from './routes/SubmitOffer';
+import OpportunitiyOverview from './components/esco/OpportunitiyOverview';
+import MembersListing from './components/esco/MembersListing';
+import MissionsListing from './components/esco/MissionsListing';
+import AssignMission from './components/esco/AssignMission';
+import ESCODashboard from './components/esco/Dashboard';
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
   const token = useGetToken();
@@ -90,7 +96,7 @@ const clientRouter = createBrowserRouter([
       },
       {
         path: 'proposals/:id',
-        element: <Proposals />,
+        element: <ProposalsPage />,
       },
       {
         path: 'esco/:id',
@@ -104,15 +110,78 @@ const clientRouter = createBrowserRouter([
   },
 ]);
 
-const escoRouter = createBrowserRouter([
+const ESCORouter = createBrowserRouter([
   {
     path: '/',
     element: (
       <ProtectedRoute>
-        <div>ESCO Dashboard</div>
+        <Layout />
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true, // Default route for "/"
+        element: <ESCODashboard />,
+      },
+      {
+        path: 'submit-offer/:id', // Updated to hyphen-case
+        element: <SubmitOffer />,
+      },
+      {
+        path: 'projects', // Grouping project-related routes
+
+        children: [
+          {
+            index: true,
+            element: <ProjectListing />,
+          },
+
+          {
+            path: 'opportunities', // Relative path for "/projects/opportunities"
+            element: <ProjectListing />,
+          },
+          {
+            path: 'opportunities/project-details/:id', // "/projects/opportunities/project-details/:id"
+            element: <OpportunitiyOverview />,
+          },
+          {
+            path: 'eligible/:id', // "/projects/eligible/:id"
+            element: <Project />,
+          },
+          {
+            path: 'eligible/:id/add-members', // "/projects/eligible/:id/add-members"
+            element: <MembersListing />,
+          },
+          {
+            path: 'eligible/:id/add-mission', // "/projects/eligible/:id/add-mission"
+            element: <MissionsListing />,
+          },
+        ],
+      },
+      {
+        path: 'new-project', // Hyphen-case for consistency
+        children: [
+          {
+            index: true, // "/new-project"
+            element: <NewProject />,
+          },
+          {
+            path: ':id', // "/new-project/:id"
+            element: <EligibilityTest />,
+          },
+        ],
+      },
+      {
+        path: 'create-mission', // "/create-mission
+        element: <AssignMission />,
+      },
+
+      {
+        path: 'profile',
+        element: <Profile />,
+      },
+    ],
   },
 ]);
 
@@ -162,7 +231,7 @@ function App() {
       case 'client':
         return clientRouter;
       case 'esco':
-        return escoRouter;
+        return ESCORouter;
       case 'expert':
         return expertRouter;
       default:

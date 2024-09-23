@@ -373,9 +373,13 @@ input[type="checkbox"] {
 }
 
 .active-eligible-container {
-  clip-path: polygon(0 0, 0% 100%, 100% 50%);
+  width: 0;
+  height: 0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-left: 30px solid #122c18;
+  /* Replace this color with your desired background */
 }
-
 .stepsSpan {
   background: linear-gradient(270deg, rgba(255, 255, 255, 0.50) 0%, rgba(255, 255, 255, 0.00) 100%),
     linear-gradient(270deg, #FFF 0%, rgba(255, 255, 255, 0.00) 100%),
@@ -602,8 +606,8 @@ input[type="checkbox"] {
 
   .custom-pagination button {
     border: none;
-    width: 35px;
-    height: 35px;
+    width: 50px;
+    height: 30px;
   }
 }
 

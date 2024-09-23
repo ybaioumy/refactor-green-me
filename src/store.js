@@ -10,6 +10,7 @@ import { lookingForApi } from './redux/features/eligibility';
 import searchReducer from './redux/slices/filtersSlice';
 import eligibilityReducer from './redux/slices/eligbility'
 import project from './redux/slices/project';
+import { proposalApi } from './redux/features/proposal';
 const persistConfig = {
     key: 'root',
     storage,
@@ -23,6 +24,8 @@ export const store = configureStore({
         [authApi.reducerPath]: authApi.reducer,
         [projectApi.reducerPath]: projectApi.reducer,
         [lookingForApi.reducerPath]: lookingForApi.reducer,
+        [proposalApi.reducerPath]: proposalApi.reducer,
+
         auth: persistedAuthReducer,
         search: searchReducer,
         eligibility: eligibilityReducer,
@@ -33,7 +36,7 @@ export const store = configureStore({
             serializableCheck: {
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER], // Add these actions to ignore list
             },
-        }).concat(authApi.middleware, projectApi.middleware, lookingForApi.middleware),
+        }).concat(authApi.middleware, projectApi.middleware, lookingForApi.middleware,proposalApi.middleware),
 });
 
 setupListeners(store.dispatch);

@@ -67,8 +67,8 @@ function GeneralInfoStepOne() {
           />
         )}
       />
-      <div className="flex flex-col  gap-5 md:gap-10 lg:flex-row w-full justify-between">
-        <div className="md:w-3/4 w-full flex flex-col gap-5 md:gap-10 lg:border-r border-black md:pr-32">
+      <div className="flex flex-col  gap-5 md:gap-10 sm:flex-col lg:flex-row w-full justify-between">
+        <div className="md:w-3/4 w-full flex flex-col gap-5 ">
           <DetailsRow onEdit={() => setEditCategory((prev) => !prev)} noBorder>
             <Controller
               name="categoryId"
@@ -149,7 +149,7 @@ function GeneralInfoStepOne() {
             )}
           />
         </div>
-        <div className="flex flex-col items-center gap-4 md:w-2/4">
+        <div className="flex flex-col items-center gap-4 md:w-2/4 lg:border-l border-black pl-2">
           <Controller
             name="servedCountryId"
             control={control}

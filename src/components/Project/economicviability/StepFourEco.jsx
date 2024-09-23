@@ -1,7 +1,7 @@
 import { useFormContext, Controller } from 'react-hook-form';
 import NumericInput from '../../shared/NumericInput';
 
-function StepFourEconomic() {
+function StepFourECO() {
   const { control } = useFormContext();
 
   return (
@@ -74,4 +74,4 @@ function StepFourEconomic() {
   );
 }
 
-export default StepFourEconomic;
+export default StepFourECO;

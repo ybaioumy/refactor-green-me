@@ -129,7 +129,7 @@ const ProjectTable = ({ data, isLoading, error, isOpportunitiesRoute }) => {
       },
       { headerName: 'Budget', field: 'budget', sortable: true, filter: true },
     ];
-    if (userType === 1) {
+    if (Number(userType) === 1) {
       baseColumnDefs.push({
         headerName: 'Project proposals',
         field: 'proposalsCount',

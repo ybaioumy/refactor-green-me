@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useMemo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Icon from '../shared/Icon';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -19,18 +19,28 @@ import StepTwoESDD from '../Project/esdd/StepTwoESDD';
 import StepThree from '../Project/esdd/StepThreeESDD';
 import StepFour from '../Project/esdd/StepFourESDD';
 import StepFive from '../Project/esdd/StepFiveESDD';
-import StepOneECO from '../Project/economicViability/StepOneEco';
-import StepTwoECO from '../Project/economicViability/StepTwoEco';
-import StepThreeEconomic from '../Project/economicViability/StepThreeEco';
-import StepFourEconomic from '../Project/economicViability/StepFourEco';
+import StepOneECO from '../Project/economicviability/StepOneEco';
+import StepTwoECO from '../Project/economicviability/StepTwoEco';
+import StepThreeECO from '../Project/economicviability/StepThreeEco';
+import StepFourECO from '../Project/economicviability/StepFourEco';
+import ViabilityStatus from '../Project/technicalInfo/TechnicalResult';
+import { useGetProjectProposalsQuery } from '../../redux/features/proposal';
+import Button from '../shared/Button';
 function Project() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const {
     data: projectData,
     isLoading: isLoadingProject,
     isError,
     error,
   } = useGetProjectByIdQuery(id);
+  const {
+    data,
+    isLoading: isLoadingProposals,
+    isError: isErrorProposals,
+  } = useGetProjectProposalsQuery(id);
   const methods = useForm({
     defaultValues: {},
     mode: 'onChange',
@@ -46,6 +56,22 @@ function Project() {
     }
   }, [projectData, reset]);
   const { projectObject } = useSelector((state) => state.project);
+  const ProposalButton = () => (
+    <>
+      {data?.length > 0 && (
+        <Button
+          variant="blue"
+          onClick={() =>
+            navigate(`/proposals/${projectData?.id}`, {
+              state: { projectId: projectData?.id },
+            })
+          }>
+          <div className="w-[20px] h-[20px] bg-[#bbea00] rounded-full mr-2" />
+          <p className="">{`${data?.length} Submitted proposals`}</p>
+        </Button>
+      )}
+    </>
+  );
   const steps = [
     {
       parentStep: 'generalInfo',
@@ -53,16 +79,31 @@ function Project() {
       icon: <Icon name={'generalInfo'} />,
       children: [
         {
-          stepLabel:<p className='mb-4 text-[#1E4A28] text-[22px] font-bold mt-4'>Project Overview</p>,
+          stepLabel: (
+            <p className="mb-4 text-[#1E4A28] text-[22px] font-bold mt-4">
+              Project Overview
+            </p>
+          ),
           content: <GeneralInfoStepOne />,
+          stepIcon: <ProposalButton />,
         },
         {
-          stepLabel:<p className='mb-4 text-[#1E4A28] text-[22px] font-bold'>Project Overview</p>,
+          stepLabel: (
+            <p className="mb-4 text-[#1E4A28] text-[22px] font-bold">
+              Project Overview
+            </p>
+          ),
           content: <GeneralInfoStepTwo />,
+          stepIcon: <ProposalButton />,
         },
         {
-          stepLabel:<p className='mb-4 text-[#1E4A28] text-[22px] font-bold'>Project Summary</p>,
+          stepLabel: (
+            <p className="mb-4 text-[#1E4A28] text-[22px] font-bold">
+              Project Summary
+            </p>
+          ),
           content: <ProjectSummary />,
+          stepIcon: <ProposalButton />,
         },
       ],
     },
@@ -76,12 +117,28 @@ function Project() {
           content: <TechnicalStepOne />,
         },
         {
-          stepLabel: 'Resource Consumption',
+          stepLabel: (
+            <p className="py-2 border-b border-[#54A967] mb-4 text-[#1E4A28] text-[20px] font-bold">
+              Resources consumption
+            </p>
+          ),
           content: <TechnicalStepTwo />,
         },
         {
-          stepLabel: 'Document Uploads',
+          stepLabel: (
+            <p className="py-2 border-b border-[#54A967] mb-4 text-[#1E4A28] text-[20px] font-bold">
+              Document Uploads{' '}
+            </p>
+          ),
           content: <TechnicalStepThree />,
+        },
+        {
+          stepLabel: (
+            <p className="py-2 border-b border-[#54A967] mb-4 text-[#1E4A28] text-[20px] font-bold">
+              Project Impact & Viability
+            </p>
+          ),
+          content: <ViabilityStatus data={projectObject} />,
         },
       ],
     },
@@ -131,10 +188,10 @@ function Project() {
           content: <StepTwoECO />,
         },
         {
-          content: <StepThreeEconomic />,
+          content: <StepThreeECO />,
         },
         {
-          content: <StepFourEconomic />,
+          content: <StepFourECO />,
         },
       ],
     },
