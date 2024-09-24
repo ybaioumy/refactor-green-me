@@ -31,7 +31,7 @@ const ProjectSwiper = ({ projects, isLoading }) => {
   const isAtStart = activeIndex === 0;
 
   return (
-    <div className="relative mt-5">
+    <div className="relative">
       <Swiper
         onSwiper={(swiper) => {
           swiperRef.current = swiper;
@@ -52,13 +52,15 @@ const ProjectSwiper = ({ projects, isLoading }) => {
           },
           480: {
             slidesPerView: 2,
-            spaceBetween: 30,
+            spaceBetween: 10,
           },
           768: {
             slidesPerView: 2,
+            spaceBetween: 10,
           },
           1024: {
             slidesPerView: 2,
+            spaceBetween: 10,
           },
         }}
         breakpointsBase="container"
@@ -67,7 +69,7 @@ const ProjectSwiper = ({ projects, isLoading }) => {
         {projects?.data?.map((project, idx) => (
           <SwiperSlide key={project.id}>
             <Link to={'projects/eligible/' + project.id}>
-              <div className="bg-[#fbfbfb] rounded-2xl p-4 h-[350px] ml-2 shadow-[0px_0px_16px_0px_#00000024] my-4 ">
+              <div className="max-w-sm bg-[#fbfbfb] ml-1 rounded-2xl p-4 h-[350px] shadow-[0px_0px_10px_0px_#00000024] my-4 ">
                 <div className="flex items-center justify-between ">
                   <div className="flex items-center space-x-2">
                     <div className="relative flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full">
@@ -110,7 +112,6 @@ const ProjectSwiper = ({ projects, isLoading }) => {
           </SwiperSlide>
         ))}
       </Swiper>
-
       <button
         style={{ boxShadow: '0px 8px 8px rgba(0, 0, 0, 0.10)' }}
         onClick={handlePrev}

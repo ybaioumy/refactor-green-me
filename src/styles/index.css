@@ -134,7 +134,7 @@ input[type=number] {
 input[type="checkbox"] {
   width: 20px;
   height: 20px;
-  accent-color: green;
+  accent-color: #4CAF50;
 }
 
 /*
@@ -380,6 +380,7 @@ input[type="checkbox"] {
   border-left: 30px solid #122c18;
   /* Replace this color with your desired background */
 }
+
 .stepsSpan {
   background: linear-gradient(270deg, rgba(255, 255, 255, 0.50) 0%, rgba(255, 255, 255, 0.00) 100%),
     linear-gradient(270deg, #FFF 0%, rgba(255, 255, 255, 0.00) 100%),
@@ -700,9 +701,32 @@ input[type="checkbox"] {
     width: 100%;
   }
 } */
+.tooltip {
+  position: absolute;
+  background-color: black;
+  color: white;
+  padding: 10px 5px 5px 5px;
 
+  border-radius: 25px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
 
+/* Pointer shape using clip-path */
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: -75%;
+  left: 3%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 75%;
+  clip-path: polygon(50% 0%, 67% 100%, 75% 100%);
+  background-color: black;
+  filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+}
 
+/* propsals tabs? */
 .active-tab {
   position: relative;
 }

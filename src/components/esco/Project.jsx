@@ -7,18 +7,14 @@ import { StepProvider } from '../../context/formContext';
 import { useGetProjectByIdQuery } from '../../redux/features/project';
 import Loader from '../shared/Loader';
 import EmptyList from '../shared/EmptyList';
-import ProjectOverView from './ProjectOverView';
+import ESCOProjectOverView from './ESCOProjectOverview';
 import GeneralInfoStepOne from '../Project/generalInfo/StepOne';
 import GeneralInfoStepTwo from '../Project/generalInfo/StepTwo';
 import ProjectSummary from '../Project/generalInfo/StepThree';
 import TechnicalStepOne from '../Project/technicalInfo/TechnicalInfoStepOne';
 import TechnicalStepTwo from '../Project/technicalInfo/TechnicalInfoStepTwo';
 import TechnicalStepThree from '../Project/technicalInfo/TechnicalStepThree';
-import StepOneESDD from '../Project/esdd/StepOneESDD';
-import StepTwoESDD from '../Project/esdd/StepTwoESDD';
-import StepThree from '../Project/esdd/StepThreeESDD';
-import StepFour from '../Project/esdd/StepFourESDD';
-import StepFive from '../Project/esdd/StepFiveESDD';
+
 import StepOneECO from '../Project/economicviability/StepOneEco';
 import StepTwoECO from '../Project/economicviability/StepTwoEco';
 import StepThreeECO from '../Project/economicviability/StepThreeEco';
@@ -26,7 +22,9 @@ import StepFourECO from '../Project/economicviability/StepFourEco';
 import ViabilityStatus from '../Project/technicalInfo/TechnicalResult';
 import { useGetProjectProposalsQuery } from '../../redux/features/proposal';
 import Button from '../shared/Button';
-function Project() {
+import StepOneESCO from '../Project/economicviability/ESCOStepOne';
+import Teams from '../Project/teams/Teams';
+function ProjectESCO() {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -76,8 +74,12 @@ function Project() {
     {
       parentStep: 'generalInfo',
       label: 'General Info',
-      icon: <Icon name={'generalInfo'} />,
+      icon: <Icon name={'escoGeneral'} />,
       children: [
+        {
+          content: <ProjectSummary />,
+          stepIcon: <ProposalButton />,
+        },
         {
           stepLabel: (
             <p className="mb-4 text-[#1E4A28] text-[22px] font-bold mt-4">
@@ -96,21 +98,12 @@ function Project() {
           content: <GeneralInfoStepTwo />,
           stepIcon: <ProposalButton />,
         },
-        {
-          stepLabel: (
-            <p className="mb-4 text-[#1E4A28] text-[22px] font-bold">
-              Project Summary
-            </p>
-          ),
-          content: <ProjectSummary />,
-          stepIcon: <ProposalButton />,
-        },
       ],
     },
     {
       parentStep: 'technicalInfo',
       label: 'Technical Info',
-      icon: <Icon name={'technicalInfo'} />,
+      icon: <Icon name={'escoTechnical'} />,
       children: [
         {
           // stepLabel: 'Step 1',
@@ -142,45 +135,20 @@ function Project() {
         },
       ],
     },
-    {
-      parentStep: 'esdd',
-      label: 'E&SDD',
-      icon: <Icon name={'esdd'} />,
-      children: [
-        {
-          stepLabel: (
-            <p className="py-2 border-y border-[#54A967] mb-4 text-[#1E4A28] text-[20px] font-bold">
-              Questions on E&S aspects of the proposed project
-            </p>
-          ),
-          content: <StepOneESDD project={projectObject} />,
-        },
-        {
-          stepLabel: (
-            <p className="py-2 border-y border-[#54A967] mb-4 text-[#1E4A28] text-[20px] font-bold">
-              General questions
-            </p>
-          ),
-          content: <StepTwoESDD />,
-        },
-        {
-          // stepLabel: 'Step 2',
-          content: <StepThree />,
-        },
-        {
-          content: <StepFour />,
-        },
-        {
-          // stepLabel: 'Step 2',
-          content: <StepFive />,
-        },
-      ],
-    },
+
     {
       parentStep: 'economicViab',
       label: 'Economic Viability',
-      icon: <Icon name={'economic'} />,
+      icon: <Icon name={'escoEconomic'} />,
       children: [
+        {
+          stepLabel: (
+            <p className="py-2 capitalize border-b border-[#54A967] mb-4 text-[#1E4A28] text-[20px] font-bold">
+              energy performance contracts model
+            </p>
+          ),
+          content: <StepOneESCO />,
+        },
         {
           content: <StepOneECO />,
         },
@@ -192,6 +160,16 @@ function Project() {
         },
         {
           content: <StepFourECO />,
+        },
+      ],
+    },
+    {
+      parentStep: 'teams',
+      label: 'Teams & Invitations',
+      icon: <Icon name={'escoTeams'} />,
+      children: [
+        {
+          content: <Teams />,
         },
       ],
     },
@@ -208,10 +186,10 @@ function Project() {
     <FormProvider {...methods}>
       {/* Wrap StepProvider in FormProvider to access form context */}
       <StepProvider steps={steps}>
-        <ProjectOverView steps={steps} />
+        <ESCOProjectOverView steps={steps} />
       </StepProvider>
     </FormProvider>
   );
 }
 
-export default Project;
+export default ProjectESCO;

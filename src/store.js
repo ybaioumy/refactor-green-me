@@ -1,16 +1,17 @@
+import storage from 'redux-persist/lib/storage';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-
 import { authApi } from './redux/features/auth';
-import authReducer from './redux/slices/user';
 import { projectApi } from './redux/features/project';
 import { lookingForApi } from './redux/features/eligibility';
+import { proposalApi } from './redux/features/proposal';
+import { inviteApi } from './redux/features/inviteMembers';
+import { expertApi } from './redux/features/expert';
+import authReducer from './redux/slices/user';
 import searchReducer from './redux/slices/filtersSlice';
 import eligibilityReducer from './redux/slices/eligbility'
 import project from './redux/slices/project';
-import { proposalApi } from './redux/features/proposal';
 const persistConfig = {
     key: 'root',
     storage,
@@ -25,6 +26,8 @@ export const store = configureStore({
         [projectApi.reducerPath]: projectApi.reducer,
         [lookingForApi.reducerPath]: lookingForApi.reducer,
         [proposalApi.reducerPath]: proposalApi.reducer,
+        [inviteApi.reducerPath]: inviteApi.reducer,
+        [expertApi.reducerPath]: expertApi.reducer,
 
         auth: persistedAuthReducer,
         search: searchReducer,
@@ -34,9 +37,9 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {
-                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER], // Add these actions to ignore list
+                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             },
-        }).concat(authApi.middleware, projectApi.middleware, lookingForApi.middleware,proposalApi.middleware),
+        }).concat(authApi.middleware, projectApi.middleware, lookingForApi.middleware, proposalApi.middleware, inviteApi.middleware, expertApi.middleware),
 });
 
 setupListeners(store.dispatch);

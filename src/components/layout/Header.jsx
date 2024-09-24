@@ -79,9 +79,9 @@ export default function Header() {
     logout();
     navigate('/');
   };
- const handleImageLoad = () => {
-   setIsImageLoaded(true);
- };
+  const handleImageLoad = () => {
+    setIsImageLoaded(true);
+  };
   return (
     <header>
       <div
@@ -106,9 +106,6 @@ export default function Header() {
             <p className="text-[#1E4A28] font-light text-[32px]">ESCO</p>
           )}
         </div>
-        {isProfile && (
-          <p className="text-[#1E4A28] font-light text-[32px]">ESCO</p>
-        )}
       </div>
       <Disclosure
         as="nav"

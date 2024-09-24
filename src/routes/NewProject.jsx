@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom';
 import { useGetLookingForQuery } from '../redux/features/eligibility';
 import Loader from '../components/shared/Loader';
 import EmptyList from '../components/shared/EmptyList';
+import Tooltip from '../components/shared/Tooltip';
 const GreenMeOptions = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [hoveredOption, setHoveredOption] = useState(null);
+  const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
+
   const { data, isLoading, error } = useGetLookingForQuery();
 
   if (isLoading) {
@@ -14,7 +17,6 @@ const GreenMeOptions = () => {
   if (!data) return <EmptyList message={'Nothing here'} />;
   if (error) return <EmptyList message={'Something went wrong'} />;
 
-  //add notifications
   return (
     <div className="mt-8 px-2 md:px-8">
       <p className="text-[#1E4A28] text-2xl font-bold">
@@ -43,7 +45,14 @@ const GreenMeOptions = () => {
               </p>
             </Link>
             <button
-              onMouseEnter={() => setHoveredOption(idx)}
+              onMouseEnter={(e) => {
+                setHoveredOption(idx);
+                const rect = e.currentTarget.getBoundingClientRect();
+                setTooltipPosition({
+                  top: rect.top + window.scrollY + 25,
+                  left: rect.left + window.scrollX + 10,
+                });
+              }}
               onMouseLeave={() => setHoveredOption(null)}
               onClick={() =>
                 setSelectedOption((prev) => (prev === idx ? null : idx))
@@ -55,27 +64,19 @@ const GreenMeOptions = () => {
                 />
               </div>
               {(hoveredOption === idx || selectedOption === idx) && (
-                <div
-                  className={`absolute text-left left-8 top-[91px] w-[300px] md:w-[300px] bg-black text-white p-2 shadow-lg z-20 rounded-2xl ${
-                    selectedOption === idx ? 'dialog-show' : 'dialog'
-                  }`}>
-                  <div className="relative text-wrap">
-                    <div className="absolute -top-[80%] left-0 transform -translate-x-1/2 bg-black w-full h-full info-shape"></div>
-                    <div className="bg-black">
-                      <p className="text-base mb-2">
-                        More Info About This ... please read below:
-                      </p>
-                    </div>
-                    <div className="bg-white p-2 rounded-2xl">
-                      <p className="text-lg text-[#1E4A28] font-bold">
-                        {box.name}
-                      </p>
-                      <div className="h-24 overflow-y-auto m-auto border-tr-10">
-                        <p className="text-base text-black">{box?.info}</p>
-                      </div>
+                <Tooltip position={tooltipPosition}>
+                  <p className="text-base mb-2">
+                    More Info About This ... please read below:
+                  </p>
+                  <div className="bg-white px-3 rounded-[25px]">
+                    <p className="text-lg text-[#1E4A28] font-bold text-wrap">
+                      {box.name}
+                    </p>
+                    <div className="h-24 overflow-y-auto m-auto border-tr-10">
+                      <p className="text-base text-black">{box?.info}</p>
                     </div>
                   </div>
-                </div>
+                </Tooltip>
               )}
             </button>
           </div>
