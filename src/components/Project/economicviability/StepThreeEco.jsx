@@ -15,15 +15,18 @@ function StepThreeECO() {
             <hr className="border-l-[2px] border-[#B5B5B5] h-full" />
           </div>
         </div>
-        <div className=" md:flex w-full p-8 gap-12">
+        <div className=" md:flex w-full p-2 md:p-8 gap-12">
           <div className="md:w-[50%] flex flex-col gap-12">
             {/* Loan to Cost Ratio */}
             <div className="w-full">
               <p className="text-[#1e4a28] text-[20px] font-[700]">
                 Loan to Cost Ratio
               </p>
-              <div className="w-full flex items-center gap-4 bg-[#EFEFEF] p-[37px] rounded-[15px] mt-1">
+              <div className="w-full flex items-center gap-4 bg-[#EFEFEF]  p-2 md:p-[30px] rounded-[15px] mt-1">
                 <Controller
+                  rules={{
+                    required: 'Loan to Cost Ratio is required',
+                  }}
                   name="economicViabilty.loanToCostRatio"
                   control={control}
                   defaultValue={0}
@@ -37,7 +40,7 @@ function StepThreeECO() {
               <p className="text-[#1e4a28] text-[20px] font-[700]">
                 Target Interest Rate (%)
               </p>
-              <div className="w-full flex items-center gap-4 bg-[#EFEFEF] p-[37px] rounded-[15px] mt-1">
+              <div className="w-full flex items-center gap-4 bg-[#EFEFEF] p-2 md:p-[30px] rounded-[15px] mt-1">
                 <Controller
                   name="economicViabilty.targetInterestRate"
                   control={control}
@@ -54,7 +57,7 @@ function StepThreeECO() {
               <p className="text-[#1e4a28] text-[20px] font-[700]">
                 Target Loan Term (Year)
               </p>
-              <div className="w-full flex items-center gap-4 bg-[#EFEFEF] p-[37px] rounded-[15px] mt-1">
+              <div className="w-full flex items-center gap-4 bg-[#EFEFEF] p-2 md:p-[30px] rounded-[15px] mt-1">
                 <Controller
                   name="economicViabilty.targetLoanTerm"
                   control={control}
@@ -71,7 +74,7 @@ function StepThreeECO() {
               <p className="text-[#1e4a28] text-[20px] font-[700]">
                 Target Equity Return (%)
               </p>
-              <div className="w-full flex items-center gap-4 bg-[#EFEFEF] p-[37px] rounded-[15px] mt-1">
+              <div className="w-full flex items-center gap-4 bg-[#EFEFEF] p-2 md:p-[30px] rounded-[15px] mt-1">
                 <Controller
                   name="economicViabilty.targetEquityReturn"
                   control={control}
@@ -86,6 +89,5 @@ function StepThreeECO() {
     </div>
   );
 }
-
 
 export default StepThreeECO;

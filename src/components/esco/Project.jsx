@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Icon from '../shared/Icon';
 import { FormProvider, useForm } from 'react-hook-form';
 import { StepProvider } from '../../context/formContext';
@@ -21,13 +21,15 @@ import StepThreeECO from '../Project/economicviability/StepThreeEco';
 import StepFourECO from '../Project/economicviability/StepFourEco';
 import ViabilityStatus from '../Project/technicalInfo/TechnicalResult';
 import { useGetProjectProposalsQuery } from '../../redux/features/proposal';
+import { setProject } from '../../redux/slices/project';
 import Button from '../shared/Button';
 import StepOneESCO from '../Project/economicviability/ESCOStepOne';
 import Teams from '../Project/teams/Teams';
+import FinancialSharedSavings from '../Project/economicviability/FinancialSharedSavings';
 function ProjectESCO() {
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const dispatch = useDispatch(); // Initialize dispatch
   const {
     data: projectData,
     isLoading: isLoadingProject,
@@ -43,21 +45,22 @@ function ProjectESCO() {
     defaultValues: {},
     mode: 'onChange',
   });
-  const {
-    reset,
-    formState: { errors },
-  } = methods;
+  const { reset } = methods;
+
   useEffect(() => {
-    // Reset form with new data when projectData is fetched
     if (projectData) {
       reset(projectData);
+      dispatch(setProject(projectData));
     }
-  }, [projectData, reset]);
+  }, [projectData, reset, dispatch, id]);
+
   const { projectObject } = useSelector((state) => state.project);
+
   const ProposalButton = () => (
     <>
       {data?.length > 0 && (
         <Button
+          isLoading={isLoadingProposals}
           variant="blue"
           onClick={() =>
             navigate(`/proposals/${projectData?.id}`, {
@@ -132,6 +135,7 @@ function ProjectESCO() {
             </p>
           ),
           content: <ViabilityStatus data={projectObject} />,
+          hideButtons: true,
         },
       ],
     },
@@ -161,6 +165,10 @@ function ProjectESCO() {
         {
           content: <StepFourECO />,
         },
+        {
+          content: <FinancialSharedSavings project={projectObject} />,
+          hideButtons: true,
+        },
       ],
     },
     {
@@ -170,21 +178,23 @@ function ProjectESCO() {
       children: [
         {
           content: <Teams />,
+          hideButtons: true,
         },
       ],
     },
   ];
 
   if (isLoadingProject) {
-    return <Loader />; // Loading state while data is fetched
+    return <Loader />;
   }
 
-  if (isError || !projectData) {
-    return <EmptyList message={'Error loading project data'} />; // Error handling
+  if (!projectData) {
+    return <EmptyList message={'Error loading project data'} />;
   }
+  if (isError || error || isErrorProposals)
+    return <EmptyList message={error.message} />;
   return (
     <FormProvider {...methods}>
-      {/* Wrap StepProvider in FormProvider to access form context */}
       <StepProvider steps={steps}>
         <ESCOProjectOverView steps={steps} />
       </StepProvider>

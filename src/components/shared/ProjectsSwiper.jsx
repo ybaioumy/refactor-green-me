@@ -43,7 +43,7 @@ const ProjectSwiper = ({ projects, isLoading }) => {
               swiper.slides.length - swiper.params.slidesPerView
           );
         }}
-        modules={[Navigation, Pagination, Scrollbar, A11y]}
+        modules={[]}
         grabCursor={true}
         breakpoints={{
           320: {
@@ -69,7 +69,7 @@ const ProjectSwiper = ({ projects, isLoading }) => {
         {projects?.data?.map((project, idx) => (
           <SwiperSlide key={project.id}>
             <Link to={'projects/eligible/' + project.id}>
-              <div className="max-w-sm bg-[#fbfbfb] ml-1 rounded-2xl p-4 h-[350px] shadow-[0px_0px_10px_0px_#00000024] my-4 ">
+              <div className="  bg-[#fbfbfb] ml-1 rounded-2xl p-4 h-[350px] shadow-[0px_0px_10px_0px_#00000024] my-4 ">
                 <div className="flex items-center justify-between ">
                   <div className="flex items-center space-x-2">
                     <div className="relative flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full">

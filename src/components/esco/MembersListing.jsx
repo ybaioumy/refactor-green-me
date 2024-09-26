@@ -25,7 +25,7 @@ function MembersListing() {
   const { id } = useParams();
   const location = useLocation();
   const { state } = location;
-  const { typeId, projectId } = state || null;
+  const { typeId, projectId } = state || {};
 
   const gridRef = useRef();
   const searchObject = useSelector((state) => state.search);
@@ -94,7 +94,7 @@ function MembersListing() {
       headerName: 'Actions',
       sortable: false,
       filter: false,
-      pinned:'right',
+      pinned: 'right',
       cellRenderer: (params) => (
         <div className="flex justify-center items-center h-full">
           <Link
@@ -231,8 +231,8 @@ function MembersListing() {
   return (
     <div className="flex flex-col h-screen">
       <HorizontalSearchBar data={dataToFilter} />
-      <div className="mb-2 w-full bg-[#EFFCFF] py-4 px-14 z-10 flex items-center justify-between shadow-md gap-5">
-        <p className="flex items-center gap-2 text-[#334B9F] font-bold">
+      <div className="mb-2 w-full bg-[#EFFCFF] py-4 md:px-14 px-2 z-10 flex items-center justify-between shadow-md gap-5">
+        <p className="flex items-center gap-2 text-[#334B9F] font-bold w-full">
           <span className="text-[22px]">Experts Listing </span>-{' '}
           <span
             className={` text-[16px] mt-[2px] transition-all duration-300 ease-in-out transform ${
@@ -246,7 +246,10 @@ function MembersListing() {
                   : 'Experts Selected'}
               </span>
             ) : (
-              <span> Start Selecting experts to assign to this Project</span>
+              <span className="line-clamp-2">
+                {' '}
+                Start Selecting experts to assign to this Project
+              </span>
             )}
           </span>
         </p>

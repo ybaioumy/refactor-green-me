@@ -4,7 +4,7 @@ import ProjectInfo from '../ProjectMiniInfo';
 const ViabilityStatus = ({ data }) => {
   return (
     <div className="flex w-full items-center justify-between sm:flex-col md:flex-row">
-      <ProjectInfo data={data} />
+      {/* <ProjectInfo /> */}
       <ProjectMetrics metrics={data} />
       {!data.isViable ? (
         <div className="flex flex-col items-center px-[20px]">
@@ -74,7 +74,7 @@ const ProjectMetrics = ({ metrics }) => {
     );
   };
   return (
-    <div className="flex flex-col gap-10 w-[60%] border-x border-black px-6 h-full ">
+    <div className="flex flex-col gap-10 w-[60%] border-r border-black px-6 h-full ">
       <Item label="Energy Yield" value="123" unit="GWh/year" />
       <Item label="Energy Saved" value="123" unit="GWh/year" />
       <Item label="Emissions Avoided" value="123" unit="tCO2eq/year" />

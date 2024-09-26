@@ -99,6 +99,7 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
           <div className="flex items-center gap-4 justify-center w-full md:w-auto">
             {/* Ex-Post Annual Consumption */}
             <Controller
+              defaultValue={0}
               name={`consumption.${type}AnnualConsumptionExPost`}
               control={control}
               rules={{
@@ -115,11 +116,12 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
               )}
             />
 
-            <div className="text-center md:text-left w-full md:w-auto">
-              <div>Annual Consumption (MWh/year)</div>
-            </div>
+            <p className="line-clamp-2 text-center">
+              Annual Consumption (MWh/year)
+            </p>
             {/* Benchmark Annual Consumption */}
             <Controller
+              defaultValue={0}
               name={`consumption.${type}AnnualConsumptionBenchmark`}
               control={control}
               rules={{
@@ -164,9 +166,10 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
                 <NumericInput {...field} disabled={!isEnabled} />
               )}
             />
-            <div className="text-center md:text-left w-full md:w-auto">
-              <div>Average Tariff Cost ($cents/kWh)</div>
-            </div>
+            <p className="line-clamp-2 text-center">
+              Average Tariff Cost ($cents/kWh)
+            </p>
+
             {/* Benchmark Average Tariff Cost */}
             <Controller
               defaultValue={0}

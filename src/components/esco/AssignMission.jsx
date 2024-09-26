@@ -412,18 +412,18 @@ export const PermissionComponent = ({ data, setSelectedPermissions }) => {
   if (!data || data.length === 0) return <EmptyList />;
   // console.log(permissions);
   return (
-    <div className="">
+    <>
       <p className="font-bold text-[#1E4A28] text-[20px] border-b border-[#54A967] pb-2">
         Project Permissions
       </p>
-      <div className="grid grid-cols-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
         {/* //generl info to be added */}
         {['TechnicalInfo', 'Essd', 'EconomicViability'].map((category) => (
-          <div key={category} className="p-4">
+          <div key={category} className="md:p-4">
             <h3 className="mb-2 font-bold text-[20px] text-[#1E4A28]">
               {category.replace(/([A-Z])/g, ' $1').trim()}
             </h3>
-            <div className="flex flex-col items-start justify-between bg-[#EFEFEF] p-4 rounded-[15px] h-[150px] w-[300px]">
+            <div className="flex flex-col items-start justify-between bg-[#EFEFEF] p-4 rounded-[15px] md:h-[150px] md:w-[300px]">
               <label className="inline-flex items-center mb-2">
                 <RadioButton
                   label={'No Access'}
@@ -472,6 +472,6 @@ export const PermissionComponent = ({ data, setSelectedPermissions }) => {
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 };

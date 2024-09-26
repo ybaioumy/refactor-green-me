@@ -40,7 +40,7 @@ const ProjectSummary = ({ onEdit }) => {
   if (!projectObject || isErrorLoadingDropDowns || isLoadingCategory)
     return <EmptyList />;
   return (
-    <div>
+    <>
       <DetailsRow onEdit={() => setCurrentChildIndex(0)}>
         <ProjectRow label="Project Name" value={projectObject?.projectName} />
         <ProjectRow label="Project Beneficiary" value="Fujairah Hold." />
@@ -76,7 +76,7 @@ const ProjectSummary = ({ onEdit }) => {
           value={`Gross Built-Up Area (sqm): ${projectObject.grossArea}` || ''}
         />
       </DetailsRow>
-    </div>
+    </>
   );
 };
 const DetailsRow = ({ children, onEdit, noBorder = false }) => {
@@ -99,10 +99,14 @@ const ProjectRow = ({ label, value }) => {
   return (
     <div className="flex items-end justify-between w-full my-3">
       <div className="flex-1 w-full md:mr-10">
-        <h2 className="text-[22px] text-[#1E4A28] font-bold">{label}</h2>
-        <p className="text-gray-700 bg-[#E6E6E6] p-1 pl-3 rounded-lg w-full">
-          {value}
-        </p>
+        <h2 className="text-[16px] md:text-[22px] text-[#1E4A28] font-bold">
+          {label}
+        </h2>
+        <div className="bg-[#E6E6E6] overflow-hidden rounded-lg">
+          <p className="text-gray-700  p-1 pl-3  w-full line-clamp-1">
+            {value}
+          </p>
+        </div>
       </div>
     </div>
   );

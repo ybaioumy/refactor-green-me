@@ -79,9 +79,9 @@ const CustomPaginationComponent = React.memo((props) => {
       className={`custom-pagination ${
         isAddMembersOrMissions ? 'membersPagination' : ''
       }`}>
-      <div className="mr-3">
+      <p className="mr-3 hidden md:block">
         {`Showing ${startRecord} to ${endRecord} of ${totalRecords} Records`}
-      </div>
+      </p>
 
       <button
         className="navigation"

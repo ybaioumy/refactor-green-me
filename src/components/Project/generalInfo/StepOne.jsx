@@ -149,7 +149,7 @@ function GeneralInfoStepOne() {
             )}
           />
         </div>
-        <div className="flex flex-col items-center gap-4 md:w-2/4 lg:border-l border-black pl-2">
+        <div className="flex flex-col md:items-center gap-4 md:w-2/4 lg:border-l border-black pl-2">
           <Controller
             name="servedCountryId"
             control={control}

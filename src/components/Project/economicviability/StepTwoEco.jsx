@@ -101,15 +101,15 @@ function StepTwoECO() {
         </div>
 
         <div className="md:flex w-full">
-          <div className="flex flex-col md:w-[80%] gap-24">
+          <div className="flex flex-col md:w-[80%] gap-24 h-[80vh] overflow-y-scroll no-scrollbar mb-4">
             {opexes.map((opex, index) => (
-              <div className="pr-[20px]" key={opex.name}>
+              <div className="md:pr-[20px]" key={opex.name}>
                 <p className="text-[#1E4A28] text-[18px] font-bold uppercase pl-4">
                   {opex?.name}
                 </p>
 
-                <div className="w-full flex flex-col gap-8 bg-[#DFDFDF] rounded-[17px] py-[25px] px-[15px] relative">
-                  <div className="flex gap-4 absolute right-[40px] -top-[30px]">
+                <div className="w-full flex flex-col gap-8 bg-[#DFDFDF] rounded-[17px] py-[25px] px-2 md:px-[15px] relative">
+                  <div className="flex gap-4 absolute right-[40px] -top-[30px] mt-1">
                     <Button
                       variant="secondary"
                       onClick={() => deleteOpex(opex.name)}
@@ -203,7 +203,7 @@ function StepTwoECO() {
                         <p className="text-[#1e4a28] text-[14px] font-[700]">
                           Item Cost / year (AED)
                         </p>
-                        <div className="w-full flex text-[#1e4a28] text-[17px] font-[600] justify-center items-center rounded-[15px] border border-dashed border-[#1e4a28] h-[50px] bg-[#e1f1dc]">
+                        <div className="w-full flex justify-center items-center rounded-[15px] border border-dashed border-[#1e4a28] h-[60px] bg-[#e1f1dc] text-[#1E4A28] font-bold text-[22px]">
                           {opex.itemTotalCost}
                         </div>
                       </div>
@@ -232,7 +232,7 @@ function StepTwoECO() {
               <p className="text-[#1e4a28] text-[14px] font-[700]">
                 Total OPEX Items
               </p>
-              <div className="w-full flex justify-center items-center rounded-[15px] border border-dashed border-[#1e4a28] h-[50px] bg-[#e1f1dc] text-[#1E4a28] text-[20px] font-[700]">
+              <div className="w-full flex justify-center items-center rounded-[15px] border border-dashed border-[#1e4a28] h-[60px] bg-[#e1f1dc] text-[#1E4A28] font-bold text-[22px]">
                 {currentLength}
               </div>
             </div>
@@ -241,7 +241,7 @@ function StepTwoECO() {
               <p className="text-[#1e4a28] text-[14px] font-[700]">
                 Total OPEX Value (AED)
               </p>
-              <div className="w-full flex justify-center items-center rounded-[15px] border border-dashed border-[#1e4a28] h-[50px] bg-[#e1f1dc] text-[#1E4a28] text-[20px] font-[700]">
+              <div className="w-full flex justify-center items-center rounded-[15px] border border-dashed border-[#1e4a28] h-[60px] bg-[#e1f1dc] text-[#1E4A28] font-bold text-[22px]">
                 {totalOpexValue}
               </div>
             </div>

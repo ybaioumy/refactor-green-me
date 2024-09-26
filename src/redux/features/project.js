@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { authHeader } from '../../utilits/authHeader';
-import { useSelector } from 'react-redux';
 import { setProject } from '../slices/project';
 import _ from 'lodash';
 // Custom base query to handle 204 No Content
@@ -22,6 +21,7 @@ const customBaseQuery = async (args, api, extraOptions) => {
     }
     // Handle other errors and return a message
     if (result.error) {
+        console.log(result);
         const errorMessage = result.error.data?.message || 'Something went wrong';
         return { error: { message: errorMessage, status: result.error.status } };
     }
@@ -65,7 +65,7 @@ export const projectApi = createApi({
             query: ({ id, data }) => ({
                 url: `Project/${id}`,
                 method: 'PUT',
-                body: JSON.stringify(data),
+                body: data,
             }),
 
         }),
@@ -101,7 +101,8 @@ export const projectApi = createApi({
             query: (id) => `FinancialProject/EnergyAudit/${id}`,
         }),
         getProjectFinancialModel: builder.query({
-            query: (id) => `FinancialProject/FinancialModel/${id}`
+            query: (id) => `FinancialProject/FinancialModel/${id}`,
+            refetchOnFocus: true
         })
     }),
 });

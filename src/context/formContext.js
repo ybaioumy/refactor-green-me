@@ -6,6 +6,8 @@ import { setProject } from '../redux/slices/project';
 import { useParams } from 'react-router-dom';
 import alertValidationMessage from '../utilits/alertMessage'
 import { message } from 'antd';
+
+
 const StepContext = createContext();
 
 export const StepProvider = ({ children, steps }) => {
@@ -16,9 +18,7 @@ export const StepProvider = ({ children, steps }) => {
     const [currentChildIndex, setCurrentChildIndex] = useState(0);
     const { trigger, getValues, watch, formState: {
         errors
-    } } = useFormContext({
-
-    });
+    } } = useFormContext();
 
     const [updateProjectById, { isLoading }] = useUpdateProjectByIdMutation();
     const handleNext = async () => {

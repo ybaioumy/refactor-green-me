@@ -159,6 +159,7 @@ const ProjectTable = ({ data, isLoading, error, isOpportunitiesRoute }) => {
       baseColumnDefs.push({
         field: 'actions',
         headerName: 'Actions',
+        pinned: 'right',
         cellRenderer: (params) => (
           <div className="flex justify-center items-center h-full">
             <Button
@@ -206,10 +207,6 @@ const ProjectTable = ({ data, isLoading, error, isOpportunitiesRoute }) => {
       setGridApi(null);
     };
   };
-
-  const onBtExport = useCallback(() => {
-    gridRef.current.api.exportDataAsExcel();
-  }, []);
 
   const onRowClicked = (event) => {
     const projectId = event.data.id;
@@ -310,11 +307,9 @@ const ProjectTable = ({ data, isLoading, error, isOpportunitiesRoute }) => {
                 rowHeight={100}
                 onSelectionChanged={onSelectionChanged}
                 onRowClicked={onRowClicked}
+                // domLayout="autoHeight"
                 suppressPaginationPanel={true}
                 paginationPageSize={pageSize}
-                // suppressVerticalScroll={true}
-
-                // rowModelType={'serverSide'}
               />
             </div>
             <Button
@@ -341,13 +336,13 @@ const ProjectTable = ({ data, isLoading, error, isOpportunitiesRoute }) => {
           </div>
         </Modal>
       </div>
-      {gridApi && (
-        <CustomPaginationComponent
-          totalRecords={Math.ceil(
-            data?.totalRecords ? data.totalRecords : 0 / pageSize
-          )}
-        />
-      )}
+        {gridApi && (
+          <CustomPaginationComponent
+            totalRecords={Math.ceil(
+              data?.totalRecords ? data.totalRecords : 0 / pageSize
+            )}
+          />
+        )}
     </>
   );
 };

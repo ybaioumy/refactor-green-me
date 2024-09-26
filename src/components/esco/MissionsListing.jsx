@@ -7,15 +7,16 @@ import { HorizontalSearchBar } from '../shared/table/tablePageComponents';
 import CustomPaginationComponent from '../shared/table/CustomPagination';
 
 import {
-  useGetMissionByIdQuery,
+  useGetMissionsQuery,
   useGetMissionStatusQuery,
 } from '../../redux/features/expert';
+import EmptyList from '../shared/EmptyList';
 function MissionListing() {
   const { state } = useLocation();
-  const { expert, projectId } = state || {};
   const navigate = useNavigate();
-  const { data, isLoading, isError, error } = useGetMissionByIdQuery({
-    userId: expert.id,
+  const { expert, projectId } = state || {};
+  const { data, isLoading, isError, error } = useGetMissionsQuery({
+    userId: expert?.id || null,
     projectId: projectId,
   });
   const [gridApi, setGridApi] = useState(null);
@@ -96,6 +97,11 @@ function MissionListing() {
   const onGridReady = (params) => {
     setGridApi(params.api);
   };
+  const onRowClick = (params) => {
+    navigate(`/projects/eligible/${projectId}/mission/${params.data.id}`, {
+      state: { expert: expert, mission: params.data },
+    });
+  };
   const totalPages =
     Math.ceil(data?.totalRecords ? data.totalRecords : 0 / pageSize) || 0;
   const assignMission = () => {
@@ -123,6 +129,13 @@ function MissionListing() {
   }, [data]);
 
   if (isLoading) return <Loader />;
+  if (!projectId) {
+    navigate('/');
+  }
+  if (isError) return <EmptyList message={'Something went wrong'} />;
+  if (!state || !expert) {
+    navigate(`/projects/eligible/${projectId}/add-mission`, { replace: true });
+  }
   return (
     <div className="flex flex-col h-screen">
       <HorizontalSearchBar data={dataToFilter} operationTodo={assignMission} />
@@ -139,6 +152,7 @@ function MissionListing() {
           columnDefs={columnDefs}
           pagination={true}
           suppressPaginationPanel={true}
+          onRowClicked={onRowClick}
           // suppressHorizontalScroll={true}
           suppressVerticalScroll
           rowHeight={80}

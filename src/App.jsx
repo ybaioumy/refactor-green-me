@@ -28,13 +28,14 @@ import MissionsListing from './components/esco/MissionsListing';
 import AssignMission from './components/esco/AssignMission';
 import ESCODashboard from './components/esco/Dashboard';
 import ProjectESCO from './components/esco/Project';
+import Mission from './components/esco/Mission';
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
   const token = useGetToken();
   const expiry = useTokenExpiration();
   const logout = useLogout();
 
-  const expirationTime = new Date(expiry).getTime() - 60000; // A minute early to avoid latency issues
+  const expirationTime = new Date(expiry).getTime() - 60000;
 
   const handleLogout = useCallback(() => {
     logout();
@@ -54,7 +55,6 @@ const ProtectedRoute = ({ children }) => {
   return token ? children : null;
 };
 
-// Define the client router
 const clientRouter = createBrowserRouter([
   {
     path: '/',
@@ -122,15 +122,15 @@ const ESCORouter = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        index: true, // Default route for "/"
+        index: true,
         element: <ESCODashboard />,
       },
       {
-        path: 'submit-offer/:id', // Updated to hyphen-case
+        path: 'submit-offer/:id',
         element: <SubmitOffer />,
       },
       {
-        path: 'projects', // Grouping project-related routes
+        path: 'projects',
 
         children: [
           {
@@ -139,42 +139,46 @@ const ESCORouter = createBrowserRouter([
           },
 
           {
-            path: 'opportunities', // Relative path for "/projects/opportunities"
+            path: 'opportunities',
             element: <ProjectListing />,
           },
           {
-            path: 'opportunities/project-details/:id', // "/projects/opportunities/project-details/:id"
+            path: 'opportunities/project-details/:id',
             element: <OpportunitiyOverview />,
           },
           {
-            path: 'eligible/:id', // "/projects/eligible/:id"
+            path: 'eligible/:id',
             element: <ProjectESCO />,
           },
           {
-            path: 'eligible/:id/add-members', // "/projects/eligible/:id/add-members"
+            path: 'eligible/:id/add-members',
             element: <MembersListing />,
           },
           {
-            path: 'eligible/:id/add-mission', // "/projects/eligible/:id/add-mission"
+            path: 'eligible/:id/add-mission',
             element: <MissionsListing />,
+          },
+          {
+            path: 'eligible/:id/mission/:id',
+            element: <Mission />,
           },
         ],
       },
       {
-        path: 'new-project', // Hyphen-case for consistency
+        path: 'new-project',
         children: [
           {
-            index: true, // "/new-project"
+            index: true,
             element: <NewProject />,
           },
           {
-            path: ':id', // "/new-project/:id"
+            path: ':id',
             element: <EligibilityTest />,
           },
         ],
       },
       {
-        path: 'create-mission', // "/create-mission
+        path: 'create-mission',
         element: <AssignMission />,
       },
 
@@ -223,7 +227,7 @@ function App() {
     return userTypeMap[Number(typeId)];
   };
   const userType = getUserType(typeId);
-  // Handle the routing based on user type
+
   const handleRouter = (userType) => {
     if (!userType || !token) {
       return AuthRouter;
@@ -245,7 +249,6 @@ function App() {
       <RouterProvider router={handleRouter(userType)} />
     </OnlineStatusProvider>
   );
-  // Use the appropriate router based on the user type
 }
 
 export default App;

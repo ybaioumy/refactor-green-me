@@ -29,7 +29,7 @@ export const expertApi = createApi({
             query: (filterBody) => ({
                 url: 'Expert/expertusers',
                 method: 'POST',
-                body: filterBody, 
+                body: filterBody,
             }),
         }),
         getExpertFilter: builder.query({
@@ -39,12 +39,18 @@ export const expertApi = createApi({
             query: () => 'MissionStatus',
         }),
         getExpertById: builder.query({}),
-        getMissionById: builder.query({
-            query: ({ userId,projectId }) => ({
+        getMissions: builder.query({
+            query: ({ userId, projectId }) => ({
                 url: `Mission`,
                 method: 'GET',
-                params: { userId, projectId }  
+                params: { userId, projectId }
 
+            }),
+        }),
+        getMissionById: builder.query({
+            query: (id) => ({
+                url: `Mission/${id}`,
+                method: 'GET',
             }),
         }),
         createNewMission: builder.mutation({
@@ -57,4 +63,4 @@ export const expertApi = createApi({
     })
 })
 
-export const { useGetAllExpertsQuery, useCreateNewMissionMutation, useGetMissionStatusQuery,useGetExpertFilterQuery ,useGetMissionByIdQuery} = expertApi
+export const { useGetAllExpertsQuery, useCreateNewMissionMutation, useGetMissionStatusQuery, useGetExpertFilterQuery, useGetMissionsQuery, useGetMissionByIdQuery } = expertApi

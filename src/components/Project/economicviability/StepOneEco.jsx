@@ -77,10 +77,10 @@ function StepOneECO() {
           <hr className="border-l-[2px] border-[#B5B5B5] h-full" />
         </div>
 
-        <div className="lg:flex w-full">
-          <div className="flex flex-col md:w-[80%] gap-24">
+        <div className="lg:flex w-full ">
+          <div className="flex flex-col md:w-[80%] gap-24 h-[80vh] overflow-y-scroll no-scrollbar mb-4">
             {fields.map((capex, index) => (
-              <div key={capex.id} className="pr-[20px]">
+              <div key={capex.id} className="md:pr-[20px]">
                 <div className="flex items-center justify-between">
                   <p className="text-[#1E4A28] text-[18px] font-bold uppercase pl-4">
                     {capex.name}
@@ -88,7 +88,7 @@ function StepOneECO() {
                 </div>
 
                 <div className="w-full flex flex-col gap-8 bg-[#DFDFDF] rounded-[17px] py-[25px] px-[15px] relative">
-                  <div className="flex gap-4 absolute right-[40px] -top-[30px]">
+                  <div className="flex gap-4 absolute right-[40px] -top-[30px] mt-1">
                     <Button
                       variant="secondary"
                       onClick={() => remove(index)}
@@ -125,12 +125,11 @@ function StepOneECO() {
                   />
 
                   <div className="flex flex-col gap-1">
-                    <div className="flex justify-between">
-                      <p className="text-[#1E4A28] text-[14px] font-[700] p-[5px]">
-                        Item Cost Calculator
-                      </p>
-                    </div>
-                    <div className="md:flex justify-between items-end bg-[#F0F0F0] p-6 rounded-[17px] border border-black">
+                    <p className="text-[#1E4A28] text-[14px] font-[700] p-[5px]">
+                      Item Cost Calculator
+                    </p>
+
+                    <div className="md:flex justify-between items-end bg-[#F0F0F0] p-6 rounded-[17px] border border-black gap-10">
                       <Controller
                         control={control}
                         name={`economicViabilty.capexes[${index}].qty`}
@@ -176,7 +175,7 @@ function StepOneECO() {
                         <p className="text-[#1e4a28] text-[14px] font-[700]">
                           Item total Cost (AED)
                         </p>
-                        <div className="w-full flex justify-center items-center rounded-[15px] border border-dashed border-[#1e4a28] h-[50px] bg-[#e1f1dc]">
+                        <div className="w-full flex justify-center items-center rounded-[15px] border border-dashed border-[#1e4a28] h-[60px] bg-[#e1f1dc] text-[#1E4A28] font-bold text-[22px]">
                           {watch(
                             `economicViabilty.capexes[${index}].itemTotalCost`
                           )}
@@ -203,12 +202,12 @@ function StepOneECO() {
             ))}
           </div>
 
-          <div className="md:w-[20%] md:border-l ml-auto border-[#AFAFAF] flex flex-col gap-16 px-[20px]">
+          <div className="md:w-[20%] md:border-l ml-auto border-[#AFAFAF] flex flex-col gap-4 md:gap-16 px-[20px]">
             <div className="flex flex-col">
               <p className="text-[#1e4a28] text-[14px] font-[700]">
                 Total CAPEX Items
               </p>
-              <div className="w-full flex justify-center items-center rounded-[15px] border border-dashed border-[#1e4a28] h-[50px] bg-[#e1f1dc]">
+              <div className="w-full flex justify-center items-center rounded-[15px] border border-dashed border-[#1e4a28] h-[60px] bg-[#e1f1dc] text-[#1E4A28] font-bold text-[22px]">
                 {currentLength}
               </div>
             </div>
@@ -216,7 +215,7 @@ function StepOneECO() {
               <p className="text-[#1e4a28] text-[14px] font-[700]">
                 Total CAPEX Value (AED)
               </p>
-              <div className="w-full flex justify-center items-center rounded-[15px] border border-dashed border-[#1e4a28] h-[50px] bg-[#e1f1dc]">
+              <div className="w-full flex justify-center items-center rounded-[15px] border border-dashed border-[#1e4a28] h-[60px] bg-[#e1f1dc] text-[#1E4A28] font-bold text-[22px]">
                 {totalCapexvalue || 0}
               </div>
             </div>

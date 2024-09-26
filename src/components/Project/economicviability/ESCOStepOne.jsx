@@ -3,11 +3,7 @@ import NumericInput from '../../shared/NumericInput';
 import RadioButton from '../../shared/RadioButton';
 function StepOneESCO() {
   const { control, watch, setValue } = useFormContext();
-  const project = watch(); // Watch the project data to dynamically update values
 
-  const contractingModelId = watch('contractingModelId'); // Watch specific field
-
-  // Function to handle resetting values when changing contracting models
   const handleRadioChange = (modelId) => {
     setValue('contractingModelId', modelId);
 
@@ -28,8 +24,8 @@ function StepOneESCO() {
       <div className="flex flex-col gap-6 h-full  w-full">
         <div className="flex flex-col w-full gap-6 ">
           {/* Shared Savings */}
-          <div className="flex items-center">
-            <div className="z-10 border border-[#c7c7c7] rounded-[28px] w-[355px] h-[70px] flex items-center px-[20px]">
+          <div className="flex flex-col md:flex-row  md:items-center gap-2">
+            <div className="z-10 border border-[#c7c7c7] rounded-[28px] w-fit md:w-[355px] h-[70px] flex items-center px-[20px]">
               <Controller
                 name="contractingModelId"
                 control={control}
@@ -46,9 +42,9 @@ function StepOneESCO() {
                 )}
               />
             </div>
-            <div className="px-[70px] opacity-7S0 flex items-center justify-between rounded-[28px] bg-[#e7e7e7] w-full h-[115px] ml-[-40px]">
-              <p>Shared Saving Percentage (%)</p>
-              <div className="w-[40%] h-[2px] bg-[#B5B5B5]"></div>
+            <div className="px-2 md:px-[70px] opacity-7S0 flex  items-center justify-between rounded-[28px] bg-[#e7e7e7] w-full h-[115px] md:ml-[-40px]">
+              <p className="md:w-[50%]">Shared Saving Percentage (%)</p>
+              <div className="w-[40%] h-[2px] bg-[#B5B5B5] flex-1"></div>
               <Controller
                 name="economicViabilty.sharedSavingPercentage"
                 control={control}
@@ -64,8 +60,8 @@ function StepOneESCO() {
           </div>
 
           {/* Guaranteed Savings */}
-          <div className="flex items-center">
-            <div className="z-10 border border-[#c7c7c7] rounded-[28px] w-[355px] h-[70px] flex items-center px-[20px]">
+          <div className="flex md:items-center flex-col md:flex-row gap-2">
+            <div className="z-10 border border-[#c7c7c7] rounded-[28px] w-fit md:w-[355px] h-[70px] flex md:items-center px-[20px]">
               <Controller
                 name="contractingModelId"
                 control={control}
@@ -82,21 +78,24 @@ function StepOneESCO() {
                 )}
               />
             </div>
-            <div className="px-[70px] opacity-70 flex items-center justify-between rounded-[28px] bg-[#E8F1E5] w-full h-[115px] ml-[-40px]">
-              <p>Guaranteed Saving Premium</p>
-              <div className="flex w-[40%] items-center">
+            <div className="px-2 md:px-[70px]  flex items-center justify-between rounded-[28px] bg-[#E8F1E5] w-full h-[115px] md:ml-[-40px]">
+              <p className="md:w-[50%]"> Guaranteed Saving Premium</p>
+              <div className="flex w-[40%] items-center flex-1">
                 <div className="w-full h-[2px] bg-[#B5B5B5]"></div>
                 <div className="w-[30px] h-[45px] border-[2px] border-[#b5b5b5] border-r-0"></div>
               </div>
 
               <div className="flex flex-col gap-4">
+                {/* Percentage Option */}
                 <div className="flex">
                   <Controller
                     name="economicViabilty.isGuaranteedSavingPercentage"
+                    defaultValue={false}
                     control={control}
                     render={({ field }) => (
                       <>
                         <RadioButton
+                          variant="green"
                           label={'(%)'}
                           checked={field.value}
                           onChange={() => {
@@ -108,6 +107,10 @@ function StepOneESCO() {
                               'economicViabilty.isGuaranteedSavingValue',
                               false
                             );
+                            setValue(
+                              'economicViabilty.guaranteedSavingPremiumValue',
+                              0
+                            );
                           }}
                           disabled={watch('contractingModelId') !== 2}
                         />
@@ -118,7 +121,12 @@ function StepOneESCO() {
                             <NumericInput
                               value={field.value || 0}
                               onChange={field.onChange}
-                              disabled={watch('contractingModelId') !== 2}
+                              disabled={
+                                watch('contractingModelId') !== 2 ||
+                                !watch(
+                                  'economicViabilty.isGuaranteedSavingPercentage'
+                                )
+                              }
                             />
                           )}
                         />
@@ -127,13 +135,16 @@ function StepOneESCO() {
                   />
                 </div>
 
+                {/* Value Option */}
                 <div className="flex">
                   <Controller
                     name="economicViabilty.isGuaranteedSavingValue"
+                    defaultValue={false}
                     control={control}
                     render={({ field }) => (
                       <>
                         <RadioButton
+                          variant="green"
                           label={'($)'}
                           checked={field.value}
                           onChange={() => {
@@ -145,6 +156,10 @@ function StepOneESCO() {
                               'economicViabilty.isGuaranteedSavingPercentage',
                               false
                             );
+                            setValue(
+                              'economicViabilty.guaranteedSavingPremiumPercentage',
+                              0
+                            );
                           }}
                           disabled={watch('contractingModelId') !== 2}
                         />
@@ -155,7 +170,12 @@ function StepOneESCO() {
                             <NumericInput
                               value={field.value || 0}
                               onChange={field.onChange}
-                              disabled={watch('contractingModelId') !== 2}
+                              disabled={
+                                watch('contractingModelId') !== 2 ||
+                                !watch(
+                                  'economicViabilty.isGuaranteedSavingValue'
+                                )
+                              }
                             />
                           )}
                         />
