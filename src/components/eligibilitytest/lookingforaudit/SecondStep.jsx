@@ -89,7 +89,7 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
         </div>
 
         {/* Annual Consumption Section */}
-        <div className="flex flex-wrap justify-center items-center gap-4 py-3">
+        <div className="flex flex-wrap justify-center items-center gap-4 py-3 md:px-[50px]">
           {isFirstItem && (
             <p
               className={`text-[#1E4A28] text-[19px] font-[700] absolute top-[-40px] left-[20%]`}>
@@ -142,7 +142,7 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
         />
 
         {/* Average Tariff Cost Section */}
-        <div className="flex flex-wrap justify-center items-center gap-4 py-3">
+        <div className="flex flex-wrap justify-center items-center gap-4 py-3 md:px-[50px]">
           {isFirstItem && (
             <p
               className={`text-[#1E4A28] text-[19px] font-[700] absolute top-[-40px] right-[20%]`}>

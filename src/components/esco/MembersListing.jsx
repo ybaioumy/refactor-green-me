@@ -21,6 +21,7 @@ import EmptyList from '../shared/EmptyList';
 import Button from '../shared/Button';
 import { useGetRolesQuery } from '../../redux/features/auth';
 import { PermissionComponent } from './AssignMission';
+import InvitationModal from '../Project/teams/InvitationModal';
 function MembersListing() {
   const { id } = useParams();
   const location = useLocation();
@@ -33,6 +34,7 @@ function MembersListing() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedPermissions, setSelectedPermissions] = useState([]);
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
   const { pageSize } = searchObject;
   const [inviteUser, { isLoading, isSuccess, isError, error }] =
@@ -157,9 +159,9 @@ function MembersListing() {
     setSelectedRows(event.api.getSelectedRows());
   };
 
-  // const handleAddNewExpert = () => {
-  //   navigate('/create-mission', { state: { projectId: id } }); // open PopUp to invite by mail
-  // };
+  const handleAddNewExpert = () => {
+    setIsPopupVisible(true); // open PopUp to invite by mail
+  };
   const openModal = () => {
     setOpen(true);
   };
@@ -341,6 +343,9 @@ function MembersListing() {
           setSelectedPermissions={setSelectedPermissions}
         />
       </Modal>
+      {isPopupVisible && (
+        <InvitationModal onClose={() => setIsPopupVisible(false)} />
+      )}
     </div>
   );
 }

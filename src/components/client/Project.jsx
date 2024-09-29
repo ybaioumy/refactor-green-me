@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Icon from '../shared/Icon';
 import { FormProvider, useForm } from 'react-hook-form';
 import { StepProvider } from '../../context/formContext';
@@ -19,16 +19,18 @@ import StepTwoESDD from '../Project/esdd/StepTwoESDD';
 import StepThree from '../Project/esdd/StepThreeESDD';
 import StepFour from '../Project/esdd/StepFourESDD';
 import StepFive from '../Project/esdd/StepFiveESDD';
-import StepOneECO from '../Project/economicviability/StepOneEco';
-import StepTwoECO from '../Project/economicviability/StepTwoEco';
-import StepThreeECO from '../Project/economicviability/StepThreeEco';
-import StepFourECO from '../Project/economicviability/StepFourEco';
+import StepOneECO from '../Project/economicViability/StepOneEco';
+import StepTwoECO from '../Project/economicViability/StepTwoEco';
+import StepThreeECO from '../Project/economicViability/StepThreeEco';
+import StepFourECO from '../Project/economicViability/StepFourEco';
 import ViabilityStatus from '../Project/technicalInfo/TechnicalResult';
 import { useGetProjectProposalsQuery } from '../../redux/features/proposal';
 import Button from '../shared/Button';
+import { setProject } from '../../redux/slices/project';
 function Project() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const {
     data: projectData,
@@ -50,11 +52,12 @@ function Project() {
     formState: { errors },
   } = methods;
   useEffect(() => {
-    // Reset form with new data when projectData is fetched
     if (projectData) {
       reset(projectData);
+      dispatch(setProject(projectData));
     }
-  }, [projectData, reset]);
+  }, [projectData, reset, dispatch, id]);
+
   const { projectObject } = useSelector((state) => state.project);
   const ProposalButton = () => (
     <>
@@ -198,15 +201,14 @@ function Project() {
   ];
 
   if (isLoadingProject) {
-    return <Loader />; // Loading state while data is fetched
+    return <Loader />;
   }
 
   if (isError || !projectData) {
-    return <EmptyList message={'Error loading project data'} />; // Error handling
+    return <EmptyList message={'Error loading project data'} />;
   }
   return (
     <FormProvider {...methods}>
-      {/* Wrap StepProvider in FormProvider to access form context */}
       <StepProvider steps={steps}>
         <ProjectOverView steps={steps} />
       </StepProvider>

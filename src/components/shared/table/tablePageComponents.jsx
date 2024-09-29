@@ -45,7 +45,7 @@ const HorizontalSearchBar = ({ data, operationTodo, isLoading }) => {
     <>
       {/* Button to toggle responsive layout on smaller devices */}
       <div className="md:hidden flex justify-between px-2 py-4">
-        {isAddMembers && (
+        {/* {isAddMembers && (
           <Button variant="blue" onClick={operationTodo}>
             <Icon name={'addProject'} />
             <span className="ml-2">Add New Member</span>
@@ -56,7 +56,7 @@ const HorizontalSearchBar = ({ data, operationTodo, isLoading }) => {
             <Icon name={'addProject'} />
             <span className="ml-2">Create New Mission</span>
           </Button>
-        )}
+        )} */}
         <Button
           variant="transparent"
           className="px-10 flex-1"
@@ -68,11 +68,11 @@ const HorizontalSearchBar = ({ data, operationTodo, isLoading }) => {
       </div>
 
       <div
-        className={`flex flex-col md:flex-row w-full gap-5 justify-between px-10 py-5 md:bg-[#D9D9D9] 
+        className={`flex flex-col md:flex-row w-full gap-5 justify-between md:px-10 py-5 md:bg-[#D9D9D9] 
         ${isOpen ? 'block' : 'hidden'}
          md:flex
          `}>
-        <div className=" flex flex-col md:flex-row gap-4 md:items-end">
+        <div className=" flex  flex-row gap-4 items-end">
           <div className="flex flex-col w-full  justify-between">
             <label
               htmlFor="search"

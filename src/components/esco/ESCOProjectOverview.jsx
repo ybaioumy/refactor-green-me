@@ -1,18 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import { useUpdateProjectByIdMutation } from '../../redux/features/project';
 import Button from '../shared/Button';
-import { useParams } from 'react-router-dom';
 import { useStep, StepProvider } from '../../context/formContext';
 import ScrollToTop from '../shared/ScrollToTop';
 import ProjectInfo from '../Project/ProjectMiniInfo';
-import { FaAlignLeft } from 'react-icons/fa';
-import { motion, useAnimationControls, AnimatePresence } from 'framer-motion';
+import { motion, useAnimationControls } from 'framer-motion';
 import { Tooltip } from 'antd';
+import { useMediaQuery } from '@mui/material';
 
 const ProjectOverView = ({ steps }) => {
   const [showProjectInfo, setShowProjectInfo] = React.useState(true);
-
+  const showSideBar = useMediaQuery('(max-width: 768px)');
   const {
     currentParentIndex,
     currentChildIndex,
@@ -36,6 +34,7 @@ const ProjectOverView = ({ steps }) => {
   const containerVariants = {
     close: {
       opacity: 0,
+      // width: 0,
       transition: {
         type: 'spring',
         damping: 15,
@@ -44,6 +43,7 @@ const ProjectOverView = ({ steps }) => {
     },
     open: {
       opacity: 1,
+      // width: '60%',
       transition: {
         type: 'spring',
         damping: 15,
@@ -61,7 +61,14 @@ const ProjectOverView = ({ steps }) => {
       transition: { duration: 0.3 },
     },
   };
-
+  const svgVariants = {
+    close: {
+      rotate: 360,
+    },
+    open: {
+      rotate: 180,
+    },
+  };
   useEffect(() => {
     if (showProjectInfo) {
       containerControls.start('open');
@@ -71,11 +78,22 @@ const ProjectOverView = ({ steps }) => {
       svgControls.start('close');
     }
   }, [showProjectInfo]);
+  const cardRefs = useRef([]);
 
+  useEffect(() => {
+    if (cardRefs.current[currentParentIndex]) {
+      cardRefs.current[currentParentIndex].scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center',
+      });
+    }
+  }, [currentParentIndex]);
   return (
-    <div className="w-full h-full flex flex-col md:flex-row md:p-4 p-2 overflow-hidden transition-all duration-200 relative">
-      <div className="relative">
-        {showProjectInfo && (
+    <div className="w-full h-full flex flex-col md:flex-row md:p-4 p-2 overflow-hidden transition-all duration-200 ease-in-out relative">
+      <motion.div className="relative flex transition-all duration-150 ease-in-out">
+        {/* //over lay */}
+        {showSideBar && showProjectInfo && (
           <motion.div
             className="fixed inset-0 bg-black z-30"
             variants={overlayVariants}
@@ -84,28 +102,68 @@ const ProjectOverView = ({ steps }) => {
             onClick={() => setShowProjectInfo(false)} // Clicking overlay closes sidebar
           ></motion.div>
         )}
+        {showSideBar && showProjectInfo && (
+          <motion.div
+            variants={containerVariants}
+            animate={showProjectInfo ? 'open' : 'close'}
+            className="fixed z-40 bg-white h-full top-0 bottom-0 left-0 w-[20rem] p-2 overflow-y-scroll no-scrollbar"
+            style={{ pointerEvents: showProjectInfo ? 'auto' : 'none' }}>
+            <div className="py-4 flex justify-between items-center">
+              <h2 className="text-lg font-bold">Project Info</h2>
+              <button
+                onClick={() => setShowProjectInfo(false)}
+                className="text-gray-500 hover:text-gray-700 transition-all duration-150 ease-in-out"
+                title="Close">
+                ✖
+              </button>
+            </div>
+            {showProjectInfo && <ProjectInfo />}
+          </motion.div>
+        )}
+        {!showSideBar && showProjectInfo && (
+          <motion.nav
+            variants={containerVariants}
+            animate={containerControls}
+            initial="close"
+            className="w-[270px]">
+            <ProjectInfo />
+          </motion.nav>
+        )}
 
-        <motion.div
-          variants={containerVariants}
-          animate={showProjectInfo ? 'open' : 'close'}
-          className="fixed z-40 bg-white h-full top-0 bottom-0 left-0 w-[20rem] p-2"
-          style={{ pointerEvents: showProjectInfo ? 'auto' : 'none' }} // Prevent interaction when closed
-        >
-          <div className="py-4 flex justify-between items-center">
-            <h2 className="text-lg font-bold">Project Info</h2>
+        <ul className="md:w-[230px] flex md:flex-col md:gap-5 gap-2 md:border-r border-black pr-4 overflow-x-scroll no-scrollbar relative">
+          <Tooltip
+            title={`${
+              showProjectInfo ? 'Hide Project Info' : 'Show Project Info'
+            }`}>
             <button
-              onClick={() => setShowProjectInfo(false)}
-              className="text-gray-500 hover:text-gray-700 transition-all duration-150"
-              title="Close">
-              ✖ {/* You can replace this with an icon if desired */}
+              className="p-1 rounded-r-md flex transition-colors duration-150 ease-in-out hover:bg-gray-200 w-fit "
+              onClick={() => setShowProjectInfo((prev) => !prev)}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-8 h-8 stroke-[#1E4A28]">
+                <motion.path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  variants={svgVariants}
+                  animate={svgControls}
+                  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                  transition={{
+                    duration: 0.5,
+                    ease: 'easeInOut',
+                  }}
+                />
+              </svg>
             </button>
-          </div>
-          {showProjectInfo && <ProjectInfo />}
-        </motion.div>
-
-        <ul className="w-full flex md:flex-col md:gap-5 gap-2 md:border-r border-black pr-4 md:h-[95vh] overflow-x-scroll no-scrollbar">
+          </Tooltip>
           {steps.map((parentStep, index) => (
-            <li key={index} className="h-fit w-full">
+            <li
+              key={index}
+              className="h-fit w-full"
+              ref={(el) => (cardRefs.current[index] = el)}>
               <button
                 title={parentStep.label}
                 type="button"
@@ -113,7 +171,7 @@ const ProjectOverView = ({ steps }) => {
                   setCurrentParentIndex(index);
                   setCurrentChildIndex(0);
                 }}
-                className={`text-white lg:h-[150px] sm:h-[100px] transition-all w-full relative flex md:flex-col items-center lg:items-start md:gap-2 justify-center md:justify-center min-w-[220px] md:min-w-[120px] gap-1 text-left px-4 py-2 font-bold rounded-[12px] card-green-gradient duration-150 ${
+                className={`text-white lg:h-[150px] sm:h-[100px] transition-all md:w-[200px] relative flex md:flex-col items-center lg:items-start md:gap-2 justify-center md:justify-center min-w-[220px] md:min-w-[120px] gap-1 text-left px-4 py-2 font-bold rounded-[12px] card-green-gradient duration-150 ${
                   index === currentParentIndex
                     ? 'border-[3px] md:border-[5px] border-[#cbff5e]'
                     : 'opacity-50 border-[3px] md:border-[5px]'
@@ -128,15 +186,8 @@ const ProjectOverView = ({ steps }) => {
               </button>
             </li>
           ))}
-          <Tooltip title={'show project information'}>
-            <button
-              className="text-[30px] md:text-[40px] w-fit md:mt-auto"
-              onClick={() => setShowProjectInfo((prev) => !prev)}>
-              <FaAlignLeft />
-            </button>
-          </Tooltip>
         </ul>
-      </div>
+      </motion.div>
 
       <motion.form
         onSubmit={methods.handleSubmit(onSubmit)}

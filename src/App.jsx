@@ -20,15 +20,14 @@ import EligibilityTest from './routes/EligibilityTest';
 import ProposalsPage from './routes/Proposals';
 import { OnlineStatusProvider } from './context/onlineConnectionContext';
 import ConnectionStatusNotification from './components/shared/ConnectionNotification';
-import ProjectOverView from './components/client/ProjectOverView';
 import SubmitOffer from './routes/SubmitOffer';
-import OpportunitiyOverview from './components/esco/OpportunitiyOverview';
-import MembersListing from './components/esco/MembersListing';
-import MissionsListing from './components/esco/MissionsListing';
-import AssignMission from './components/esco/AssignMission';
-import ESCODashboard from './components/esco/Dashboard';
-import ProjectESCO from './components/esco/Project';
-import Mission from './components/esco/Mission';
+import OpportunitiyOverview from './components/ESCO/OpportunitiyOverview'
+import MembersListing from './components/ESCO/MembersListing';
+import MissionsListing from './components/ESCO/MissionsListing';
+import AssignMission from './components/ESCO/AssignMission';
+import ESCODashboard from './components/ESCO/Dashboard';
+import ProjectESCO from './components/ESCO/Project';
+import Mission from './components/ESCO/Mission';
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
   const token = useGetToken();

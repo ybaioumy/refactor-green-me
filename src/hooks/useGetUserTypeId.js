@@ -3,13 +3,11 @@ import { useGetRolesQuery } from '../redux/features/auth';
 
 const useFetchUserTypeMap = (id) => {
     const [userTypeMap, setUserTypeMap] = useState({});
-
     const { data, isLoading, isError } = useGetRolesQuery()
-    // Function to fetch user types from an API
 
     // Map the user types by ID
     const map = data.reduce((acc, { id, name }) => {
-        acc[id] = name.toLowerCase(); // Assuming 'name' contains the type name
+        acc[id] = name.toLowerCase(); 
         return acc;
     }, {});
 

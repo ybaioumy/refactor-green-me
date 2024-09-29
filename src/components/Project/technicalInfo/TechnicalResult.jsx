@@ -1,31 +1,23 @@
 import React from 'react';
-import ProjectInfo from '../ProjectMiniInfo';
-
+import successAnimation from '../../../assets/animations/Animation-success.json';
+import Lottie from 'react-lottie';
 const ViabilityStatus = ({ data }) => {
+  const defaultOptions = {
+    loop: false,
+    autoplay: true,
+    animationData: successAnimation,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice',
+    },
+  };
   return (
     <div className="flex w-full items-center justify-between sm:flex-col md:flex-row">
       {/* <ProjectInfo /> */}
       <ProjectMetrics metrics={data} />
       {!data.isViable ? (
         <div className="flex flex-col items-center px-[20px]">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="150"
-            height="214"
-            viewBox="0 0 214 214"
-            fill="none">
-            <path
-              d="M88.152 123.443L63.8773 104.058L43.9841 128.939L93.9923 168.919L170.855 65.7341L145.304 46.7331L88.152 123.443Z"
-              fill="#54A967"
-            />
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M213.735 106.868C213.735 165.889 165.889 213.735 106.868 213.735C47.8462 213.735 0 165.889 0 106.868C0 47.8462 47.8462 0 106.868 0C165.889 0 213.735 47.8462 213.735 106.868ZM195.696 106.868C195.696 155.926 155.926 195.696 106.868 195.696C57.8089 195.696 18.039 155.926 18.039 106.868C18.039 57.8089 57.8089 18.039 106.868 18.039C155.926 18.039 195.696 57.8089 195.696 106.868Z"
-              fill="#54A967"
-            />
-          </svg>
-          <p>Viable</p>
+          <Lottie options={defaultOptions} height={200} width={200} />
+          <p className="text-[#1E4A28] font-bold text-[26px]">Viable</p>
         </div>
       ) : (
         <div className="flex flex-col items-center px-[20px]">

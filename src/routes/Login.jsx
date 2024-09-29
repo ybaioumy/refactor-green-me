@@ -10,7 +10,6 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { message, notification } from 'antd';
 import useMediaQuery from '../hooks/useMediaQuery';
-import { setCredentials } from '../redux/slices/user';
 import { useSetCookiesAfterLogin } from '../hooks/useCookies';
 // const loginOptions = {
 //   google: 'google',

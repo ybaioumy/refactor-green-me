@@ -135,7 +135,7 @@ input[type="checkbox"] {
   width: 20px;
   height: 20px;
   accent-color: #4CAF50;
-  
+
 
 }
 
@@ -547,7 +547,7 @@ input[type="checkbox"] {
   align-items: center;
   border-radius: 50%;
   width: 40px;
-  /* height: 40px; */
+  height: 40px;
   margin: 0 5px;
   cursor: pointer;
   font-size: 16px;
@@ -595,7 +595,8 @@ input[type="checkbox"] {
   background: linear-gradient(0deg, #D8F992 0%, #D8F992 100%), linear-gradient(180deg, rgba(255, 255, 255, 0.60) 0%, rgba(255, 255, 255, 0) 100%)
 }
 
-.custom-pagination button[disabled] {
+.custom-pagination button[disabled],
+.custom-pagination.custom-pagination.membersPagination button[disabled] {
   background: #cccccc;
   color: #666666;
 }
@@ -604,12 +605,12 @@ input[type="checkbox"] {
 
 @media screen and (max-width: 768px) {
   .custom-pagination {
-    justify-content: center;
+    justify-content: space-between;
   }
 
   .custom-pagination button {
     border: none;
-    width: 50px;
+    width: 30px;
     height: 30px;
   }
 }

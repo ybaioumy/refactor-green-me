@@ -21,7 +21,7 @@ const Dashboard = () => {
     pageSize: 0,
   };
 
-  const { data, isLoading, isError } =
+  const { data, isLoading, isError, error } =
     useGetAllProjectsQuery(intialSearchState);
 
   const {
@@ -72,6 +72,12 @@ const Dashboard = () => {
     headline2: 'overview',
   };
   if (isLoading || isOpportunitiesLoading) return <Loader />;
+  if (error && error.status === 'FETCH_ERROR')
+    return (
+      <EmptyList
+        message={'Something went wrong, Check your internet connection'}
+      />
+    );
   if (isError) return <EmptyList message={'Something went wrong'} />;
   return (
     <div className="grid gap-4 p-4 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-1 transition-all duration-150">

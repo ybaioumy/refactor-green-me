@@ -100,13 +100,13 @@ const Input = forwardRef(
       return (
         <div className="flex flex-col gap-2 justify-end items-start w-full">
           {label && (
-            <div className="w-full flex items-center justify-between">
+            <div className="w-full inline-flex items-center justify-between">
               <label style={{ ...defaultLabelStyle, ...labelStyle }}>
                 {label}
               </label>
-              <p className="text-[#202020] font-abel text-[20px]">{`${
+              <p className="text-[#202020] font-abel text-[16px]">{`${
                 value?.length || 0
-              }/${maxLength || 60}`}</p>
+              }/${maxLength || 60} Char`}</p>
             </div>
           )}
           <textarea

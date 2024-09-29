@@ -20,6 +20,7 @@ function ProposalsPage() {
     state: { projectId },
   } = useLocation();
   const { data, isLoading, isError } = useGetProjectProposalsQuery(projectId);
+  console.log(data);
   const [
     clientResponseToProposal,
     { isLoading: isSubmitLoading, isSuccess, isError: isErrorSubmitting },
@@ -52,6 +53,8 @@ function ProposalsPage() {
       console.error('Error submitting client response:', error);
     }
   };
+  if (!data || data.length === 0)
+    return <EmptyList message={'No Proposals available'} />;
   return (
     <div className="p-8">
       <h1 className="text-xl font-bold mb-4 text-[#1E4A28]">
@@ -112,6 +115,7 @@ const Proposals = ({
   const [activeTab, setActiveTab] = useState(data[0]);
 
   const { esco } = data[0] || {};
+
   const navigate = useNavigate();
   useEffect(() => {
     if (data) {
@@ -141,6 +145,7 @@ const Proposals = ({
       id: item.id,
     }));
   };
+  if (!esco) return;
   return (
     <div className="w-[70%]">
       <div className="flex space-x-4 mt-6 border-y border-[#CBCBCB] py-4">
@@ -167,7 +172,7 @@ const Proposals = ({
         <Input
           variant="secondary"
           type="text"
-          placeHolder={esco.name || 'ESCO name not available'}
+          placeHolder={esco?.name || 'ESCO name not available'}
           readOnly
           // value={esco?.name || 'ESCO name not available'}
         />
@@ -192,8 +197,7 @@ const Proposals = ({
               target="_blank"
               rel="noreferrer"
               className="text-blue-500 underline flex items-center gap-4">
-              <p>{file.filePath.split('/').pop()}</p>{' '}
-              <Icon name="download" />
+              <p>{file.filePath.split('/').pop()}</p> <Icon name="download" />
             </a>
           ))}
         </div>

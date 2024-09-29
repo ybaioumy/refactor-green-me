@@ -16,11 +16,13 @@ export const StepProvider = ({ children, steps }) => {
 
     const [currentParentIndex, setCurrentParentIndex] = useState(0);
     const [currentChildIndex, setCurrentChildIndex] = useState(0);
-    const { trigger, getValues, watch, formState: {
-        errors
-    } } = useFormContext();
-
+    const { trigger, getValues, watch,
+        formState: {
+            errors
+        }
+    } = useFormContext();
     const [updateProjectById, { isLoading }] = useUpdateProjectByIdMutation();
+    console.log(errors);
     const handleNext = async () => {
         const isValid = await trigger();
         if (!isValid) {
@@ -61,11 +63,16 @@ export const StepProvider = ({ children, steps }) => {
         console.log('object submitted');
         const isValid = await trigger();
         const currentData = getValues();
-        if (!isValid) return;
+        if (!isValid) {
+            alertValidationMessage(errors);
+            return;
+        }
 
         try {
             await updateProjectById({ id, data: currentData }).unwrap();
             message.success('Project Updated Successfully!');
+            setCurrentParentIndex(0);  // Reset to the first parent step
+            setCurrentChildIndex(0);   // Reset to the first child step
         } catch (error) {
             console.error('Failed to update project: ', error);
             alert('Failed to update the project. Please try again.');

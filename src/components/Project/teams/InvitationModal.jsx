@@ -14,7 +14,7 @@ import {
 import { useParams } from 'react-router-dom';
 import { message } from 'antd';
 
-const InvitationModal = ({ onClose }) => {
+const InvitationModal = ({ onClose, typeId }) => {
   const { id } = useParams();
   const { data: members, isLoading, isError } = useGetMyUsersQuery();
   const [
@@ -96,7 +96,7 @@ const InvitationModal = ({ onClose }) => {
       await inviteUser({
         emails: emailsArray,
         projectId: projectIdToSend,
-        typeId: 2,
+        typeId: typeId || 2,
         statusId: intialInvitationStatus,
         permissionIds: permissionIds,
         roleId: initialRoleId,

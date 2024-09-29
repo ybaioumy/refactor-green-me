@@ -19,6 +19,18 @@ function StepOneESCO() {
       setValue('economicViabilty.sharedSavingPercentage', 0);
     }
   };
+  const handleGuaranteedSavingsRadioChange = (type) => {
+    if (type === 'percentage') {
+      setValue('economicViabilty.isGuaranteedSavingPercentage', true);
+      setValue('economicViabilty.isGuaranteedSavingValue', false);
+      setValue('economicViabilty.guaranteedSavingPremiumValue', 0);
+    } else {
+      setValue('economicViabilty.isGuaranteedSavingValue', true);
+      setValue('economicViabilty.isGuaranteedSavingPercentage', false);
+      setValue('economicViabilty.guaranteedSavingPremiumPercentage', 0);
+    }
+  };
+  console.log(watch('economicViabilty'));
   return (
     <div className="flex flex-col h-full ">
       <div className="flex flex-col gap-6 h-full  w-full">
@@ -97,21 +109,12 @@ function StepOneESCO() {
                         <RadioButton
                           variant="green"
                           label={'(%)'}
-                          checked={field.value}
-                          onChange={() => {
-                            setValue(
-                              'economicViabilty.isGuaranteedSavingPercentage',
-                              true
-                            );
-                            setValue(
-                              'economicViabilty.isGuaranteedSavingValue',
-                              false
-                            );
-                            setValue(
-                              'economicViabilty.guaranteedSavingPremiumValue',
-                              0
-                            );
-                          }}
+                          checked={watch(
+                            'economicViabilty.isGuaranteedSavingPercentage'
+                          )}
+                          onChange={() =>
+                            handleGuaranteedSavingsRadioChange('percentage')
+                          }
                           disabled={watch('contractingModelId') !== 2}
                         />
                         <Controller
@@ -146,21 +149,12 @@ function StepOneESCO() {
                         <RadioButton
                           variant="green"
                           label={'($)'}
-                          checked={field.value}
-                          onChange={() => {
-                            setValue(
-                              'economicViabilty.isGuaranteedSavingValue',
-                              true
-                            );
-                            setValue(
-                              'economicViabilty.isGuaranteedSavingPercentage',
-                              false
-                            );
-                            setValue(
-                              'economicViabilty.guaranteedSavingPremiumPercentage',
-                              0
-                            );
-                          }}
+                          checked={watch(
+                            'economicViabilty.isGuaranteedSavingValue'
+                          )}
+                          onChange={() =>
+                            handleGuaranteedSavingsRadioChange('value')
+                          }
                           disabled={watch('contractingModelId') !== 2}
                         />
                         <Controller

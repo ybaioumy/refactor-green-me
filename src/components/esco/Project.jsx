@@ -15,17 +15,17 @@ import TechnicalStepOne from '../Project/technicalInfo/TechnicalInfoStepOne';
 import TechnicalStepTwo from '../Project/technicalInfo/TechnicalInfoStepTwo';
 import TechnicalStepThree from '../Project/technicalInfo/TechnicalStepThree';
 
-import StepOneECO from '../Project/economicviability/StepOneEco';
-import StepTwoECO from '../Project/economicviability/StepTwoEco';
-import StepThreeECO from '../Project/economicviability/StepThreeEco';
-import StepFourECO from '../Project/economicviability/StepFourEco';
+import StepOneECO from '../Project/economicViability/StepOneEco';
+import StepTwoECO from '../Project/economicViability/StepTwoEco';
+import StepThreeECO from '../Project/economicViability/StepThreeEco';
+import StepFourECO from '../Project/economicViability/StepFourEco';
 import ViabilityStatus from '../Project/technicalInfo/TechnicalResult';
 import { useGetProjectProposalsQuery } from '../../redux/features/proposal';
 import { setProject } from '../../redux/slices/project';
 import Button from '../shared/Button';
-import StepOneESCO from '../Project/economicviability/ESCOStepOne';
+import StepOneESCO from '../Project/economicViability/ESCOStepOne';
 import Teams from '../Project/teams/Teams';
-import FinancialSharedSavings from '../Project/economicviability/FinancialSharedSavings';
+import FinancialSharedSavings from '../Project/economicViability/FinancialSharedSavings';
 function ProjectESCO() {
   const { id } = useParams();
   const navigate = useNavigate();

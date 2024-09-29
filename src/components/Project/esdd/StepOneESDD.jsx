@@ -89,17 +89,19 @@ function StepOneESDD({ title, project, updateProjectEsdd }) {
             </div>
             <div className="flex flex-col gap-10 lg:w-[45%]">
               <div className="flex flex-col gap-4">
-                <p className="text-[#1E4A28] font-bold text-[16px]">
-                  Explain how the project improves energy/resource efficiency
-                </p>
                 <Controller
                   name="esdd.explainEnergyResourceEfficiency"
                   control={control}
                   render={({ field: { onChange, value } }) => (
                     <>
-                      <span className="font-normal">{` (${
-                        value?.length || 0
-                      }/120 character)`}</span>
+                      <p className="text-[#1E4A28] font-bold text-[16px]">
+                        Explain how the project improves energy/resource
+                        efficiency
+                        <span className="font-normal ml-2">{` (${
+                          value?.length || 0
+                        }/120 character)`}</span>
+                      </p>
+
                       <textarea
                         value={value}
                         maxLength={120}
