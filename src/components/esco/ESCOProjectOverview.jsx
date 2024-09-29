@@ -34,7 +34,7 @@ const ProjectOverView = ({ steps }) => {
   const containerVariants = {
     close: {
       opacity: 0,
-      // width: 0,
+    
       transition: {
         type: 'spring',
         damping: 15,
@@ -43,7 +43,7 @@ const ProjectOverView = ({ steps }) => {
     },
     open: {
       opacity: 1,
-      // width: '60%',
+    
       transition: {
         type: 'spring',
         damping: 15,
@@ -165,6 +165,7 @@ const ProjectOverView = ({ steps }) => {
               className="h-fit w-full"
               ref={(el) => (cardRefs.current[index] = el)}>
               <button
+                
                 title={parentStep.label}
                 type="button"
                 onClick={() => {

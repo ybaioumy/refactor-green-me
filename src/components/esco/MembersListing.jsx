@@ -22,6 +22,8 @@ import Button from '../shared/Button';
 import { useGetRolesQuery } from '../../redux/features/auth';
 import { PermissionComponent } from './AssignMission';
 import InvitationModal from '../Project/teams/InvitationModal';
+import { useGetTypesQuery } from '../../redux/features/auth';
+import useGetItemIdByName from '../../hooks/useGetItemIdByName';
 function MembersListing() {
   const { id } = useParams();
   const location = useLocation();
@@ -69,6 +71,12 @@ function MembersListing() {
   const intialInvitationStatus = statusData?.find(
     (item) => item.name === 'Pending'
   );
+  const {
+    data: types,
+    isLoading: isLoadingTypes,
+    isError: isErrorTypes,
+  } = useGetTypesQuery();
+  const expertTypeId = useGetItemIdByName(types, 'expert');
 
   const {
     data: permissionsArray,
@@ -176,7 +184,6 @@ function MembersListing() {
       message.error('Please select at least one permission.');
       return;
     }
-    console.log(selectedPermissions);
     try {
       await inviteUser({
         emails: emailsArray,
@@ -232,7 +239,10 @@ function MembersListing() {
   // console.log(selectedPermissions);
   return (
     <div className="flex flex-col h-screen">
-      <HorizontalSearchBar data={dataToFilter} />
+      <HorizontalSearchBar
+        data={dataToFilter}
+        operationTodo={handleAddNewExpert}
+      />
       <div className="mb-2 w-full bg-[#EFFCFF] py-4 md:px-14 px-2 z-10 flex items-center justify-between shadow-md gap-5">
         <p className="flex items-center gap-2 text-[#334B9F] font-bold w-full">
           <span className="text-[22px]">Experts Listing </span>-{' '}
@@ -344,7 +354,7 @@ function MembersListing() {
         />
       </Modal>
       {isPopupVisible && (
-        <InvitationModal onClose={() => setIsPopupVisible(false)} />
+        <InvitationModal onClose={() => setIsPopupVisible(false)} typeId={expertTypeId}/>
       )}
     </div>
   );

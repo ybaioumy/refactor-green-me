@@ -73,12 +73,12 @@ const InvitationModal = ({ onClose, typeId }) => {
   );
   const editPermissionsIds = useMemo(() => getPermissionsIds('Edit'), []);
 
-  // Depending on the isEdit state, set the correct permissionIds
-  const permissionIds = useMemo(
+  // Depending on the isEdit state, set the correct permissionId
+  const permissionId = useMemo(
     () => (isEdit ? editPermissionsIds : viewPermissionsIds),
     [isEdit, editPermissionsIds, viewPermissionsIds]
   );
-  // console.log(permissionIds);
+  // console.log(permissionId);
 
   const handleAddMembers = async () => {
     const projectIdToSend = Number(id);
@@ -98,7 +98,7 @@ const InvitationModal = ({ onClose, typeId }) => {
         projectId: projectIdToSend,
         typeId: typeId || 2,
         statusId: intialInvitationStatus,
-        permissionIds: permissionIds,
+        permissionId: permissionId,
         roleId: initialRoleId,
       }).unwrap();
 
@@ -107,9 +107,10 @@ const InvitationModal = ({ onClose, typeId }) => {
           ', '
         )} successfully invited to project id ${id}`
       );
-
-      onClose(false);
+      setSelectedMembers([]);
+      // onClose(false);
     } catch (error) {
+      console.log(error);
       message.error(
         error.data?.message || 'An error occurred while inviting the users.'
       );
@@ -119,10 +120,20 @@ const InvitationModal = ({ onClose, typeId }) => {
 
   const handleEmailKeyDown = (e) => {
     if (e.key === 'Enter') {
+      e.preventDefault();
       const email = searchTerm.trim();
+
+      // Simple regex for basic email validation
+      const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+      if (!isValidEmail(email)) {
+        message.error('Please enter a valid email.');
+        return;
+      }
+
       if (email && !selectedMembers.some((m) => m.email === email)) {
         setSelectedMembers([...selectedMembers, { email, fullName: email }]);
-        setSearchTerm('');
+        setSearchTerm(''); // Clear input after adding
       } else {
         message.error('Email is already added or invalid.');
       }
@@ -136,7 +147,9 @@ const InvitationModal = ({ onClose, typeId }) => {
           <h2 className="text-sm sm:text-lg md:text-xl">
             Search Members by Name, ID, or Email
           </h2>
-          <button onClick={onClose}>✖</button>
+          <button type="button" onClick={onClose}>
+            ✖
+          </button>
         </div>
         <div className="flex flex-col md:flex-row gap-2">
           <div className="flex flex-col flex-1">
@@ -158,6 +171,7 @@ const InvitationModal = ({ onClose, typeId }) => {
                       className="bg-white border border-[#D80000] px-3 py-1 rounded-lg mr-2 mb-2 flex items-center">
                       {member.fullName}
                       <button
+                        type="button"
                         onClick={() => handleRemoveMember(member.email)}
                         className="ml-2 text-red-600 font-bold">
                         ✖

@@ -17,7 +17,7 @@ const customBaseQuery = async (args, api, extraOptions) => {
     const result = await baseQuery(args, api, extraOptions);
     //handle empty list
     if (result.error && result.error.status === 204) {
-        return { data: null };
+        return { data: [] };
     }
     // Handle other errors and return a message
     if (result.error) {
@@ -60,6 +60,13 @@ export const projectApi = createApi({
                     console.error('Error fetching item by ID:', error);
                 }
             },
+        }),
+        createProject: builder.mutation({
+            query: (newProject) => ({
+                url: 'Project',
+                method: 'POST',
+                body: newProject,
+            }),
         }),
         updateProjectById: builder.mutation({
             query: ({ id, data }) => ({
@@ -107,4 +114,4 @@ export const projectApi = createApi({
     }),
 });
 
-export const { useGetAllProjectsQuery, useGetAllOpportunitiesQuery, useGetProjectByIdQuery, useGetProjectUsersQuery, useGetAllCategoriesWithCrietriaQuery, useGetProjectDropDownsQuery, useGetProjectsFiltersQuery, useGetProjectStatusQuery, useLazyGetProjectEligibilityQuery, useGetUsersQuery, useGetProjectEnergyAuditQuery, useGetProjectFinancialModelQuery, useGetProjectImpactViabilityQuery, useUpdateProjectByIdMutation } = projectApi;
+export const { useGetAllProjectsQuery, useGetAllOpportunitiesQuery, useGetProjectByIdQuery, useGetProjectUsersQuery, useGetAllCategoriesWithCrietriaQuery, useGetProjectDropDownsQuery, useGetProjectsFiltersQuery, useGetProjectStatusQuery, useLazyGetProjectEligibilityQuery, useGetUsersQuery, useGetProjectEnergyAuditQuery, useGetProjectFinancialModelQuery, useGetProjectImpactViabilityQuery, useUpdateProjectByIdMutation,useCreateProjectMutation } = projectApi;

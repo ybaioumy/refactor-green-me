@@ -24,7 +24,7 @@ export const authApi = createApi({
     }),
     extractRehydrationInfo(action, { reducerPath }) {
         if (isHydrateAction(action)) {
-            return action.payload?.[reducerPath]; // Rehydrate RTK Query state if present in payload
+            return action.payload?.[reducerPath]; 
         }
     },
     endpoints: (builder) => ({
@@ -70,10 +70,13 @@ export const authApi = createApi({
         }),
         getAllCountries: builder.query({
             query: () => 'Country'
+        }),
+        getAllClientSectors: builder.query({
+            query: () => 'ClientSector'
         })
     }),
-  
+
 });
 
-export const { useLoginMutation, useRegisterMutation, useGetTypesQuery, useGetMyUsersQuery, useGetRolesQuery, useGetAllCountriesQuery } = authApi;
+export const { useLoginMutation, useRegisterMutation, useGetTypesQuery, useGetMyUsersQuery, useGetRolesQuery, useGetAllCountriesQuery, useGetAllClientSectorsQuery } = authApi;
 

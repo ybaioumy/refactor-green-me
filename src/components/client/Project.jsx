@@ -141,7 +141,7 @@ function Project() {
               Project Impact & Viability
             </p>
           ),
-          content: <ViabilityStatus data={projectObject} />,
+          content: <ViabilityStatus id={projectObject.id} />,
         },
       ],
     },

@@ -134,7 +134,7 @@ function ProjectESCO() {
               Project Impact & Viability
             </p>
           ),
-          content: <ViabilityStatus data={projectObject} />,
+          content: <ViabilityStatus id={id} />,
           hideButtons: true,
         },
       ],

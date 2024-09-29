@@ -1,9 +1,8 @@
-import React, { Children, useState } from 'react';
+import React, { useState } from 'react';
 import Steps from '../components/shared/Steps';
 import { useParams } from 'react-router-dom';
 import LookingForAudit from '../components/eligibilitytest/LookingForAudit';
 import SeconedStep from '../components/eligibilitytest/lookingforaudit/SecondStep';
-
 import EnergyEfficiency, {
   Criteria,
   ReductionRate,
@@ -17,7 +16,6 @@ import ChatButton from '../components/shared/ChatBot';
 import EligibilityStatus from '../components/eligibilitytest/EligibiltyResult';
 import { message } from 'antd';
 import {
-  useEligibilityTestMutation,
   useGetAllCategoriesWithCrietriaQuery,
   useGetAllContractingModelsQuery,
   useGetEligibilityStatusQuery,
@@ -25,14 +23,14 @@ import {
 import Loader from '../components/shared/Loader';
 import EmptyList from '../components/shared/EmptyList';
 import {
-  useGetAllProjectsQuery,
   useLazyGetProjectEligibilityQuery,
   useGetProjectStatusQuery,
   useGetProjectEnergyAuditQuery,
+  useCreateProjectMutation,
 } from '../redux/features/project';
-import Icon from '../components/shared/Icon';
 import AuditResult from '../components/eligibilitytest/lookingforaudit/LookingforAuditResult';
 import { useSelector } from 'react-redux';
+import useGetItemIdByName from '../hooks/useGetItemIdByName';
 const reductionRateOptions = [
   { value: '<30%', label: '< 30%' },
   { value: '30%-50%', label: '> 30% and < 50%' },
@@ -64,8 +62,10 @@ const EligibilityTest = () => {
 
   const { data, isLoading, error } = useGetAllCategoriesWithCrietriaQuery();
   const { data: contractingData } = useGetAllContractingModelsQuery();
-  const [eligibilityTest, { isError, isLoading: isProjectELigibleLoading }] =
-    useEligibilityTestMutation();
+  const [
+    createProjectMutaion,
+    { isError, isLoading: isProjectELigibleLoading },
+  ] = useCreateProjectMutation();
 
   const {
     data: auditResult,
@@ -83,73 +83,17 @@ const EligibilityTest = () => {
     },
   ] = useLazyGetProjectEligibilityQuery();
 
-  //end of APIs
-  const intialEligibilityStatusId = eligibilityStatus?.find(
-    (item) => item.name === 'Eligible'
-  ).id;
-  const intialProjectStatusId = projectStatus?.find(
-    (project) => project.name === 'Inquiry Received'
-  )?.id;
-  // const [eligibilityTestData, setEligibilityTestData] = useState({
-  //   projectName: '',
-  //   description: '',
-  //   servedCountryId: null,
-  //   cityId: null,
-  //   economicSectorId: null,
-  //   buildingOrientation: 0,
-  //   buildingTypicalOccupancy: 0,
-  //   buildingIsOccupied: 0,
-  //   lightsAreOn: 0,
-  //   fenestration: 0,
-  //   landArea: 0,
-  //   grossArea: 0,
-  //   noOfFloor: 0,
-  //   consumption: {
-  //     electricityAnnualConsumptionExPost: 0,
-  //     electricityAverageTariffCostExPost: 0,
-  //     naturalGasAnnualConsumptionExPost: 0,
-  //     naturalGasAverageTariffCostExPost: 0,
-  //     dieselAnnualConsumptionExPost: 0,
-  //     dieselAverageTariffCostExPost: 0,
-  //     gasolineAnnualConsumptionExPost: 0,
-  //     gasolineAverageTariffCostExPost: 0,
-  //     waterAnnualConsumptionExPost: 0,
-  //     waterAverageTariffCostExPost: 0,
-  //     electricity: false,
-  //     water: false,
-  //     naturalGas: false,
-  //     diesel: false,
-  //     gasoline: false,
-  //   },
-  //   technicalInfo: {
-  //     buildingFunctionId: null,
-  //   },
-  //   buildingFacadeTypesIds: [],
-  //   lightingSystemTypesIds: [],
-  //   lookingForId: Number(id),
-  //   categoryId: 1,
-  //   SubCriteriaId: null,
-  //   criteriaId: 1,
-  //   eligibiltyStatusId: 3, //intialEligibilityStatusId?.id,
-  //   projectStatusId: 1,
-  //   contractingModelId: null,
-  //   lat: '',
-  //   long: '',
-  //   eligibilty: {
-  //     reductionRate: '',
-  //     exclusions: '',
-  //     totalGenerationCapacity: 0,
-  //     alignedToTheIfcperformance: '',
-  //     projectStandardsCertification: '',
-  //     energyDemand: '',
-  //     carbonIntensity: '',
-  //     improvementActivitiesFossilFuel: '',
-  //     involvedInTheExplorationExtraction: '',
-  //     products: [],
-  //   },
-  // });
+  const initalProjectStatus = useGetItemIdByName(
+    projectStatus,
+    'Inquiry Received'
+  );
+  const initialEligibility = useGetItemIdByName(eligibilityStatus, 'Eligible');
+  const [initialData, setInitialData] = useState({
+    eligibiltyStatusId: initialEligibility,
+    projectStatusId: initalProjectStatus,
+  });
 
-  if (isLoading) return <Loader />;
+  if (isLoading || isLoadingProjectStatus || isLoadingStatus) return <Loader />;
   if (!data) return <EmptyList message={'Emty Options'} />;
 
   const renderSecondStep = {
@@ -221,19 +165,17 @@ const EligibilityTest = () => {
   const createProject = async (data) => {
     try {
       // Create the project and get the response with the project ID
-      const response = await eligibilityTest(data).unwrap();
+      const response = await createProjectMutaion(data).unwrap();
       const createdProjectId = response.id;
       setCreactedProjectId(createdProjectId);
       message.success(
         'Project created successfully with id ' + createdProjectId
       );
-
-      // Explicitly return the createdProjectId
       return createdProjectId;
     } catch (error) {
       message.error('Failed to create a new project');
       console.error('Error posting project:', error);
-      return null; // Return null on failure to ensure downstream logic handles it
+      return null;
     }
   };
 
@@ -260,24 +202,21 @@ const EligibilityTest = () => {
     }
   };
 
-  // Main handleSave function: Calls the two separate functions
   const handleSave = async (data) => {
     try {
-      const createdProjectId = await createProject(data); // Create the project
+      const createdProjectId = await createProject({ ...initialData, ...data }); // Create the project
       if (!createdProjectId) {
         message.error('Project creation failed, cannot proceed further.');
-        return; // Stop the flow if the project ID is null
+        return;
       }
-      await handleAuditOrEligibility(createdProjectId); // Fetch audit/eligibility data
+      await handleAuditOrEligibility(createdProjectId); // Fetch audit and eligibility data
     } catch (error) {
-      // Handle any errors that propagate from either function
       console.error('Error during save process:', error);
     }
   };
 
-  // Render logic
+  // Render if looking for audit
   if (lookingFor === 1 && auditResult != null && auditResult !== undefined) {
-    // If lookingFor is 1, show ThirdStep component
     return (
       <AuditResult
         data={auditResult}
@@ -292,21 +231,12 @@ const EligibilityTest = () => {
   }
 
   return (
-    <div className="flex flex-col p-2 md:p-5 gap-4">
-      <>
-        <div className="grid place-content-end w-full">
-          {/* <Title
-            text={'New Project Submission'}
-            type="h1"
-            style={{ color: '#202020', fontSize: 24 }}
-          /> */}
-        </div>
-        <Steps
-          steps={steps}
-          onSave={handleSave}
-          isLoading={isProjectELigibleLoading || isLoadingEligibiltyResult}
-        />
-      </>
+    <div className="p-2 md:p-5">
+      <Steps
+        steps={steps}
+        onSave={handleSave}
+        isLoading={isProjectELigibleLoading || isLoadingEligibiltyResult}
+      />
     </div>
   );
 };

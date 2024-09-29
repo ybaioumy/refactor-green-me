@@ -29,6 +29,7 @@ function GeneralInfoStepTwo() {
       {siteType === 5 && (
         <Controller
           name="description"
+          defaultValue={''}
           control={control}
           render={({ field }) => (
             <Input

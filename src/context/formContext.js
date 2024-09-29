@@ -6,23 +6,24 @@ import { setProject } from '../redux/slices/project';
 import { useParams } from 'react-router-dom';
 import alertValidationMessage from '../utilits/alertMessage'
 import { message } from 'antd';
+import { DevTool } from "@hookform/devtools";
 
 
 const StepContext = createContext();
 
-export const StepProvider = ({ children, steps }) => {
+export const StepProvider = ({ children, steps, canEdit }) => {
     const dispatch = useDispatch();
     const { id } = useParams()
 
     const [currentParentIndex, setCurrentParentIndex] = useState(0);
     const [currentChildIndex, setCurrentChildIndex] = useState(0);
     const { trigger, getValues, watch,
+        control,
         formState: {
             errors
         }
     } = useFormContext();
     const [updateProjectById, { isLoading }] = useUpdateProjectByIdMutation();
-    console.log(errors);
     const handleNext = async () => {
         const isValid = await trigger();
         if (!isValid) {
@@ -60,7 +61,6 @@ export const StepProvider = ({ children, steps }) => {
         }
     };
     const onSubmit = async (data) => {
-        console.log('object submitted');
         const isValid = await trigger();
         const currentData = getValues();
         if (!isValid) {
@@ -94,6 +94,8 @@ export const StepProvider = ({ children, steps }) => {
                 onSubmit
             }}>
             {children}
+            {/* <DevTool control={control} /> */}
+
         </StepContext.Provider>
     );
 };

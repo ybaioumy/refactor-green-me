@@ -10,27 +10,27 @@ function StepOneESCO() {
     // Reset dependent fields based on model change
     if (modelId === 1) {
       // If 'Shared Savings' is selected, reset 'Guaranteed Savings' fields
-      setValue('economicViabilty.guaranteedSavingPremiumPercentage', 0);
-      setValue('economicViabilty.guaranteedSavingPremiumValue', 0);
+      setValue('economicViabilty.guaranteedSavingPremiumPercentage', null);
+      setValue('economicViabilty.guaranteedSavingPremiumValue', null);
       setValue('economicViabilty.isGuaranteedSavingPercentage', false);
       setValue('economicViabilty.isGuaranteedSavingValue', false);
     } else if (modelId === 2) {
       // If 'Guaranteed Savings' is selected, reset 'Shared Saving Percentage'
-      setValue('economicViabilty.sharedSavingPercentage', 0);
+      setValue('economicViabilty.sharedSavingPercentage', null);
     }
   };
   const handleGuaranteedSavingsRadioChange = (type) => {
     if (type === 'percentage') {
       setValue('economicViabilty.isGuaranteedSavingPercentage', true);
       setValue('economicViabilty.isGuaranteedSavingValue', false);
-      setValue('economicViabilty.guaranteedSavingPremiumValue', 0);
+      setValue('economicViabilty.guaranteedSavingPremiumValue', null);
     } else {
       setValue('economicViabilty.isGuaranteedSavingValue', true);
       setValue('economicViabilty.isGuaranteedSavingPercentage', false);
-      setValue('economicViabilty.guaranteedSavingPremiumPercentage', 0);
+      setValue('economicViabilty.guaranteedSavingPremiumPercentage', null);
     }
   };
-  console.log(watch('economicViabilty'));
+  // console.log(watch('economicViabilty'));
   return (
     <div className="flex flex-col h-full ">
       <div className="flex flex-col gap-6 h-full  w-full">

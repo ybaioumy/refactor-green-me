@@ -1,9 +1,11 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
-Chart.register(...registerables);
+import annotationPlugin from 'chartjs-plugin-annotation';
 
-function VerticalBarChart() {
+Chart.register(...registerables, annotationPlugin);
+
+function VerticalBarChart({ dataX }) {
   const data = {
     labels: ['Y1', 'Y2', 'Y3', 'Y4', 'Y5', 'Y6', 'Y7', 'Y8', 'Y9', 'Y10'],
     datasets: [
@@ -29,6 +31,24 @@ function VerticalBarChart() {
       legend: {
         display: true,
         position: 'bottom', // Use 'as const' to explicitly set the type
+      },
+      annotation: {
+        annotations: {
+          paybackLine: {
+            type: 'line',
+            xMin: 4.7, // Positioning the vertical line at Y4.7
+            xMax: 4.7,
+            borderColor: '#00BFFF',
+            borderWidth: 2,
+            borderDash: [5, 5],
+            label: {
+              content: ['Payback Point', 'Y4.7'],
+              enabled: true,
+              position: 'bottom',
+              color: '#00BFFF',
+            },
+          },
+        },
       },
     },
     maintainAspectRatio: false,
@@ -57,7 +77,7 @@ function VerticalBarChart() {
 
   return (
     <>
-      <Bar width="900" height="600" data={data} options={options} />
+      <Bar width={'100%'} height="600" data={data} options={options} />
     </>
   );
 }

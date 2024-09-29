@@ -35,7 +35,7 @@ const teamsCols = [
         width: '15%',
         render: (text) => {
             return (
-                <p className="text-[#3E3E3E] flex-grow rounded-[15px] text-center bg-[#e6e6e6] py-2 px-4 font-abel text-[18px]">
+                <p className="text-[#3E3E3E] flex-grow rounded-[15px] text-center bg-[#e6e6e6] py-2 px-4 font-abel text-[18px] truncate">
                     {text}
                 </p>
             );

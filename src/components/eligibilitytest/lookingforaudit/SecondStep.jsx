@@ -52,10 +52,10 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
     setValue('consumption', updatedConsumption);
 
     if (!isToggledOn) {
-      setValue(`consumption.${type}AnnualConsumptionExPost`, 0);
-      setValue(`consumption.${type}AverageTariffCostExPost`, 0);
-      setValue(`consumption.${type}AnnualConsumptionBenchmark`, 0);
-      setValue(`consumption.${type}AverageTariffCostBenchmark`, 0);
+      setValue(`consumption.${type}AnnualConsumptionExPost`, null);
+      setValue(`consumption.${type}AverageTariffCostExPost`, null);
+      setValue(`consumption.${type}AnnualConsumptionBenchmark`, null);
+      setValue(`consumption.${type}AverageTariffCostBenchmark`, null);
     }
   };
 
@@ -149,7 +149,7 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
               Benchmark
             </p>
           )}
-          <div className="flex items-center gap-4 justify-between w-full md:w-auto">
+          <div className="flex items-center gap-4 justify-center w-full md:w-auto">
             {/* Ex-Post Average Tariff Cost */}
             <Controller
               defaultValue={0}

@@ -1,9 +1,5 @@
 import { Empty, Spin, Result } from 'antd';
-import {
-  useGetProjectFinancialModelQuery,
-  useGetProjectImpactViabilityQuery,
-  useGetProjectEnergyAuditQuery,
-} from '../../../redux/features/project';
+import { useGetProjectFinancialModelQuery } from '../../../redux/features/project';
 import ExportAsExcelButton from '../../shared/ExcelButton';
 import ExportAsPdf from '../../shared/ExportPDF';
 import CustomerNetCashFlowTable from './components/CustomerNetCashFlowTable';
@@ -12,25 +8,13 @@ import VerticalBarChart from './components/VerticalBarChart';
 import Loader from '../../shared/Loader';
 import Button from '../../shared/Button';
 function FinancialSharedSavings({ project }) {
-  // const {
-  //   data: projectImpactViabilityData,
-  //   isLoading: isLoadingViability,
-  //   isError: isErrorViability,
-  //   error: errorViability,
-  // } = useGetProjectImpactViabilityQuery(project.id);
-  // const {
-  //   data: projectEnergyAudtData,
-  //   isLoading: isLoadingAduit,
-  //   isError: isErrorAudit,
-  //   error: errorAudit,
-  // } = useGetProjectEnergyAuditQuery(project.id);
   const {
     data: projectFinancialData,
     isLoading: isLoadingFinancial,
     isError: isErrorFinancial,
     error: errorFinancial,
   } = useGetProjectFinancialModelQuery(project.id);
-  console.error(errorFinancial);
+
   console.table(
     // projectImpactViabilityData,
     // projectEnergyAudtData,
@@ -43,13 +27,6 @@ function FinancialSharedSavings({ project }) {
         status="error"
         title="Calculations Failed"
         subTitle={errorFinancial.message}
-         
-        // extra={[
-        //   <Button type="primary" key="console">
-        //     Go Console
-        //   </Button>,
-        //   <Button key="buy">Buy Again</Button>,
-        // ]}
       />
     );
   return (
@@ -69,78 +46,35 @@ function FinancialSharedSavings({ project }) {
             <hr className="border-l-[2px] border-[#B5B5B5] h-full" />
           </div>
         </div>
-        <div className=" flex flex-col w-full p-2 md:p-8 gap-12">
-          <div className="md:flex w-full gap-20">
-            <div className="md:flex  gap-20 md:w-[80%]">
-              <div className="flex flex-col gap-8 md:w-[50%]">
-                <div className="w-full">
-                  <p className="text-[#000] font-abel text-[20px] font-[400]">
-                    DSCR{' '}
-                    <span className="text-[#000] font-abel text-[15px] font-[400]">
-                      (Expected Debt Service Coverage Ratio)
-                    </span>
-                  </p>
-                  <div className="w-full flex text-[#1e4a28] text-[17px] font-[600] justify-start gap-2 px-2 flex-row-reverse items-center rounded-[15px] border border-dotted border-[#1e4a28] h-[50px] bg-[#e1f1dc]">
-                    <p className="border-l border-[#000000] pl-2 text-[#1e4a28] text-[14px] font-[400]">
-                      %
-                    </p>
-                    <p className="text-[#1e4a28] text-[20px] font-[700] ">
-                      7.5
-                    </p>
-                  </div>
-                </div>
-                <div className="w-full">
-                  <p className="text-[#000] font-abel text-[20px] font-[400]">
-                    IRR{' '}
-                    <span className="text-[#000] font-abel text-[15px] font-[400]">
-                      (Expected Internal Rate of Return)
-                    </span>
-                  </p>
-                  <div className="w-full flex text-[#1e4a28] text-[17px] font-[600] justify-start gap-2 px-2 flex-row-reverse items-center rounded-[15px] border border-dotted border-[#1e4a28] h-[50px] bg-[#e1f1dc]">
-                    <p className="border-l border-[#000000] pl-2 text-[#1e4a28] text-[14px] font-[400]">
-                      %
-                    </p>
-                    <p className="text-[#1e4a28] text-[20px] font-[700] ">
-                      24.43
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col gap-8 md:w-[50%]">
-                <div className="w-full">
-                  <p className="text-[#000] font-abel text-[20px] font-[400]">
-                    NPV{' '}
-                    <span className="text-[#000] font-abel text-[15px] font-[400]">
-                      (Expected Net Present Value)
-                    </span>
-                  </p>
-                  <div className="w-full flex text-[#1e4a28] text-[17px] font-[600] justify-start gap-2 px-2 flex-row-reverse items-center rounded-[15px] border border-dotted border-[#1e4a28] h-[50px] bg-[#e1f1dc]">
-                    <p className="border-l border-[#000000] pl-2 text-[#1e4a28] text-[14px] font-[400]">
-                      AED
-                    </p>
-                    <p className="text-[#1e4a28] text-[20px] font-[700] ">
-                      12,000,000
-                    </p>
-                  </div>
-                </div>
+        <div className=" flex flex-col w-full  gap-12">
+          <div className="md:flex w-full gap-10">
+            <div className="grid grid-cols-2 gap-10">
+              <MetricCard
+                title={'DSCR'}
+                subtitle={'(Expected Debt Service Coverage Ratio)'}
+                unit={'%'}
+                value={projectFinancialData.averageDSCR}
+              />
 
-                <div className="w-full">
-                  <p className="text-[#000] font-abel text-[20px] font-[400]">
-                    PBP{' '}
-                    <span className="text-[#000] font-abel text-[15px] font-[400]">
-                      (Expected Payback Period)
-                    </span>
-                  </p>
-                  <div className="w-full flex text-[#1e4a28] text-[17px] font-[600] justify-start gap-2 px-2 flex-row-reverse items-center rounded-[15px] border border-dotted border-[#1e4a28] h-[50px] bg-[#e1f1dc]">
-                    <p className="border-l border-[#000000] pl-2 text-[#1e4a28] text-[14px] font-[400]">
-                      Year
-                    </p>
-                    <p className="text-[#1e4a28] text-[20px] font-[700] ">
-                      4.8
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <MetricCard
+                title={'NPV'}
+                subtitle={'(Expected Net Present Value)'}
+                unit={'AED'}
+                value={projectFinancialData.npv}
+              />
+
+              <MetricCard
+                title={'IRR'}
+                subtitle={'(Expected Internal Rate of Return)'}
+                unit={'Years'}
+                value={projectFinancialData.irr}
+              />
+              <MetricCard
+                title={'PBP'}
+                subtitle={' (Expected Payback Period)'}
+                unit={'Years'}
+                value={projectFinancialData.paybackPeriod}
+              />
             </div>
             <div className="md:w-[20%] bg-[#BFE0C6] p-6 flex flex-col gap-8 rounded-[11px] border border-dashed border-[#bfe0c6]">
               <div className="flex items-end gap-4">
@@ -275,3 +209,22 @@ function FinancialSharedSavings({ project }) {
 }
 
 export default FinancialSharedSavings;
+
+const MetricCard = ({ title, subtitle, value, unit }) => {
+  return (
+    <div className="w-full col-span-1 place-items-stretch">
+      <p className="text-[#000] font-abel text-[20px] font-[400] block">
+        {title}{' '}
+        <span className="text-[#000] font-abel text-[15px] font-[400]">
+          {subtitle}
+        </span>
+      </p>
+      <div className="w-full flex text-[#1e4a28] text-[17px] font-[600] justify-start gap-2 px-2 flex-row-reverse items-center rounded-[15px] border border-dotted border-[#1e4a28] h-[50px] bg-[#e1f1dc]">
+        <p className="border-l border-[#000000] pl-2 text-[#1e4a28] text-[14px] font-[400]">
+          {unit}
+        </p>
+        <p className="text-[#1e4a28] text-[20px] font-[700] ">{value}</p>
+      </div>
+    </div>
+  );
+};

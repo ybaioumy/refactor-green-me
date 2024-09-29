@@ -1,20 +1,26 @@
 import React from 'react';
 import successAnimation from '../../../assets/animations/Animation-success.json';
 import Lottie from 'react-lottie';
-const ViabilityStatus = ({ data }) => {
+import { useGetProjectImpactViabilityQuery } from '../../../redux/features/project';
+import Loader from '../../shared/Loader';
+const ViabilityStatus = ({ id }) => {
   const defaultOptions = {
     loop: false,
     autoplay: true,
     animationData: successAnimation,
-    rendererSettings: {
-      preserveAspectRatio: 'xMidYMid slice',
-    },
+    // rendererSettings: {
+    //   preserveAspectRatio: 'xMidYMid slice',
+    // },
   };
+  const { data, isLoading, error, isError } =
+    useGetProjectImpactViabilityQuery(id);
+  if (isLoading) return <Loader />;
+  if (isError) return <div>Error: {error.message}</div>;
   return (
     <div className="flex w-full items-center justify-between sm:flex-col md:flex-row">
       {/* <ProjectInfo /> */}
       <ProjectMetrics metrics={data} />
-      {!data.isViable ? (
+      {data?.isViable ? (
         <div className="flex flex-col items-center px-[20px]">
           <Lottie options={defaultOptions} height={200} width={200} />
           <p className="text-[#1E4A28] font-bold text-[26px]">Viable</p>
@@ -38,7 +44,7 @@ const ViabilityStatus = ({ data }) => {
               fill="#EF4848"
             />
           </svg>
-          <p>Not Viable</p>
+          <p className="text-[#1E4A28] font-bold text-[26px]">Not Viable</p>
         </div>
       )}
     </div>
@@ -55,7 +61,7 @@ const ProjectMetrics = ({ metrics }) => {
         <div className="w-full flex text-[#1e4a28] text-[17px] font-[600] justify-start gap-2 px-2 flex-row items-center rounded-[15px] border border-dotted border-[#1e4a28] h-[50px] bg-[#BFE0C6]">
           {/* Metric value */}
           <p className="text-[#1e4a28] text-[20px] font-[700] mr-auto">
-            {value}
+            {value || 'NA'}
           </p>
           {/* Metric unit */}
           <p className="border-l border-[#000000] pl-2 text-[#1e4a28] text-[14px] font-[400]">
@@ -67,11 +73,27 @@ const ProjectMetrics = ({ metrics }) => {
   };
   return (
     <div className="flex flex-col gap-10 w-[60%] border-r border-black px-6 h-full ">
-      <Item label="Energy Yield" value="123" unit="GWh/year" />
-      <Item label="Energy Saved" value="123" unit="GWh/year" />
-      <Item label="Emissions Avoided" value="123" unit="tCO2eq/year" />
-      <Item label="Monetary Savings" value="123" unit="tCO2eq/year" />
-      <Item label="Expected Income" value="123" unit="$/year" />
+      <Item label="Energy Yield" value={metrics.energyYield} unit="GWh/year" />
+      <Item
+        label="Energy Saved"
+        value={metrics.totalEnergySaved}
+        unit="GWh/year"
+      />
+      <Item
+        label="Emissions Avoided"
+        value={metrics.emissionsAvoided}
+        unit="tCO2eq/year"
+      />
+      <Item
+        label="Monetary Savings"
+        value={metrics.monetarySavings}
+        unit="tCO2eq/year"
+      />
+      <Item
+        label="Expected Income"
+        value={metrics.expectedIncome}
+        unit="$/year"
+      />
     </div>
   );
 };

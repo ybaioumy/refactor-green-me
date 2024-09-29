@@ -35,7 +35,9 @@ const ProjectInfo = () => {
           alt="Project Icon"
           className="w-24 h-w-24 rounded-full object-cover"
         />
-        <div className="text-xl font-bold">{projectObject?.projectName}</div>
+        <div className="text-xl font-bold line-clamp-3">
+          {projectObject?.projectName}
+        </div>
       </div>
 
       {/* Project Details using Item component */}

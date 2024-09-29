@@ -5,8 +5,7 @@ export const lookingForApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.REACT_APP_API_BASE,
     prepareHeaders: (headers) => {
-      headers.set('Content-Type', 'application/json');
-      headers.set('Accept', 'application/json');
+
       headers.set('Authorization', authHeader());
 
       return headers;
@@ -26,20 +25,13 @@ export const lookingForApi = createApi({
     getAllCategoriesWithCrietria: builder.query({
       query: () => 'Category/GetAllCategoriesWithCrietria',
     }),
-    eligibilityTest: builder.mutation({
-      query: (newProject) => ({
-        url: 'Project',
-        method: 'POST',
-        body: newProject,
-      }),
-    }),
+
   }),
 });
 
 export const {
   useGetLookingForQuery,
   useGetAllCategoriesWithCrietriaQuery,
-  useEligibilityTestMutation,
   useGetAllContractingModelsQuery,
   useGetEligibilityStatusQuery,
 } = lookingForApi;

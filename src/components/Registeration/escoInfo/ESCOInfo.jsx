@@ -9,14 +9,13 @@ import Section, { ItemRow } from '../../shared/Section';
 import DisbursedPie from '../../shared/PieChart';
 import dayjs from 'dayjs';
 
-function ESCODetails({ sectors, countries }) {
+function ESCODetails({ countries }) {
   const { control, setValue, watch, getValues } = useFormContext({
     defaultValues: {
       escoName: '',
       escoLegalName: '',
       escoType: null,
       escoCountriesServeds: [],
-
     },
   });
   const [countriesServed, setCountriesServed] = useState([{ countryId: 0 }]);
@@ -138,7 +137,7 @@ function ESCODetails({ sectors, countries }) {
               control={control}
               render={({ field }) => (
                 <Select
-                {...field}
+                  {...field}
                   removeMaxWidth
                   search
                   variant="secondary"

@@ -152,7 +152,7 @@ const ProjectPipline = ({ data, loading }) => {
             Filters
           </Button>
         </div>
-        <div className="max-w-[320px] md:max-w-fit">
+        <div className="max-w-[320px] md:max-w-full ">
           <ProjectSwiper projects={data} slidePerView={2} isLoading={loading} />
         </div>
       </div>

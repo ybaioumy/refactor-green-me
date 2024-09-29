@@ -41,16 +41,16 @@ const ProjectSummary = ({ onEdit }) => {
     return <EmptyList />;
   return (
     <>
-      <DetailsRow onEdit={() => setCurrentChildIndex(0)}>
+      <DetailsRow onEdit={() => setCurrentChildIndex(1)}>
         <ProjectRow label="Project Name" value={projectObject?.projectName} />
         <ProjectRow label="Project Beneficiary" value="Fujairah Hold." />
       </DetailsRow>
-      <DetailsRow onEdit={() => setCurrentChildIndex(0)}>
+      <DetailsRow onEdit={() => setCurrentChildIndex(1)}>
         <ProjectRow label="Project Category" value={selectedCategory} />
         <ProjectRow label="Economic Sector" value={selectedSector} />
       </DetailsRow>
 
-      <DetailsRow onEdit={() => setCurrentChildIndex(0)}>
+      <DetailsRow onEdit={() => setCurrentChildIndex(1)}>
         {/* <LocationDetail projectObject={projectObject} /> */}
       </DetailsRow>
       <DetailsRow onEdit={() => setCurrentChildIndex(1)}>

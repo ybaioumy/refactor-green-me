@@ -2,6 +2,7 @@ import React from 'react';
 import { Alert } from 'antd';
 
 const alertValidationMessage = (errors) => {
+    console.log(errors);
     const messages = [];
     const visited = new Set();
     const extractMessages = (errorObj, depth = 0, maxDepth = 10) => {

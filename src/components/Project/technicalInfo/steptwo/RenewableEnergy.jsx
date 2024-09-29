@@ -77,13 +77,16 @@ const RenewableEnergy = ({ title, project }) => {
               <div className="z-10 border border-[#c7c7c7] rounded-[28px] w-full md:w-[355px] h-[70px] flex items-center px-[20px]">
                 <Controller
                   name={`technicalInfo.${key}`}
+                  defaultValue={false}
                   control={control}
                   render={({ field }) => (
                     <>
                       <RadioButton
                         label={label}
                         variant="green"
-                        className={'text-[#1E4A28] flex items-center gap-2 cursor-pointer'}
+                        className={
+                          'text-[#1E4A28] flex items-center gap-2 cursor-pointer'
+                        }
                         name="Interconnection"
                         checked={technicalInfo?.[key] || false}
                         onChange={(e) => {
@@ -127,6 +130,7 @@ const RenewableEnergy = ({ title, project }) => {
                       <Controller
                         name={`technicalInfo.${innerKey}`}
                         control={control}
+                        defaultValue={0}
                         render={({ field }) => (
                           <NumericInput
                             {...field}
