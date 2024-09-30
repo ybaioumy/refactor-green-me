@@ -30,6 +30,7 @@ import ProjectESCO from './components/ESCO/Project';
 import Mission from './components/ESCO/Mission';
 import ProjectInvitation from './routes/JoinProject';
 
+
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
   const token = useGetToken();
