@@ -13,7 +13,7 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
     getValues,
     formState: { errors },
   } = methods;
-
+  console.log(errors);
   const [currentParentIndex, setCurrentParentIndex] = useState(0);
   const [currentChildIndex, setCurrentChildIndex] = useState(0);
   useEffect(() => {
@@ -28,7 +28,7 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
         errors,
         'errors at ' + location.pathname + currentParentIndex
       );
-      alertValidationMessage(errors); // Automatically calls alert function when there are errors
+      alertValidationMessage(errors); 
     }
   }, [currentParentIndex, errors, location.pathname]); // Listen for changes in the `errors` object
 
@@ -56,11 +56,12 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
   };
 
   const onSubmit = async (data) => {
-    const isValid = await trigger(); // Validate form before saving
+    const isValid = await trigger();
+    console.log(isValid);
     if (!isValid) {
-      alertValidationMessage(errors); // Alert if validation fails
+      alertValidationMessage(errors); 
     } else {
-      onSave(data); // Call the onSave function if the form is valid
+      onSave(data);
     }
   };
   const childrenLength = steps[currentParentIndex]?.children?.length || 0;
@@ -90,7 +91,7 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
         </div>
         <form
           onSubmit={methods.handleSubmit(onSubmit)}
-          className="w-full flex flex-col justify-between min-h-full mt-2">
+          className="w-full flex flex-col min-h-full justify-center">
           {steps[currentParentIndex]?.children[currentChildIndex]
             ?.childLabel && (
             <div className="bg-card rounded-lg py-2 px-5 mb-5 mt-5">
@@ -105,13 +106,13 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
             </div>
           )}
 
-          <div className="h-full min-h-[70vh] w-full my-auto transition-all duration-200">
+          <div className="h-full w-full min-h-[60vh] transition-all duration-200 mb-[10%]">
             {steps[currentParentIndex]?.children[currentChildIndex]?.content ||
               null}
           </div>
 
           {/* Navigation Buttons */}
-          <div className="flex flex-col md:flex-row-reverse mt-4 gap-3 justify-between items-center pb-2">
+          <div className="flex flex-col md:flex-row-reverse mt-4 gap-3 justify-between items-center justify-self-end pb-2">
             <div className="flex items-center gap-5">
               {currentChildIndex > 0 || currentParentIndex > 0 ? (
                 <Button

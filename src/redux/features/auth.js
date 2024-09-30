@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Cookies from 'js-cookie';
 import { setCredentials } from '../slices/user';
 import { REHYDRATE } from 'redux-persist';
+import { jwtDecode } from 'jwt-decode';
 
 // Helper function to check for REHYDRATE action
 function isHydrateAction(action) {
@@ -24,7 +25,7 @@ export const authApi = createApi({
     }),
     extractRehydrationInfo(action, { reducerPath }) {
         if (isHydrateAction(action)) {
-            return action.payload?.[reducerPath]; 
+            return action.payload?.[reducerPath];
         }
     },
     endpoints: (builder) => ({
@@ -37,6 +38,7 @@ export const authApi = createApi({
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
+                    const decodedToken = jwtDecode(data.token);
                     // Dispatch setUser action with user info
                     dispatch(
                         setCredentials({
@@ -45,6 +47,7 @@ export const authApi = createApi({
                             typeId: data.typeId,
                             role: data.role,
                             fullName: data.fullName,
+                            userId: decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]
                         })
                     );
                 } catch (err) {
@@ -73,10 +76,18 @@ export const authApi = createApi({
         }),
         getAllClientSectors: builder.query({
             query: () => 'ClientSector'
+        }),
+        getUserProjectPermissions: builder.query({
+            query: ({ projectId, userId }) => ({
+                url: 'userPermissionProject',
+                method: 'GET',
+                params: { userId, projectId }
+
+            }),
         })
     }),
 
 });
 
-export const { useLoginMutation, useRegisterMutation, useGetTypesQuery, useGetMyUsersQuery, useGetRolesQuery, useGetAllCountriesQuery, useGetAllClientSectorsQuery } = authApi;
+export const { useLoginMutation, useRegisterMutation, useGetTypesQuery, useGetMyUsersQuery, useGetRolesQuery, useGetAllCountriesQuery, useGetAllClientSectorsQuery,useGetUserProjectPermissionsQuery } = authApi;
 

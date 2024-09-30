@@ -15,19 +15,26 @@ export const inviteApi = createApi({
     }),
     endpoints: (builder) => ({
         inviteUser: builder.mutation({
-            query: ({ emails, projectId, typeId, statusId, permissionId ,roleId}) => ({
-                url: '/Users/invite',
+            query: ({ emails, projectId, typeId, statusId, permissionId, roleId }) => ({
+                url: 'Invitation/invite',
                 method: 'POST',
-                body: { emails, projectId, typeId, statusId, permissionId ,roleId},
+                body: { emails, projectId, typeId, statusId, permissionId, roleId },
             }),
         }),
-        getInvitations: builder.query({
+        getInvitationStatus: builder.query({
             query: () => 'InvitationStatus',
         }),
         getUserPermissions: builder.query({
             query: () => `Permission`,
+        }),
+        reponseToProjectInvitation: builder.mutation({
+            query: ({ permissionId, roleId, typeId, isAccept, invitationToken, invitationStatusId }) => ({
+                url: `Invitation/RespondToInvitation`,
+                method: 'POST',
+                body: { permissionId, roleId, isAccept, typeId, invitationToken, invitationStatusId },
+            }),
         })
     }),
 });
 
-export const { useInviteUserMutation, useGetInvitationsQuery, useGetUserPermissionsQuery } = inviteApi;
+export const { useInviteUserMutation, useGetInvitationStatusQuery, useGetUserPermissionsQuery, useReponseToProjectInvitationMutation } = inviteApi;

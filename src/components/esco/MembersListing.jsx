@@ -9,7 +9,7 @@ import Icon from '../shared/Icon';
 import Loader from '../shared/Loader';
 import {
   useInviteUserMutation,
-  useGetInvitationsQuery,
+  useGetInvitationStatusQuery,
   useGetUserPermissionsQuery,
 } from '../../redux/features/inviteMembers';
 import {
@@ -67,7 +67,7 @@ function MembersListing() {
     data: statusData,
     isLoading: isLoadingStatus,
     isError: isErrorStatus,
-  } = useGetInvitationsQuery();
+  } = useGetInvitationStatusQuery();
   const intialInvitationStatus = statusData?.find(
     (item) => item.name === 'Pending'
   );
@@ -354,7 +354,10 @@ function MembersListing() {
         />
       </Modal>
       {isPopupVisible && (
-        <InvitationModal onClose={() => setIsPopupVisible(false)} typeId={expertTypeId}/>
+        <InvitationModal
+          onClose={() => setIsPopupVisible(false)}
+          typeId={expertTypeId}
+        />
       )}
     </div>
   );

@@ -6,12 +6,12 @@ export default function ErrorPage() {
 
   return (
     <div className="error-page flex flex-col justify-center items-center h-dvh text-center">
-      <div className=" p-4 flex flex-col gap-3 rounded-lg">
+      <div className=" p-4 flex flex-col gap-3 rounded-lg w-[70%]">
         <h1 className="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary-600 dark:text-primary-500">
           {error.status || 404}
         </h1>
 
-        <h1 className="text-[20px] text-[#000] font-bold">
+        <h1 className="text-[20px] text-[#000] font-bold line-clamp-2">
           Oops , {error.error.message || error.statusText || error.message}
         </h1>
         {error.status === 404 ? (

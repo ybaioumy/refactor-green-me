@@ -12,6 +12,8 @@ const useLogout = () => {
     removeCookie('typeId', { path: '/' });
     removeCookie('token', { path: '/' });
     removeCookie('expiry', { path: '/' });
+    removeCookie('role', { path: '/' });
+    removeCookie('userId', { path: '/' });
   };
 
   return logout;
@@ -34,17 +36,22 @@ const useTokenExpiration = () => {
 const useSetCookiesAfterLogin = () => {
   const [isCookiesSet, setIsCookiesSet] = useState(false);
 
-  const setCookies = ({ fullName, typeId, token, expiry }) => {
+  const setCookies = ({ fullName, typeId, token, expiry, role, userId }) => {
     try {
       const cookieOptions = {
-        path: '/',
         expires: new Date(expiry),
-      };
+        secure: true,
+        sameSite: 'Strict',
+        httpOnly: false,
+        path: '/',
+      }
 
       Cookies.set('userName', fullName, cookieOptions);
       Cookies.set('typeId', typeId, cookieOptions);
       Cookies.set('token', token, cookieOptions);
       Cookies.set('expiry', expiry, cookieOptions);
+      Cookies.set('role', role, cookieOptions);
+      Cookies.set('userId', userId, cookieOptions);
       setIsCookiesSet(true);
     } catch (error) {
       console.error('Error setting cookies:', error);

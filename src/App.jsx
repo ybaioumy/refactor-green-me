@@ -21,13 +21,14 @@ import ProposalsPage from './routes/Proposals';
 import { OnlineStatusProvider } from './context/onlineConnectionContext';
 import ConnectionStatusNotification from './components/shared/ConnectionNotification';
 import SubmitOffer from './routes/SubmitOffer';
-import OpportunitiyOverview from './components/ESCO/OpportunitiyOverview'
+import OpportunitiyOverview from './components/ESCO/OpportunitiyOverview';
 import MembersListing from './components/ESCO/MembersListing';
 import MissionsListing from './components/ESCO/MissionsListing';
 import AssignMission from './components/ESCO/AssignMission';
 import ESCODashboard from './components/ESCO/Dashboard';
 import ProjectESCO from './components/ESCO/Project';
 import Mission from './components/ESCO/Mission';
+import ProjectInvitation from './routes/JoinProject';
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
   const token = useGetToken();
@@ -184,6 +185,10 @@ const ESCORouter = createBrowserRouter([
       {
         path: 'profile',
         element: <Profile />,
+      },
+      {
+        path: 'join-project',
+        element: <ProjectInvitation />,
       },
     ],
   },

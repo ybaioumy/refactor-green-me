@@ -37,7 +37,7 @@ function ClientESCO({ tokenData }) {
                     errors?.firstName ? 'opacity-100' : 'opacity-0'
                   }`}>
                   {errors?.firstName?.message && (
-                    <p>{errors?.firstName?.message}</p>
+                    <span>{errors?.firstName?.message}</span>
                   )}
                 </p>
               )}
@@ -63,7 +63,7 @@ function ClientESCO({ tokenData }) {
                     errors?.lastName ? 'opacity-100' : 'opacity-0'
                   }`}>
                   {errors?.lastName?.message && (
-                    <p>{errors?.lastName?.message}</p>
+                    <span>{errors?.lastName?.message}</span>
                   )}
                 </p>
               )}
@@ -97,7 +97,7 @@ function ClientESCO({ tokenData }) {
                 errors?.birthDate ? 'opacity-100' : 'opacity-0'
               }`}>
               {errors?.birthDate?.message && (
-                <p>{errors?.birthDate?.message}</p>
+                <span>{errors?.birthDate?.message}</span>
               )}
             </p>
           )}
@@ -138,7 +138,7 @@ function ClientESCO({ tokenData }) {
               className={`text-red-500 transition-opacity duration-300 ${
                 errors?.email ? 'opacity-100' : 'opacity-0'
               }`}>
-              {errors?.email?.message && <p>{errors?.email?.message}</p>}
+              {errors?.email?.message && <span>{errors?.email?.message}</span>}
             </p>
           )}
           {tokenData && (
@@ -146,7 +146,7 @@ function ClientESCO({ tokenData }) {
               className={`text-[#8c8c8c] transition-opacity duration-300 ${
                 tokenData?.Email ? 'opacity-100' : 'opacity-0'
               }`}>
-              <p>You can not edit this field</p>
+              <span>You can not edit this field</span>
             </p>
           )}
         </div>
@@ -174,7 +174,7 @@ function ClientESCO({ tokenData }) {
                 errors?.phoneNumber ? 'opacity-100' : 'opacity-0'
               }`}>
               {errors?.phoneNumber?.message && (
-                <p>{errors?.phoneNumber?.message}</p>
+                <span>{errors?.phoneNumber?.message}</span>
               )}
             </p>
           )}

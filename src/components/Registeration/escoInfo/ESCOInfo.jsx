@@ -10,7 +10,11 @@ import DisbursedPie from '../../shared/PieChart';
 import dayjs from 'dayjs';
 
 function ESCODetails({ countries }) {
-  const { control, setValue, watch, getValues } = useFormContext({
+  const {
+    control,
+    setValue,
+    formState: { errors },
+  } = useFormContext({
     defaultValues: {
       escoName: '',
       escoLegalName: '',
@@ -18,17 +22,17 @@ function ESCODetails({ countries }) {
       escoCountriesServeds: [],
     },
   });
-  const [countriesServed, setCountriesServed] = useState([{ countryId: 0 }]);
-
+  const [countriesServed, setCountriesServed] = useState([]);
+  const cleanCountriesServed = (countries) =>
+    countries.filter((country) => country.countryId !== null);
   const addCountry = () => {
     const newCountry = { countryId: null };
-    setCountriesServed([...countriesServed, newCountry]);
-    setValue('escoCountriesServeds', [
-      ...getValues('escoCountriesServeds'),
-      newCountry,
-    ]);
-  };
+    const updatedCountries = [...countriesServed, newCountry];
+    setCountriesServed(updatedCountries);
 
+    // Update form value with cleaned data
+    setValue('escoCountriesServeds', cleanCountriesServed(updatedCountries));
+  };
   const removeCountry = (index) => {
     if (countriesServed.length <= 1) {
       message.error('At least one ESCO country must be selected.');
@@ -74,14 +78,21 @@ function ESCODetails({ countries }) {
             }}
             control={control}
             render={({ field }) => (
-              <Select
-                {...field}
-                removeMaxWidth
-                search
-                variant="innerShadow"
-                options={countries}
-                onChange={(value) => handleChange('countryId', value.id)}
-              />
+              <div className="flex flex-col w-full">
+                <Select
+                  {...field}
+                  // removeMaxWidth
+                  search
+                  variant="innerShadow"
+                  options={countries}
+                  onChange={(value) => handleChange('countryId', value.id)}
+                />
+                {errors.countryId && (
+                  <span className="transition-opacity duration-300 text-[14px] md:text-[18px] text-red-500">
+                    {errors.countryId.message}
+                  </span>
+                )}
+              </div>
             )}
           />
         </ItemRow>
@@ -138,7 +149,7 @@ function ESCODetails({ countries }) {
               render={({ field }) => (
                 <Select
                   {...field}
-                  removeMaxWidth
+                  // removeMaxWidth
                   search
                   variant="secondary"
                   options={countries}
@@ -218,14 +229,12 @@ function ESCODetails({ countries }) {
 const EscoOwnershipSection = () => {
   const { control, setValue, getValues } = useFormContext();
   const [shareholders, setShareholders] = useState([]);
-
+  const cleanState = (shares) => shares.filter((share) => share.id !== null);
   const addShareholder = () => {
     const newShareholder = { name: '', share: 0, value: 0 };
-    setShareholders([...shareholders, newShareholder]);
-    setValue('escoOwnerships', [
-      ...getValues('escoOwnerships'),
-      newShareholder,
-    ]);
+    const updatedState = [...shareholders, newShareholder];
+    setShareholders(updatedState);
+    setValue('escoOwnerships', cleanState(updatedState));
   };
 
   const removeShareholder = (index) => {
@@ -386,14 +395,14 @@ const EscoOwnershipSection = () => {
 
 const EscoActivitiesSection = () => {
   const { control, setValue, getValues } = useFormContext();
-  const [activities, setActivities] = useState([
-    { activityName: '', description: '' },
-  ]);
-
+  const [activities, setActivities] = useState([]);
+  const cleanedActivities = (activities) =>
+    activities.filter((activity) => activity.id !== null);
   const addActivity = () => {
     const newActivity = { activityName: '', description: '' };
-    setActivities([...activities, newActivity]);
-    setValue('escoActivities', [...getValues('escoActivities'), newActivity]);
+    const updatedActivities = [...activities, newActivity];
+    setActivities(updatedActivities);
+    setValue('escoActivities', cleanedActivities(updatedActivities));
   };
 
   const removeActivity = (index) => {
@@ -473,12 +482,14 @@ const EscoActivitiesSection = () => {
 
 const EscoManagementSection = () => {
   const { control, setValue, getValues } = useFormContext();
-  const [management, setManagement] = useState([{ name: '', role: '' }]);
-
+  const [management, setManagement] = useState([]);
+  const cleanState = (management) =>
+    management.filter((management) => management.id !== null);
   const addManagement = () => {
     const newManagement = { name: '', role: '' };
-    setManagement([...management, newManagement]);
-    setValue('escoManagement', [...getValues('escoManagement'), newManagement]);
+    const updated = [...management, newManagement];
+    setManagement(updated);
+    setValue('escoManagement', cleanState(updated));
   };
 
   const removeManagement = (index) => {

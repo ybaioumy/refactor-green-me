@@ -7,7 +7,7 @@ import {
   useGetRolesQuery,
 } from '../../../redux/features/auth';
 import {
-  useGetInvitationsQuery,
+  useGetInvitationStatusQuery,
   useInviteUserMutation,
   useGetUserPermissionsQuery,
 } from '../../../redux/features/inviteMembers';
@@ -25,7 +25,7 @@ const InvitationModal = ({ onClose, typeId }) => {
     data: statusData,
     isLoading: isLoadingStatus,
     isError: isErrorStatus,
-  } = useGetInvitationsQuery();
+  } = useGetInvitationStatusQuery();
 
   const {
     data: permissions,

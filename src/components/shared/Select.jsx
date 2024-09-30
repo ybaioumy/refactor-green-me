@@ -164,7 +164,7 @@ const Select = forwardRef(
 
     return (
       <div
-        className={`relative inline-block text-left w-full  md:min-w-[250px] max-w-[300px] ${
+        className={`relative inline-block text-left w-full   max-w-[300px] ${
           !removeMaxWidth ? 'md:max-w-[400px]' : ''
         }`}
         onBlur={handleBlur}

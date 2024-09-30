@@ -8,7 +8,17 @@ import {
 } from '../../redux/features/auth';
 import Loader from '../shared/Loader';
 import EmptyList from '../shared/EmptyList';
+import { useFormContext } from 'react-hook-form';
 function StepThree({ registerData }) {
+  const {
+    control,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useFormContext();
+
+  const typeId = watch('typesId');
+  console.log(typeId, 'typeId');
   const {
     data: countries,
     isLoading: isLoadingCountries,
@@ -30,8 +40,8 @@ function StepThree({ registerData }) {
     // Return the id associated with the name, or null if not found
     return userType ? userType.id : null;
   };
-  const clientId = getUserTypeIdByName(registerData.typesId, 'client');
-  const escoId = getUserTypeIdByName(registerData.typesId, 'esco');
+  const clientId = getUserTypeIdByName(typeId, 'client');
+  const escoId = getUserTypeIdByName(typeId, 'esco');
   if (isLoading || isLoadingCountries) return <Loader />;
   if (isError || isErrorCountries) return <EmptyList />;
   if (escoId) return <ESCODetails countries={countries} />;

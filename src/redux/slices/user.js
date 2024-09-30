@@ -7,6 +7,8 @@ const initialState = {
     typeId: null,
     role: null,
     fullName: null,
+    userId: null,
+    invtationToken: null,
 };
 
 const authSlice = createSlice({
@@ -14,19 +16,14 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         setCredentials: (state, action) => {
-            const { token, expiry, typeId, role, fullName } = action.payload; 
-            Cookies.set('token', token, {
-                expires: new Date(expiry),
-                secure: true,   // Use only HTTPS
-                sameSite: 'Strict',  // CSRF protection
-                httpOnly: false, // JS can still access this; set to true on server-side
-            });
-
+            const { token, expiry, typeId, role, fullName, userId, invtationToken } = action.payload;
             state.token = token;
             state.expiry = expiry;
             state.typeId = typeId;
             state.role = role;
             state.fullName = fullName;
+            state.userId = userId;
+            state.invtationToken = invtationToken;
         },
         clearCredentials: (state) => {
             Cookies.remove('token'); // Clear token from cookies

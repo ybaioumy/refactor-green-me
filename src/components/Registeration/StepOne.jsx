@@ -4,32 +4,21 @@ import Loader from '../shared/Loader';
 import { useGetTypesQuery } from '../../redux/features/auth';
 import EmptyList from '../shared/EmptyList';
 
-function UserType({ registerData, setRegisterData, tokenData }) {
+function UserType({ tokenData }) {
   const {
     control,
     formState: { errors },
     setValue,
-  } = useFormContext(); // useForm hook
+  } = useFormContext();
   const { data, isLoading, isError } = useGetTypesQuery();
 
-  // If tokenData is available, set the default TypeId in registerData
   useEffect(() => {
     if (tokenData?.TypeId) {
-      setRegisterData((prevData) => ({
-        ...prevData,
-        typesId: Number(tokenData.TypeId),
-      }));
-      setValue('typesId', Number(tokenData.TypeId)); // Set the form value for validation
+   
+      setValue('typesId', Number(tokenData.TypeId)); 
     }
-  }, [tokenData, setRegisterData, setValue]);
+  }, [tokenData, setValue]);
 
-  // Handle checkbox change
-  const handleCheckboxChange = (id) => {
-    setRegisterData((prevData) => ({
-      ...prevData,
-      typesId: id,
-    }));
-  };
 
   if (isLoading) return <Loader />;
   if (isError) return <EmptyList />;
@@ -77,7 +66,6 @@ function UserType({ registerData, setRegisterData, tokenData }) {
                     }
                     onChange={() => {
                       field.onChange(item.id); // Set the value in the form for validation
-                      handleCheckboxChange(item.id); // Update registerData state
                     }}
                     className="accent-[#1d4628]"
                     disabled={tokenData && tokenData.Email !== undefined} // Disable if tokenData.Email is present

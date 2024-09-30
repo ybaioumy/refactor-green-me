@@ -6,7 +6,8 @@ import { setProject } from '../redux/slices/project';
 import { useParams } from 'react-router-dom';
 import alertValidationMessage from '../utilits/alertMessage'
 import { message } from 'antd';
-import { DevTool } from "@hookform/devtools";
+import Cookies from 'js-cookie';
+import { useGetUserProjectPermissionsQuery } from '../redux/features/auth';
 
 
 const StepContext = createContext();
@@ -14,16 +15,17 @@ const StepContext = createContext();
 export const StepProvider = ({ children, steps, canEdit }) => {
     const dispatch = useDispatch();
     const { id } = useParams()
-
+    const userId = Cookies.get('userId')
     const [currentParentIndex, setCurrentParentIndex] = useState(0);
     const [currentChildIndex, setCurrentChildIndex] = useState(0);
-    const { trigger, getValues, watch,
-        control,
-        formState: {
-            errors
-        }
+    const { trigger, getValues,
+        formState: { errors }
     } = useFormContext();
     const [updateProjectById, { isLoading }] = useUpdateProjectByIdMutation();
+    const { data: projectPermissions, isLoading: isLoadingPermissions } =
+        useGetUserProjectPermissionsQuery({ projectId: id, userId: userId })
+
+    console.log(projectPermissions,'form state');
     const handleNext = async () => {
         const isValid = await trigger();
         if (!isValid) {

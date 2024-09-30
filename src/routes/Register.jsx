@@ -1,6 +1,6 @@
 import React from 'react';
 import Steps from '../components/shared/Steps';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Logo from '../assets/images/greenme.png';
 import GreenMeTitle from '../assets/images/GreenMeTitle.png';
 import { useSearchParams } from 'react-router-dom';
@@ -14,6 +14,7 @@ import UserInformation from '../components/Registeration/StepTwo';
 import StepThree from '../components/Registeration/StepThree';
 import Loader from '../components/shared/Loader';
 import EmptyList from '../components/shared/EmptyList';
+import useGetItemIdByName from '../hooks/useGetItemIdByName';
 function Register() {
   const {
     data: roles,
@@ -21,26 +22,36 @@ function Register() {
     isError,
   } = useGetRolesQuery();
 
-  const initialRoleId = roles?.find(
-    (role) => role.name.toLowerCase() === 'admin'
-  ).id;
+  const initialRoleId = useGetItemIdByName(roles, 'admin');
   const [searchParams] = useSearchParams();
-  const token = searchParams.get('token');
-  const { decodedToken, isExpired } = useJwt(token);
+  const token = searchParams.get('encryptedData');
+  const { decodedToken } = useJwt(token);
   const [registerData, setRegisterData] = useState({
     gender: 1,
     statusId: 1,
-    typesId: null,
-    clientId: null,
-    invitationToken: '',
     invitationStatusId: 0,
     permissionId: [],
+    clientId: null,
+    invitationToken: '',
     roleId: initialRoleId,
-    escotypeId: null,
+    escoId: null,
   });
+  useEffect(() => {
+    if (decodedToken) {
+      setRegisterData((prevData) => ({
+        ...prevData,
+        clientId: decodedToken.ClientId || null,
+        invitationToken: decodedToken.InvitationToken || '',
+        roleId: decodedToken.RoleId || initialRoleId,
+        escoId: decodedToken.EscoId || null,
+      }));
+    }
+  }, [decodedToken, initialRoleId]);
+
+  console.log(registerData);
+
   const [imagePreview, setImagePreview] = useState(null);
-  const [registerMutation, { isLoading, error, isError: isErrorRegister }] =
-    useRegisterMutation();
+  const [registerMutation, { isLoading }] = useRegisterMutation();
   const navigate = useNavigate();
   const handleFileChange = (typesId, event) => {
     const file = event.target.files[0];
@@ -78,13 +89,7 @@ function Register() {
     {
       children: [
         {
-          content: (
-            <UserType
-              registerData={registerData}
-              setRegisterData={setRegisterData}
-              tokenData={decodedToken}
-            />
-          ),
+          content: <UserType tokenData={decodedToken} />,
         },
         {
           content: (
@@ -111,7 +116,7 @@ function Register() {
       }, 200);
     } catch (error) {
       console.error(error);
-      message.error(error.data.message||'Registration failed');
+      message.error(error.data.message || 'Registration failed');
     }
   };
   if (isLoadingRoles) return <Loader />;

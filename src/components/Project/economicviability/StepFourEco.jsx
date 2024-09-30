@@ -2,7 +2,10 @@ import { useFormContext, Controller } from 'react-hook-form';
 import NumericInput from '../../shared/NumericInput';
 
 function StepFourECO() {
-  const { control } = useFormContext();
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
 
   return (
     <div className="flex flex-col ">
@@ -58,6 +61,9 @@ function StepFourECO() {
               </p>
               <div className="w-full flex items-center gap-4 bg-[#EFEFEF] p-[37px] rounded-[15px] mt-1">
                 <Controller
+                  rules={{
+                    required: 'Tax Rate is required',
+                  }}
                   name="economicViabilty.taxRate"
                   control={control}
                   defaultValue={0}
@@ -65,6 +71,7 @@ function StepFourECO() {
                     <NumericInput {...field} unit="Year" />
                   )}
                 />
+                
               </div>
             </div>
           </div>

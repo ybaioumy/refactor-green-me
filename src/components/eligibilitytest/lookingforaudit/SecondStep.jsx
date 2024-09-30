@@ -103,7 +103,9 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
               name={`consumption.${type}AnnualConsumptionExPost`}
               control={control}
               rules={{
-                required: isEnabled ? 'This field is required' : false,
+                required: isEnabled
+                  ? `Since you Enabled ${type} Annual Consumption Ex-Post: value must be greater than 0`
+                  : false,
                 validate: (value) =>
                   !isEnabled ||
                   value > 0 ||
@@ -125,7 +127,9 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
               name={`consumption.${type}AnnualConsumptionBenchmark`}
               control={control}
               rules={{
-                required: isEnabled ? 'This field is required' : false,
+                required: isEnabled
+                  ? `Since You Enabled ${type} Annual Consumption Bench Mark: Value must be greater than 0`
+                  : false,
                 validate: (value) =>
                   !isEnabled ||
                   value > 0 ||
@@ -156,7 +160,9 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
               name={`consumption.${type}AverageTariffCostExPost`}
               control={control}
               rules={{
-                required: isEnabled ? 'This field is required' : false,
+                required: isEnabled
+                  ? `Since You Enabled ${type} Average Tariff Const Ex-Post: value must be greater than 0`
+                  : false,
                 validate: (value) =>
                   !isEnabled ||
                   value > 0 ||
@@ -176,7 +182,9 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
               name={`consumption.${type}AverageTariffCostBenchmark`}
               control={control}
               rules={{
-                required: isEnabled ? 'This field is required' : false,
+                required: isEnabled
+                  ? `Since you Enabled ${type} Average Tariff Const Bench Mark: Value must be greater than 0`
+                  : false,
                 validate: (value) =>
                   !isEnabled ||
                   value > 0 ||

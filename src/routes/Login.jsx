@@ -6,21 +6,19 @@ import { useForm } from 'react-hook-form';
 import { useLoginMutation } from '../redux/features/auth';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import Button from '../components/shared/Button';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { message, notification } from 'antd';
 import useMediaQuery from '../hooks/useMediaQuery';
 import { useSetCookiesAfterLogin } from '../hooks/useCookies';
-// const loginOptions = {
-//   google: 'google',
-//   facebook: 'facebook',
-//   twitter: 'twitter',
-//   github: 'github',
-// };
-
+import { jwtDecode } from 'jwt-decode';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../redux/slices/user';
 function Login() {
   const navigation = useNavigate();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
+  // const [searchParams] = useSearchParams();
+  // const token = searchParams.get('token');
+  // const { decodedToken } = jwtDecode(token);
   const {
     register,
     handleSubmit,
@@ -35,24 +33,24 @@ function Login() {
   const onSubmit = async (data) => {
     try {
       const response = await login(data).unwrap();
+      const decodedToken = jwtDecode(response.token);
       const expires = response.expiry;
       const expDate = new Date(expires);
-      // dispatch(
-      //   setCredentials({
-      //     token: response.token,
-      //     expiry: expires,
-      //     typeId: response.typeId,
-      //     role: response.role,
-      //     fullName: response.fullName,
-      //   })
-      // );
       setCookies({
         fullName: response.fullName,
         typeId: response.typeId,
         token: response.token,
         role: response.role,
         expiry: expDate,
+        userId:
+          decodedToken[
+            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
+          ],
       });
+      // if (token) {
+      //   // dispatch(setCredentials({ invtationToken: token.invitaionToken }));
+      // }
+
       const userTypeMap = {
         1: 'client',
         2: 'esco',
@@ -132,7 +130,7 @@ function Login() {
                   },
                 })}
                 placeholder="Email / Phone"
-                autoComplete='email'
+                autoComplete="email"
               />
               {errors.email && (
                 <p className="text-red-500 text-base mt-1">
@@ -153,7 +151,7 @@ function Login() {
                   })}
                   placeholder="Password"
                   className="w-full focus:outline-none p-2"
-                  autoComplete='current-password'
+                  autoComplete="current-password"
                 />
                 <button
                   onClick={handlePasswordVisibilityToggle}
