@@ -33,6 +33,7 @@ const authSlice = createSlice({
             state.typeId = null;
             state.role = null;
             state.fullName = null;
+            state.invtationToken = null;
         }
     },
 });

@@ -5,20 +5,18 @@ export const inviteApi = createApi({
     reducerPath: 'inviteApi',
     baseQuery: fetchBaseQuery({
         baseUrl: process.env.REACT_APP_API_BASE, prepareHeaders: (headers) => {
-            headers.set('Content-Type', 'application/json');
-            headers.set('Accept', 'application/json');
-
             headers.set('Authorization', authHeader());
 
             return headers;
         },
     }),
+    // new body : esco id , clientId
     endpoints: (builder) => ({
         inviteUser: builder.mutation({
-            query: ({ emails, projectId, typeId, statusId, permissionId, roleId }) => ({
+            query: ({ emails, projectId, typeId, statusId, permissionId, roleId, escoId }) => ({
                 url: 'Invitation/invite',
                 method: 'POST',
-                body: { emails, projectId, typeId, statusId, permissionId, roleId },
+                body: { emails, projectId, typeId, statusId, permissionId, roleId, escoId },
             }),
         }),
         getInvitationStatus: builder.query({

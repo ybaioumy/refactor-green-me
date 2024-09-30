@@ -68,11 +68,11 @@ const HorizontalSearchBar = ({ data, operationTodo, isLoading }) => {
       </div>
 
       <div
-        className={`flex flex-col md:flex-row w-full gap-5 justify-between md:px-10 py-5 md:bg-[#D9D9D9] 
+        className={`flex flex-col md:flex-row w-full gap-5 justify-between px-2 md:px-10 py-5 md:bg-[#D9D9D9] 
         ${isOpen ? 'block' : 'hidden'}
          md:flex
          `}>
-        <div className=" flex  flex-row gap-4 items-end">
+        <div className="flex  flex-row gap-4 items-end flex-wrap">
           <div className="flex flex-col w-full  justify-between">
             <label
               htmlFor="search"

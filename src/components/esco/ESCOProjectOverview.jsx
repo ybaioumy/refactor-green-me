@@ -34,7 +34,7 @@ const ProjectOverView = ({ steps }) => {
   const containerVariants = {
     close: {
       opacity: 0,
-    
+
       transition: {
         type: 'spring',
         damping: 15,
@@ -43,7 +43,7 @@ const ProjectOverView = ({ steps }) => {
     },
     open: {
       opacity: 1,
-    
+
       transition: {
         type: 'spring',
         damping: 15,
@@ -165,7 +165,6 @@ const ProjectOverView = ({ steps }) => {
               className="h-fit w-full"
               ref={(el) => (cardRefs.current[index] = el)}>
               <button
-                
                 title={parentStep.label}
                 type="button"
                 onClick={() => {
@@ -195,7 +194,7 @@ const ProjectOverView = ({ steps }) => {
         className="w-full flex flex-col justify-between min-h-full flex-1 md:p-4 p-2">
         <div className="h-full min-h-[70vh] w-full my-auto pb-4 transition-all duration-200">
           <div className="flex flex-col gap-2 mb-4 capitalize">
-            <div className="flex gap-2 w-full justify-between">
+            <div className="flex gap-2 w-full justify-between items-center mt-2">
               <div className="flex gap-2 w-fit">
                 {Array.from({ length: childrenLength }).map((_, index) => (
                   <span

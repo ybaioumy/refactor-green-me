@@ -108,12 +108,13 @@ function Register() {
   const onSubmit = async (data) => {
     const dataToSend = { ...registerData, ...data };
     try {
-      const response = await registerMutation(dataToSend).unwrap();
-      console.log(response);
-      message.success('Registration successful');
-      setTimeout(() => {
-        navigate('/');
-      }, 200);
+      console.log(dataToSend);
+      // const response = await registerMutation(dataToSend).unwrap();
+      // console.log(response);
+      // message.success('Registration successful');
+      // setTimeout(() => {
+      //   navigate('/');
+      // }, 200);
     } catch (error) {
       console.error(error);
       message.error(error.data.message || 'Registration failed');

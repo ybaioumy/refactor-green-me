@@ -13,7 +13,6 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
     getValues,
     formState: { errors },
   } = methods;
-  console.log(errors);
   const [currentParentIndex, setCurrentParentIndex] = useState(0);
   const [currentChildIndex, setCurrentChildIndex] = useState(0);
   useEffect(() => {
@@ -28,7 +27,7 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
         errors,
         'errors at ' + location.pathname + currentParentIndex
       );
-      alertValidationMessage(errors); 
+      alertValidationMessage(errors);
     }
   }, [currentParentIndex, errors, location.pathname]); // Listen for changes in the `errors` object
 
@@ -59,7 +58,7 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
     const isValid = await trigger();
     console.log(isValid);
     if (!isValid) {
-      alertValidationMessage(errors); 
+      alertValidationMessage(errors);
     } else {
       onSave(data);
     }
@@ -79,7 +78,7 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
             />
             {steps[currentParentIndex]?.icon}
           </div>
-          <div className="flex gap-2 w-fit">
+          <div className="flex gap-2 w-fit mb-2">
             {Array.from({ length: childrenLength }).map((_, index) => (
               <span
                 key={index}

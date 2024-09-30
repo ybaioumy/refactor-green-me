@@ -26,7 +26,8 @@ const ProjectSwiper = ({ projects, isLoading }) => {
   };
 
   if (isLoading) return <SkeltonLoader />;
-  if (!projects || projects.length === 0) return <EmptyList />;
+  if (!projects || projects.length === 0)
+    return <EmptyList message={'No Projects to show'} type="add" />;
 
   const isAtStart = activeIndex === 0;
 

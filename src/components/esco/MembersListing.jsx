@@ -28,7 +28,7 @@ function MembersListing() {
   const { id } = useParams();
   const location = useLocation();
   const { state } = location;
-  const { typeId, projectId } = state || {};
+  const { typeId, projectId, escoId } = state || {};
 
   const gridRef = useRef();
   const searchObject = useSelector((state) => state.search);
@@ -37,10 +37,8 @@ function MembersListing() {
   const [open, setOpen] = useState(false);
   const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
-
   const { pageSize } = searchObject;
-  const [inviteUser, { isLoading, isSuccess, isError, error }] =
-    useInviteUserMutation();
+  const [inviteUser, { isLoading }] = useInviteUserMutation();
   const {
     data,
     isLoading: isLoadingAllExperts,
@@ -50,40 +48,22 @@ function MembersListing() {
     data: filters,
     isLoading: isLoadingFilters,
     isError: isErrorFilters,
-    error: errorLoadingFilters,
   } = useGetExpertFilterQuery();
 
-  const {
-    data: roles,
-    isLoading: isLodingRoles,
-    error: errorRoles,
-    isError: isErrorRoles,
-  } = useGetRolesQuery();
-  const initialRoleId = roles?.find(
-    (role) => role.name.toLowerCase() === 'user'
-  ).id;
+  const { data: roles, isLoading: isLodingRoles } = useGetRolesQuery();
+  const initialRoleId = useGetItemIdByName(roles, 'user');
 
   const {
     data: statusData,
     isLoading: isLoadingStatus,
     isError: isErrorStatus,
   } = useGetInvitationStatusQuery();
-  const intialInvitationStatus = statusData?.find(
-    (item) => item.name === 'Pending'
-  );
-  const {
-    data: types,
-    isLoading: isLoadingTypes,
-    isError: isErrorTypes,
-  } = useGetTypesQuery();
+  const intialInvitationStatus = useGetItemIdByName(statusData, 'pending');
+  const { data: types } = useGetTypesQuery();
   const expertTypeId = useGetItemIdByName(types, 'expert');
 
-  const {
-    data: permissionsArray,
-    isLoading: isLoadingPermissions,
-    isError: isErrorPermissions,
-    error: errorPermissions,
-  } = useGetUserPermissionsQuery();
+  const { data: permissionsArray, isLoading: isLoadingPermissions } =
+    useGetUserPermissionsQuery();
   const [gridApi, setGridApi] = useState(null);
   const [columnDefs] = useState([
     {
@@ -110,7 +90,7 @@ function MembersListing() {
           <Link
             state={{ expert: params.data, projectId: id }}
             to={`/projects/eligible/${id}/add-mission`}
-            className="flex justify-between items-center rounded-full w-[226px] px-2 bg-[#0050C8] text-white font-semibold">
+            className="flex justify-between items-center rounded-full w-[150px] md:w-[226px] px-2 bg-[#0050C8] text-white font-semibold">
             <Icon name={'addProject'} />
             Mission
           </Link>
@@ -189,9 +169,10 @@ function MembersListing() {
         emails: emailsArray,
         projectId: projectIdToSend,
         typeId,
-        statusId: intialInvitationStatus?.id,
-        permissionId: selectedPermissions, //list of selected permission
+        statusId: intialInvitationStatus,
+        permissionId: selectedPermissions,
         roleId: initialRoleId,
+        escoId,
       }).unwrap();
       message.success(
         `Users with emails ${emailsArray.join(

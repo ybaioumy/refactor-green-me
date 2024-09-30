@@ -538,7 +538,6 @@ input[type="checkbox"] {
 
 .custom-pagination.membersPagination button {
   color: #142478;
-  font-size: 25;
   font-family: 'Quicksand';
   font-weight: 700;
   text-transform: capitalize;
@@ -606,12 +605,13 @@ input[type="checkbox"] {
 @media screen and (max-width: 768px) {
   .custom-pagination {
     justify-content: space-between;
+    padding: 5px !important;
   }
 
   .custom-pagination button {
-    border: none;
-    width: 30px;
-    height: 30px;
+    border: none !important;
+    width: 30px !important;
+    height: 30px !important;
   }
 }
 

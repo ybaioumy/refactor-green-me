@@ -135,7 +135,7 @@ const SusGraph = () => {
         <div className="flex flex-wrap gap-2">
           {filters.map((filter) => (
             <button
-              className="text-[#1E4A28] font-semibold w-1/4 truncate"
+              className="text-[#1E4A28] font-semibold md:w-1/4 truncate bg-slate-100 rounded-md p-2 focus:outline"
               key={Math.random()}>
               {filter}
             </button>
@@ -188,7 +188,7 @@ const SusGraph = () => {
           {/* Years data from api*/}
           <Select options={[]} onChange={(e) => console.log(e)} />
 
-          <div className="flex items-center justify-between gap-2 w-full">
+          <div className="flex items-center justify-between gap-2 w-full flex-wrap">
             <Button
               hasIcon
               iconPosition="left"

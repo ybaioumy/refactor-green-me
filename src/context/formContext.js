@@ -25,7 +25,7 @@ export const StepProvider = ({ children, steps, canEdit }) => {
     const { data: projectPermissions, isLoading: isLoadingPermissions } =
         useGetUserProjectPermissionsQuery({ projectId: id, userId: userId })
 
-    console.log(projectPermissions,'form state');
+    // console.log(projectPermissions,'form state');
     const handleNext = async () => {
         const isValid = await trigger();
         if (!isValid) {

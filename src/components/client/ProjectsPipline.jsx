@@ -42,12 +42,12 @@ const ProjectsPipline = ({ slidePerView }) => {
             </Button>
           </div>
           {/* New Project Button */}
-          <div className="w-full md:w-auto">
+          <div className="w-full ">
             <Button
               hasIcon
               iconPosition="left"
               iconName="addProject"
-              className="w-full md:w-auto font-semibold"
+              className="w-full font-semibold"
               type="link"
               to={'/new-project'}>
               New project

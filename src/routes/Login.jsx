@@ -34,6 +34,8 @@ function Login() {
     try {
       const response = await login(data).unwrap();
       const decodedToken = jwtDecode(response.token);
+      // console.log(decodedToken);
+      // console.log(response, 'response');
       const expires = response.expiry;
       const expDate = new Date(expires);
       setCookies({

@@ -72,7 +72,7 @@ const CustomPaginationComponent = React.memo((props) => {
     return Math.min(currentPage * pageSize, totalRecords);
   }, [currentPage, pageSize, totalRecords]);
   if (totalPages <= 0) {
-    return null; // Or render a message indicating no data is available
+    return null; 
   }
   return (
     <div

@@ -15,10 +15,17 @@ function StepThree({ registerData }) {
     formState: { errors },
     setValue,
     watch,
-  } = useFormContext();
+  } = useFormContext({
+    defaultValues: {
+      dateOfEstablishment: null,
+      escoBrief: null,
+      jurisdictionOfTheCompany: null,
+      legalForm: null,
+      escoLegalName: null,
+    },
+  });
 
   const typeId = watch('typesId');
-  console.log(typeId, 'typeId');
   const {
     data: countries,
     isLoading: isLoadingCountries,

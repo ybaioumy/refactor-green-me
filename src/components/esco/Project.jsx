@@ -55,11 +55,12 @@ function ProjectESCO() {
   }, [projectData, reset, dispatch, id]);
 
   const { projectObject } = useSelector((state) => state.project);
-
+  // console.log(projectObject);
   const ProposalButton = () => (
     <>
-      {data?.length > 0 && (
+      {data?.length > 0 ? (
         <Button
+          className={'w-[100px]'}
           isLoading={isLoadingProposals}
           variant="blue"
           onClick={() =>
@@ -68,9 +69,9 @@ function ProjectESCO() {
             })
           }>
           <div className="w-[20px] h-[20px] bg-[#bbea00] rounded-full mr-2" />
-          <p className="">{`${data?.length} Submitted proposals`}</p>
+          <p className={''}>{`${data?.length} Submitted proposals`}</p>
         </Button>
-      )}
+      ) : null}
     </>
   );
   const steps = [

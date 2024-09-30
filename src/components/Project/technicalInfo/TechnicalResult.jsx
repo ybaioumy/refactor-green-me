@@ -21,7 +21,7 @@ const ViabilityStatus = ({ id }) => {
       {/* <ProjectInfo /> */}
       <ProjectMetrics metrics={data} />
       {data?.isViable ? (
-        <div className="flex flex-col items-center px-[20px]">
+        <div className="flex flex-col items-center md:px-[20px]">
           <Lottie options={defaultOptions} height={200} width={200} />
           <p className="text-[#1E4A28] font-bold text-[26px]">Viable</p>
         </div>
@@ -72,7 +72,7 @@ const ProjectMetrics = ({ metrics }) => {
     );
   };
   return (
-    <div className="flex flex-col gap-10 w-[60%] border-r border-black px-6 h-full ">
+    <div className="flex flex-col gap-10 w-[60%] border-r border-black pr-6 md:px-6 h-full ">
       <Item label="Energy Yield" value={metrics.energyYield} unit="GWh/year" />
       <Item
         label="Energy Saved"

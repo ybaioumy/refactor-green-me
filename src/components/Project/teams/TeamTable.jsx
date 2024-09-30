@@ -5,19 +5,24 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Button from '../../shared/Button';
 import { useTypeId } from '../../../hooks/useCookies';
 import AddMembersPopup from './InvitationModal'; // Import the Add Members Popup component
+import { useGetTypesQuery } from '../../../redux/features/auth';
+import useGetItemIdByName from '../../../hooks/useGetItemIdByName';
 
 function TeamTable({ label, membersType, data }) {
   const { id } = useParams();
   const userType = useTypeId();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
-
+  const [selectedType, setSelectedType] = useState(null);
+  const { data: types } = useGetTypesQuery();
+  const escoId = useGetItemIdByName(types, 'esco');
+  const expertId = useGetItemIdByName(types, 'expert');
   const Header = () => {
     const opertaionToDo = () => {
       switch (membersType) {
         case 'esco':
           return [
             {
-              id: 2,
+              id: escoId,
               name: 'add members',
               action: () => setIsPopupVisible(true),
             },
@@ -25,15 +30,10 @@ function TeamTable({ label, membersType, data }) {
         case 'expert':
           return [
             {
-              id: 3,
+              id: expertId,
               name: 'add members',
               path: `/projects/eligible/${id}/add-members`,
             },
-            // {
-            //   id: 3,
-            //   name: 'add Mission',
-            //   path: `/projects/eligible/${id}/add-mission`,
-            // },
           ];
 
         default:
@@ -56,14 +56,15 @@ function TeamTable({ label, membersType, data }) {
               onClick={() => {
                 if (button.action) {
                   button.action();
+                  setSelectedType(button.id);
                 } else if (button.path) {
                   navigate(button.path, {
                     state: {
                       typeId: button.id,
                       projectId: id,
-                      escoId: userType,
+                      escoId: userType, //esco id 
                     },
-                  }); // Navigate to the path if action is not provided
+                  });
                 }
               }}
               hasIcon
@@ -93,7 +94,10 @@ function TeamTable({ label, membersType, data }) {
       />
 
       {isPopupVisible && (
-        <AddMembersPopup onClose={() => setIsPopupVisible(false)} />
+        <AddMembersPopup
+          onClose={() => setIsPopupVisible(false)}
+          typeId={selectedType}
+        />
       )}
     </div>
   );

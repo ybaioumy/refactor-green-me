@@ -42,19 +42,19 @@ function GeneralInfoStepTwo() {
           )}
         />
       )}
-      <div className="flex w-full  md:gap-20 flex-wrap">
+      <div className="flex w-full gap-10  md:gap-20 flex-wrap">
         <Controller
           name="siteTypeId"
           control={control}
           render={({ ...field }) => (
             <Select
+              labelStyle={labelStyle}
               //   {...field}
               label="Project Site Type"
               options={dropDowns?.siteType}
               onChange={(e) => {
                 handleChange('siteTypeId', e.id);
               }}
-              labelStyle={labelStyle}
             />
           )}
         />
@@ -92,6 +92,7 @@ function GeneralInfoStepTwo() {
                 {...field}
                 value={field.value}
                 disabled={watch('multiLocation') === false}
+                label={'Quantity of Pluralism'}
               />
             )}
           />

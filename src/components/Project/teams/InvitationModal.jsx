@@ -5,6 +5,7 @@ import RadioButton from '../../shared/RadioButton';
 import {
   useGetMyUsersQuery,
   useGetRolesQuery,
+  useGetTypesQuery,
 } from '../../../redux/features/auth';
 import {
   useGetInvitationStatusQuery,
@@ -12,7 +13,8 @@ import {
   useGetUserPermissionsQuery,
 } from '../../../redux/features/inviteMembers';
 import { useParams } from 'react-router-dom';
-import { message } from 'antd';
+import { message, Tooltip } from 'antd';
+import useGetItemIdByName from '../../../hooks/useGetItemIdByName';
 
 const InvitationModal = ({ onClose, typeId }) => {
   const { id } = useParams();
@@ -38,12 +40,18 @@ const InvitationModal = ({ onClose, typeId }) => {
     error: errorRoles,
     isError: isErrorRoles,
   } = useGetRolesQuery();
-  const initialRoleId = roles?.find(
-    (role) => role.name.toLowerCase() === 'user'
-  ).id;
+  const {
+    data: types,
+    isLoading: isLoadingTypes,
+    isError: isErrorTypes,
+  } = useGetTypesQuery();
+  const escoId = useGetItemIdByName(types, 'esco');
+  const expertId = useGetItemIdByName(types, 'expert');
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [isEdit, setIsEdit] = useState(true);
+  const [roleId, setRoleId] = useState(null);
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -73,35 +81,45 @@ const InvitationModal = ({ onClose, typeId }) => {
   );
   const editPermissionsIds = useMemo(() => getPermissionsIds('Edit'), []);
 
-  // Depending on the isEdit state, set the correct permissionId
-  const permissionId = useMemo(
-    () => (isEdit ? editPermissionsIds : viewPermissionsIds),
-    [isEdit, editPermissionsIds, viewPermissionsIds]
-  );
-  // console.log(permissionId);
+  const permissionId = useMemo(() => {
+    if (typeId === escoId) {
+      return null; // No permissions for escoId
+    }
+    return isEdit ? editPermissionsIds : viewPermissionsIds;
+  }, [typeId, escoId, isEdit, editPermissionsIds, viewPermissionsIds]);
 
+  const intialInvitationStatus = useGetItemIdByName(statusData, 'pending');
+  const userRole = useGetItemIdByName(roles, 'user');
+  const adminRole = useGetItemIdByName(roles, 'admin');
+  const emailsArray = selectedMembers.map((member) => member.email);
+  const projectIdToSend = Number(id);
+
+  // Function to handle role and permissions change based on escoId and radio button
+  const handleRoleAndPermissionsChange = (isEdit) => {
+    if (typeId === escoId) {
+      setRoleId(isEdit ? adminRole : userRole);
+    }
+    setIsEdit(isEdit);
+  };
+  const invitationData = {
+    emails: emailsArray,
+    projectId: projectIdToSend,
+    typeId: typeId || 2,
+    statusId: intialInvitationStatus,
+    permissionId: permissionId || null,
+    roleId: roleId || userRole,
+    escoId: escoId,
+    // clientId: expertId,
+  };
   const handleAddMembers = async () => {
-    const projectIdToSend = Number(id);
-    const intialInvitationStatus = statusData?.find(
-      (item) => item.name === 'Pending'
-    ).id;
-
     if (!selectedMembers.length) {
       message.error('Please select at least one user.');
       return;
     }
     try {
-      const emailsArray = selectedMembers.map((member) => member.email);
-
-      await inviteUser({
-        emails: emailsArray,
-        projectId: projectIdToSend,
-        typeId: typeId || 2,
-        statusId: intialInvitationStatus,
-        permissionId: permissionId,
-        roleId: initialRoleId,
-      }).unwrap();
-
+      //escoId, clientId
+      await inviteUser(invitationData).unwrap();
+      console.log(invitationData);
       message.success(
         `Users with emails ${emailsArray.join(
           ', '
@@ -123,7 +141,6 @@ const InvitationModal = ({ onClose, typeId }) => {
       e.preventDefault();
       const email = searchTerm.trim();
 
-      // Simple regex for basic email validation
       const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
       if (!isValidEmail(email)) {
@@ -133,7 +150,7 @@ const InvitationModal = ({ onClose, typeId }) => {
 
       if (email && !selectedMembers.some((m) => m.email === email)) {
         setSelectedMembers([...selectedMembers, { email, fullName: email }]);
-        setSearchTerm(''); // Clear input after adding
+        setSearchTerm('');
       } else {
         message.error('Email is already added or invalid.');
       }
@@ -183,18 +200,18 @@ const InvitationModal = ({ onClose, typeId }) => {
               <div className="flex justify-between bg-black rounded-lg text-white p-2 mr-2 border border-[#D80000] ">
                 <div className="flex items-center gap-2 text-xs sm:text-sm md:text-base">
                   <RadioButton
-                    title={'Set user Permissions to view Only'}
-                    label={'View'}
-                    value={true}
-                    onChange={(e) => setIsEdit(false)}
+                    title={'Set User Permissions to view Only'}
+                    label={typeId === escoId ? 'User' : 'View'}
+                    value={false}
+                    onChange={(e) => handleRoleAndPermissionsChange(false)}
                     checked={!isEdit}
                   />
                   |
                   <RadioButton
-                    title={'Set user Permissions to Edit On Project'}
-                    label={'Edit'}
-                    value={false}
-                    onChange={(e) => setIsEdit(true)}
+                    title={'Set User Permissions to Edit On Project'}
+                    label={typeId === escoId ? 'Admin' : 'Edit'}
+                    value={true}
+                    onChange={(e) => handleRoleAndPermissionsChange(true)}
                     checked={isEdit}
                   />
                 </div>
@@ -207,10 +224,14 @@ const InvitationModal = ({ onClose, typeId }) => {
               ) : (
                 <ul>
                   {members
-                    .filter((member) =>
-                      member.fullName
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
+                    .filter(
+                      (member) =>
+                        member.fullName
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        member.email
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
                     )
                     .map((member, idx) => (
                       <li

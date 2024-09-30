@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Steps from '../components/shared/Steps';
 import { useParams } from 'react-router-dom';
 import LookingForAudit from '../components/eligibilitytest/LookingForAudit';
@@ -89,9 +89,16 @@ const EligibilityTest = () => {
   );
   const initialEligibility = useGetItemIdByName(eligibilityStatus, 'Eligible');
   const [initialData, setInitialData] = useState({
-    eligibiltyStatusId: initialEligibility,
-    projectStatusId: initalProjectStatus,
+    eligibiltyStatusId: null,
+    projectStatusId: null,
   });
+
+  useEffect(() => {
+    setInitialData({
+      eligibiltyStatusId: initialEligibility,
+      projectStatusId: initalProjectStatus,
+    });
+  }, [initalProjectStatus, initialEligibility]);
 
   if (isLoading || isLoadingProjectStatus || isLoadingStatus) return <Loader />;
   if (!data) return <EmptyList message={'Emty Options'} />;
@@ -201,7 +208,6 @@ const EligibilityTest = () => {
       console.error('Error fetching audit/eligibility:', error);
     }
   };
-
   const handleSave = async (data) => {
     try {
       const createdProjectId = await createProject({ ...initialData, ...data }); // Create the project
