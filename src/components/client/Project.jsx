@@ -27,6 +27,7 @@ import ViabilityStatus from '../Project/technicalInfo/TechnicalResult';
 import { useGetProjectProposalsQuery } from '../../redux/features/proposal';
 import Button from '../shared/Button';
 import { setProject } from '../../redux/slices/project';
+import FinancialSharedSavings from '../Project/economicViability/FinancialSharedSavings';
 function Project() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -44,7 +45,6 @@ function Project() {
     isError: isErrorProposals,
   } = useGetProjectProposalsQuery(id);
   const methods = useForm({
-    defaultValues: {},
     mode: 'onChange',
   });
   const {
@@ -195,6 +195,10 @@ function Project() {
         },
         {
           content: <StepFourECO />,
+        },
+        {
+          content: <FinancialSharedSavings project={projectObject} />,
+          hideButtons: true,
         },
       ],
     },

@@ -1,17 +1,30 @@
 import React, { forwardRef } from 'react';
 import Icon from './Icon';
-const Section = forwardRef(({ label, children }, ref) => {
-  return (
-    <div ref={ref} className="flex flex-col my-10 w-full">
-      <label className="text-[#1E4A28] text-[20px] font-semibold">
-        {label}
-      </label>
-      <div className="bg-[#EFEFEF] md:p-6 p-2 py-4 w-full md:w-full rounded-[10px] mt-1 relative">
-        {children}
+import Button from './Button';
+const Section = forwardRef(
+  ({ label, children, onEdit, canEdit = true }, ref) => {
+    return (
+      <div ref={ref} className="flex flex-col my-10 w-full">
+        <label className="text-[#1E4A28] text-[20px] font-semibold">
+          {label}
+        </label>
+        <div className="bg-[#EFEFEF] md:p-6 p-2 py-4 w-full md:w-full rounded-[10px] mt-1 relative">
+          {children}
+          {canEdit && (
+            <div className="absolute -top-5 -right-5">
+              <Button
+                onClick={onEdit}
+                className={'w-[40px] h-[40px]'}
+                variant="secondary">
+                <Icon name={'edit'} />
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 const ItemRow = ({
   label,
   children,
@@ -33,7 +46,7 @@ const ItemRow = ({
       <div className="w-full flex flex-row gap-4 md:gap-5">
         {children}
         {canEdit && (
-          <button onClick={onRemove} className="" type='button'>
+          <button onClick={onRemove} className="" type="button">
             <Icon name={'remove'} />
           </button>
         )}

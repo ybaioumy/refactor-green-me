@@ -45,7 +45,7 @@ const Button = ({
   const content = isLoading ? (
     <span>Loading...</span>
   ) : (
-    <div className="flex items-center gap-2 justify-center">
+    <div className="flex  items-center gap-2 justify-center">
       {hasIcon && iconPosition === 'left' && <Icon name={iconName} />}
       {children}
       {hasIcon && iconPosition === 'right' && <Icon name={iconName} />}

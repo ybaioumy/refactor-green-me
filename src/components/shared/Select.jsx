@@ -138,6 +138,8 @@ const Select = forwardRef(
         'w-full py-1.5 pl-1 md:pl-4 pr-1 bg-[#F7F7F7] [box-shadow:0px_2px_6px_1px_rgba(0,_0,_0,_0.20)_inset] rounded-md justify-between items-center inline-flex focus:outline-none placeholder-[#1E4A28] text-[#1E4A28] hover:outline';
       const underLineClasses =
         'w-full text-left px-4 py-2 bg-[#F1F1F1] border-b-2 border-[#8E8E8E] shadow-sm focus:outline-none flex items-center justify-between';
+      const greenClass =
+        'w-full pt-2.5 pb-2.5 pl-2 md:pl-4 pr-1 rounded-md justify-start items-center inline-flex border border-black focus:outline-none placeholder-[#1E4A28] bg-[#BFE0C6] ';
 
       switch (variant) {
         case 'default':
@@ -148,6 +150,9 @@ const Select = forwardRef(
           return secondaryClasses;
         case 'underline':
           return underLineClasses;
+        case 'green':
+          return greenClass;
+
         default:
           return defaultClasses;
       }
@@ -164,8 +169,8 @@ const Select = forwardRef(
 
     return (
       <div
-        className={`relative inline-block text-left w-full min-w-[170px]  max-w-[300px] ${
-          !removeMaxWidth ? 'md:max-w-[400px]' : ''
+        className={`relative inline-block text-left w-full min-w-[170px] md:max-w-[400px]  ${
+          removeMaxWidth ? 'md:max-w-full' : ''
         }`}
         onBlur={handleBlur}
         ref={ref || dropdownRef} // Use forwarded ref here

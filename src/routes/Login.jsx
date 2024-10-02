@@ -6,19 +6,14 @@ import { useForm } from 'react-hook-form';
 import { useLoginMutation } from '../redux/features/auth';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import Button from '../components/shared/Button';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { message, notification } from 'antd';
 import useMediaQuery from '../hooks/useMediaQuery';
 import { useSetCookiesAfterLogin } from '../hooks/useCookies';
 import { jwtDecode } from 'jwt-decode';
-import { useDispatch } from 'react-redux';
-import { setCredentials } from '../redux/slices/user';
+
 function Login() {
   const navigation = useNavigate();
-  // const dispatch = useDispatch();
-  // const [searchParams] = useSearchParams();
-  // const token = searchParams.get('token');
-  // const { decodedToken } = jwtDecode(token);
   const {
     register,
     handleSubmit,
@@ -34,10 +29,9 @@ function Login() {
     try {
       const response = await login(data).unwrap();
       const decodedToken = jwtDecode(response.token);
-      // console.log(decodedToken);
-      // console.log(response, 'response');
       const expires = response.expiry;
       const expDate = new Date(expires);
+
       setCookies({
         fullName: response.fullName,
         typeId: response.typeId,
@@ -48,40 +42,39 @@ function Login() {
           decodedToken[
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
           ],
+        ...(response.escoid ? { escoid: response.escoid } : {}), // Only include escoid/client if it exists
+        ...(response.clientid ? { clientid: response.clientid } : {}),
       });
-      // if (token) {
-      //   // dispatch(setCredentials({ invtationToken: token.invitaionToken }));
-      // }
 
-      const userTypeMap = {
-        1: 'client',
-        2: 'esco',
-        3: 'expert',
+      const userTypeRoutes = {
+        1: '/', // client
+        2: '/', // esco
+        3: '/', // expert
       };
 
-      const getUserType = (typeId) => userTypeMap[Number(typeId)];
-      const userType = getUserType(response.typeId);
-      let url = '';
-      // handle invitaions redirect
-      if (userType != null) {
-        if (userType === 'client') {
-          url = '/';
-        } else if (userType === 'esco') {
-          url = '/';
-        } else if (userType === 'expert') {
-          url = '/';
-        }
+      const userType = Number(response.typeId);
+      const redirectUrl = userTypeRoutes[userType];
+
+      // Check if a valid route exists for the userType, if not, use a default route or error handling
+      if (redirectUrl) {
+        navigation(redirectUrl, { replace: true });
+        message.success(
+          `Welcome ${response.fullName || 'User'}, logged in successfully!`
+        );
+      } else {
+        throw new Error(
+          'User type does not have a corresponding redirect route.'
+        );
       }
-      navigation(url, { replace: true });
-      message.success(
-        'Welcome ' + response.fullName || 'Logged in successfully'
-      );
     } catch (err) {
+      // Error handling for login failure
       console.error('There was a problem with the login request:', err);
 
       notification.error({
         message: 'Login Failed',
-        description: `${err.data?.message || 'Unknown error'}`,
+        description: `${
+          err.data?.message || 'Unknown error occurred during login.'
+        }`,
         placement: 'top',
       });
     }

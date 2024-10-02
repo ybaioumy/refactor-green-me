@@ -10,11 +10,20 @@ function ClientESCO({ tokenData }) {
     setValue,
     register,
     watch,
-  } = useFormContext(); // useForm hook
+  } = useFormContext({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      dateOfBirth: null,
+    },
+  }); // useForm hook
 
   const password = watch('password');
   return (
-    <div className="flex flex-col w-full h-full justify-center gap-4 md:gap-10 my-auto">
+    <div className="flex flex-col w-full h-full justify-center gap-6 md:gap-10 my-auto mt-[10%] ">
       <div className="flex flex-col">
         <div className="flex w-full gap-8">
           <div className="w-full">
@@ -82,7 +91,7 @@ function ClientESCO({ tokenData }) {
             <Input
               {...field}
               type="date"
-              placeHolder="Birth Date"
+              placeHolder="YYYY-MM-DD"
               className="w-full py-2 border-0 pl-0  border-b-2 border-[#8c8c8c] outline-none hover:border-b-[#77AF00] focus:border-b-[#77AF00] focus:border-b-2 rounded-none bg-[##F1F1F1] focus:border-transparent focus:ring-0"
               onChange={(date) =>
                 field.onChange(date ? dayjs(date).toISOString() : null)

@@ -7,6 +7,7 @@ import {
   useLogout,
 } from './hooks/useCookies';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Login from './routes/Login';
 import ErrorPage from './routes/ErrorPage';
 import Layout from './routes/Layout';
@@ -29,14 +30,15 @@ import ESCODashboard from './components/ESCO/Dashboard';
 import ProjectESCO from './components/ESCO/Project';
 import Mission from './components/ESCO/Mission';
 import ProjectInvitation from './routes/JoinProject';
-
+import ExpertDashboard from './components/expert/ExpertDashboard';
 
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
+  const { invitationToken } = useSelector((state) => state.invitation);
+
   const token = useGetToken();
   const expiry = useTokenExpiration();
   const logout = useLogout();
-
   const expirationTime = new Date(expiry).getTime() - 60000;
 
   const handleLogout = useCallback(() => {
@@ -51,8 +53,13 @@ const ProtectedRoute = ({ children }) => {
     } else if (Date.now() >= expirationTime) {
       handleLogout();
       console.log('Token expired');
+    } else if (invitationToken) {
+      // Redirect only if navigating from a valid state
+      if (window.location.pathname !== '/join-project') {
+        navigate('/join-project');
+      }
     }
-  }, [token, expirationTime, handleLogout]);
+  }, [token, expirationTime, handleLogout, invitationToken, navigate]);
 
   return token ? children : null;
 };
@@ -201,10 +208,16 @@ const expertRouter = createBrowserRouter([
     path: '/',
     element: (
       <ProtectedRoute>
-        <div>Expert Dashboard</div>
+        <Layout />
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <ExpertDashboard />,
+      },
+    ],
   },
 ]);
 

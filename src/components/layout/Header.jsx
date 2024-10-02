@@ -12,11 +12,11 @@ import { useTypeId, useGetUserName, useLogout } from '../../hooks/useCookies';
 import LogoPrimary from '../../assets/images/GreenMeTitle.png';
 import LogoSec from '../../assets/images/greenMe_Green.png';
 import User from '../../assets/images/m.png';
-import HeadrBg from '../../assets/images/headerBackground.jpeg';
 import '../../styles/header.css';
+import { useGetTypesQuery } from '../../redux/features/auth';
 export default function Header() {
+  // const { data: types } = useGetTypesQuery();
   const [isImageLoaded, setIsImageLoaded] = useState(false);
-
   const userType = useTypeId();
   const userName = useGetUserName();
   function getFirstName(fullName) {
@@ -42,7 +42,10 @@ export default function Header() {
       newProject: '/new-project',
       OandM: '/O&M',
     },
-    expert: {},
+    expert: {
+      projects: '/',
+      OandM: '/O&M',
+    },
   };
 
   const getNavLinks = (role) => {
@@ -66,14 +69,16 @@ export default function Header() {
 
   const navigate = useNavigate();
   const logout = useLogout();
-  const isProfile = useLocation().pathname === '/profile';
+  const pathName = useLocation().pathname;
+  const isProfileEsco = pathName === '/profile';
+  const isProfileExpert = Number(userType) === 3 && pathName === '/';
   const headerImage = useMemo(() => {
-    if (isProfile) {
+    if (isProfileEsco || isProfileExpert) {
       return LogoSec;
     } else {
       return LogoPrimary;
     }
-  }, [isProfile]);
+  }, [isProfileEsco, isProfileExpert]);
 
   const handleLogout = () => {
     logout();
@@ -86,7 +91,7 @@ export default function Header() {
     <header>
       <div
         className={`${
-          isProfile
+          isProfileEsco || isProfileExpert
             ? 'bg-[#E0E0E0] flex items-center justify-center min-h-[60px] max-h-[60px] gap-2'
             : ' bgGreenMe'
         }`}>
@@ -102,8 +107,13 @@ export default function Header() {
               onLoad={handleImageLoad}
             />
           </Link>
-          {isProfile && (
+          {isProfileEsco && (
             <p className="text-[#1E4A28] font-light text-[32px]">ESCO</p>
+          )}
+          {isProfileExpert && (
+            <p className="text-[#1E4A28] font-light text-[32px] ml-2">
+              Expert Space
+            </p>
           )}
         </div>
       </div>

@@ -31,7 +31,7 @@ const HorizontalSearchBar = ({ data, operationTodo, isLoading }) => {
   if (!data || isLoading)
     return (
       <div className="text-center animate-pulse h-[100px] w-full">
-        <div className="h-full bg-gray-200  w-full flex items-center justify-center"></div>
+        <div className="h-full bg-gray-200 w-full flex items-center justify-center" />
       </div>
     );
 
@@ -73,7 +73,7 @@ const HorizontalSearchBar = ({ data, operationTodo, isLoading }) => {
          md:flex
          `}>
         <div className="flex  flex-row gap-4 items-end flex-wrap">
-          <div className="flex flex-col w-full  justify-between">
+          <div className="flex flex-col   justify-between">
             <label
               htmlFor="search"
               className="text-[#202020] font-semibold text-md ml-1 mb-2">
@@ -81,7 +81,7 @@ const HorizontalSearchBar = ({ data, operationTodo, isLoading }) => {
             </label>
             <input
               type="text"
-              className="bg-[#FFE7E7] border border-[#8E8E8E] rounded focus:outline-none "
+              className="bg-[#FFE7E7] border border-[#8E8E8E] w-full pl-1 md:w-[200px] h-[30px] text-[14px] rounded focus:outline-none "
               placeholder="Search Project Code"
             />
           </div>

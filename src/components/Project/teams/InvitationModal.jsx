@@ -98,6 +98,8 @@ const InvitationModal = ({ onClose, typeId }) => {
   const handleRoleAndPermissionsChange = (isEdit) => {
     if (typeId === escoId) {
       setRoleId(isEdit ? adminRole : userRole);
+    } else {
+      setRoleId(null);
     }
     setIsEdit(isEdit);
   };
@@ -107,7 +109,7 @@ const InvitationModal = ({ onClose, typeId }) => {
     typeId: typeId || 2,
     statusId: intialInvitationStatus,
     permissionId: permissionId || null,
-    roleId: roleId || userRole,
+    ProjectRoleId: roleId || userRole,
     escoId: escoId,
     // clientId: expertId,
   };
@@ -224,7 +226,7 @@ const InvitationModal = ({ onClose, typeId }) => {
               ) : (
                 <ul>
                   {members
-                    .filter(
+                    ?.filter(
                       (member) =>
                         member.fullName
                           .toLowerCase()
@@ -233,7 +235,7 @@ const InvitationModal = ({ onClose, typeId }) => {
                           .toLowerCase()
                           .includes(searchTerm.toLowerCase())
                     )
-                    .map((member, idx) => (
+                    ?.map((member, idx) => (
                       <li
                         key={idx}
                         className="p-2 hover:bg-gray-200 cursor-pointer"

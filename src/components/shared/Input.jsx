@@ -13,6 +13,7 @@ const Input = forwardRef(
       readOnly = false,
       variant = 'primary',
       value,
+      disabled = false,
       labelStyle = {}, // Optional labelStyle prop with an empty object as the default
       ...props
     },
@@ -44,7 +45,7 @@ const Input = forwardRef(
     const primary =
       'w-full pt-2.5 pb-1.5 pl-1 md:pl-4 pr-1 bg-[#F7F7F7] [box-shadow:0px_2px_6px_1px_rgba(0,_0,_0,_0.20)_inset] rounded-md justify-start items-center inline-flex focus:outline-none hover:outline placeholder-[#1E4A28] font-typeMono';
     const secondary =
-      'w-full pt-2.5 pb-1.5 pl-2 md:pl-4 pr-1 rounded-md justify-start items-center inline-flex border border-black focus:outline-none placeholder-[#1E4A28] bg-[#BFE0C6]';
+      'w-full pt-2.5 pb-2.5 pl-2 md:pl-4 pr-1 rounded-md justify-start items-center inline-flex border border-black focus:outline-none placeholder-[#1E4A28] bg-[#BFE0C6]';
     const date =
       'w-full py-2 border-0 pl-0 border-b-2 border-[#8c8c8c] outline-none custom-date-picker rounded-none bg-[##F1F1F1] focus:border-transparent focus:ring-0 hover:border-b-[#77AF00] focus:border-b-[#77AF00] placeholder-[#1E4A28] text-[#1E4A28]';
     const borderBottom =
@@ -68,6 +69,7 @@ const Input = forwardRef(
           return primary;
       }
     };
+    const disabledClasses = 'cursor-not-allowed opacity-70 ';
 
     const defaultLabelStyle = {
       color: '#1E4A28',
@@ -76,7 +78,14 @@ const Input = forwardRef(
       textTransform: 'capitalize',
     };
 
-    if (type === 'text' || type === 'number') {
+    if (
+      type === 'text' ||
+      type === 'number' ||
+      type === 'url' ||
+      type === 'email' ||
+      type === 'tel' ||
+      type === 'search'
+    ) {
       return (
         <div className="flex flex-col gap-2 justify-end items-start w-full">
           {label && (
@@ -88,7 +97,9 @@ const Input = forwardRef(
             ref={ref} // Forward the ref
             placeholder={placeHolder || ''}
             type={type}
-            className={getVariantStyles()}
+            className={`${getVariantStyles()} ${
+              disabled ? disabledClasses : ''
+            }`}
             onChange={handleInputChange} // Use the custom handler
             readOnly={readOnly}
             value={value || ''}
@@ -112,7 +123,9 @@ const Input = forwardRef(
           <textarea
             ref={ref} // Forward the ref
             placeholder={placeHolder || ''}
-            className={getVariantStyles()}
+            className={`${getVariantStyles()} ${
+              disabled ? disabledClasses : ''
+            }`}
             onChange={onChange}
             readOnly={readOnly}
             value={value || ''}
@@ -127,7 +140,9 @@ const Input = forwardRef(
           onChange={handleDateChange}
           placeholder={placeHolder}
           value={value ? dayjs(value) : null} // Handle null value properly
-          className={`${getVariantStyles()} hover:outline-none focus:border-0 focus:outline-none`}
+          className={`${getVariantStyles()} ${
+            disabled ? disabledClasses : ''
+          } hover:outline-none focus:border-0 focus:outline-none`}
           {...props}
         />
       );
@@ -144,7 +159,9 @@ const Input = forwardRef(
               ref={ref} // Forward the ref
               placeholder={placeHolder || ''}
               type={togglePassword ? 'text' : 'password'}
-              className={getVariantStyles()}
+              className={`${getVariantStyles()} ${
+                disabled ? disabledClasses : ''
+              }`}
               onChange={onChange}
               readOnly={readOnly}
               value={value || ''}
@@ -171,7 +188,9 @@ const Input = forwardRef(
             ref={ref} // Forward the ref
             placeholder={placeHolder || ''}
             type={type}
-            className={getVariantStyles()}
+            className={`${getVariantStyles()} ${
+              disabled ? disabledClasses : ''
+            }`}
             onChange={onChange}
             readOnly={readOnly}
             value={value || ''}

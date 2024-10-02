@@ -110,16 +110,16 @@ function MissionListing() {
     });
   };
 
-  const dataToFilter = [
-    {
-      label: 'By Project',
-      data: [],
-    },
-    {
-      label: 'By Mission Type',
-      data: [],
-    },
-  ];
+  // const dataToFilter = [
+  //   {
+  //     label: 'By Project',
+  //     data: [],
+  //   },
+  //   {
+  //     label: 'By Mission Type',
+  //     data: [],
+  //   },
+  // ];
   useEffect(() => {
     if (data && data !== undefined) {
       setFilteredProjects(data);
@@ -138,7 +138,7 @@ function MissionListing() {
   }
   return (
     <div className="flex flex-col h-screen">
-      <HorizontalSearchBar data={dataToFilter} operationTodo={assignMission} />
+      <HorizontalSearchBar data={[]} operationTodo={assignMission} />
       <div className="mb-2 w-full bg-[#EFFCFF] py-4 px-14 z-10 flex items-center shadow-md gap-5">
         <span className="flex items-center gap-2 text-[22px] text-[#334B9F] font-bold">
           Missions Assigned to Expert: {`${state?.expert.expertName}`}

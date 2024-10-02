@@ -8,7 +8,7 @@ const initialState = {
     role: null,
     fullName: null,
     userId: null,
-    invtationToken: null,
+    invitationToken: null,
 };
 
 const authSlice = createSlice({
@@ -16,24 +16,23 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         setCredentials: (state, action) => {
-            const { token, expiry, typeId, role, fullName, userId, invtationToken } = action.payload;
+            const { token, expiry, typeId, role, fullName, userId, invitationToken } = action.payload;
             state.token = token;
             state.expiry = expiry;
             state.typeId = typeId;
             state.role = role;
             state.fullName = fullName;
             state.userId = userId;
-            state.invtationToken = invtationToken;
+            state.invitationToken = invitationToken;
         },
         clearCredentials: (state) => {
-            Cookies.remove('token'); // Clear token from cookies
-
+            Cookies.remove('token');
             state.token = null;
             state.expiry = null;
             state.typeId = null;
             state.role = null;
             state.fullName = null;
-            state.invtationToken = null;
+            state.invitationToken = null;
         }
     },
 });

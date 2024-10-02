@@ -29,7 +29,7 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
       );
       alertValidationMessage(errors);
     }
-  }, [currentParentIndex, errors, location.pathname]); // Listen for changes in the `errors` object
+  }, [currentParentIndex, errors, location.pathname]); 
 
   const handleNext = async () => {
     const isValid = await trigger();
@@ -56,7 +56,7 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
 
   const onSubmit = async (data) => {
     const isValid = await trigger();
-    console.log(isValid);
+    // console.log(isValid);
     if (!isValid) {
       alertValidationMessage(errors);
     } else {

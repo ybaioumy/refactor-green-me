@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import { setCredentials } from '../slices/user';
 import { REHYDRATE } from 'redux-persist';
 import { jwtDecode } from 'jwt-decode';
+import { setInvitaion } from '../slices/invitaion';
 
 // Helper function to check for REHYDRATE action
 function isHydrateAction(action) {
@@ -39,7 +40,11 @@ export const authApi = createApi({
                 try {
                     const { data } = await queryFulfilled;
                     const decodedToken = jwtDecode(data.token);
-                    // Dispatch setUser action with user info
+                    const searchParams = new URLSearchParams(window.location.search);
+                    const invitationTokenParamas = searchParams.get('encryptedData');
+                    const encryptedData = invitationTokenParamas
+                        ? jwtDecode(invitationTokenParamas)
+                        : null;
                     dispatch(
                         setCredentials({
                             token: data.token,
@@ -47,14 +52,29 @@ export const authApi = createApi({
                             typeId: data.typeId,
                             role: data.role,
                             fullName: data.fullName,
-                            userId: decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]
+                            userId: decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"],
                         })
                     );
+                    if (invitationTokenParamas && encryptedData) {
+                        console.table(encryptedData)
+                        dispatch(
+                            setInvitaion({
+                                invitationToken: encryptedData.InvitationToken,
+                                email: encryptedData.Email || null,
+                                expiry: encryptedData.exp || null,
+                                typeId: encryptedData.TypeId || null,
+                                roleId: encryptedData.RoleId || null,
+                                escoId: encryptedData.EscoId || null,
+                                permissionId: encryptedData.PermissionId || null,
+                            }))
+                    }
+
                 } catch (err) {
                     console.error('Login failed:', err);
                 }
             }
         }),
+
         register: builder.mutation({
             query: (userData) => ({
                 url: 'Users/register',
@@ -89,5 +109,5 @@ export const authApi = createApi({
 
 });
 
-export const { useLoginMutation, useRegisterMutation, useGetTypesQuery, useGetMyUsersQuery, useGetRolesQuery, useGetAllCountriesQuery, useGetAllClientSectorsQuery,useGetUserProjectPermissionsQuery } = authApi;
+export const { useLoginMutation, useRegisterMutation, useGetTypesQuery, useGetMyUsersQuery, useGetRolesQuery, useGetAllCountriesQuery, useGetAllClientSectorsQuery, useGetUserProjectPermissionsQuery } = authApi;
 

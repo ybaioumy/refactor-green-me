@@ -16,20 +16,20 @@ export const Dropdown = ({
   useEffect(() => {
     if (value) {
       if (multiSelect) {
-        const selectedOptions = options.filter((opt) =>
-          value.includes(opt.value)
+        const selectedOptions = options.filter(
+          (opt) => value.includes(opt.id) // Ensure you are comparing IDs correctly
         );
         setSelectedOption(selectedOptions);
       } else {
-        const option = options.find((opt) => opt.value === value);
+        const option = options.find((opt) => opt.id === value);
         setSelectedOption(option);
       }
     }
   }, [value, options, multiSelect]);
 
   const toggleDropdown = () => {
-    setIsOpen(prev => !prev)
-    setSearchQuery('')
+    setIsOpen((prev) => !prev);
+    setSearchQuery('');
   };
 
   const handleOptionClick = (option) => {

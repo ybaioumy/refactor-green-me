@@ -23,7 +23,7 @@ import { useGetProjectsFiltersQuery } from '../../redux/features/project';
 import { getTimeAgo } from '../../utilits/helpers';
 import { useSelector } from 'react-redux';
 import ExportAsExcelButton from './ExcelButton';
-const ProjectTable = ({ data, isLoading, error, isOpportunitiesRoute }) => {
+const ProjectTable = ({ data, isOpportunitiesRoute }) => {
   const [filteredProjects, setFilteredProjects] = useState([]);
   const isSmallDevice = useMediaQuery('(max-width: 768px)');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -336,13 +336,13 @@ const ProjectTable = ({ data, isLoading, error, isOpportunitiesRoute }) => {
           </div>
         </Modal>
       </div>
-        {gridApi && (
-          <CustomPaginationComponent
-            totalRecords={Math.ceil(
-              data?.totalRecords ? data.totalRecords : 0 / pageSize
-            )}
-          />
-        )}
+      {gridApi && (
+        <CustomPaginationComponent
+          totalRecords={Math.ceil(
+            data?.totalRecords ? data.totalRecords : 0 / pageSize
+          )}
+        />
+      )}
     </>
   );
 };

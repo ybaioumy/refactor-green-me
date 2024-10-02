@@ -200,7 +200,7 @@ const EligibilityTest = () => {
         const eligibilityResult = await triggerGetProjectEligibility(
           createdProjectId
         ).unwrap();
-        setIsEligible(eligibilityResult || false);
+        setIsEligible(eligibilityResult.isEligible || false);
         console.log(isEligible);
       }
     } catch (error) {

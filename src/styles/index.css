@@ -134,8 +134,7 @@ input[type=number] {
 input[type="checkbox"] {
   width: 20px;
   height: 20px;
-  accent-color: #4CAF50;
-
+  /* accent-color: #4CAF50; */
 
 }
 
@@ -762,4 +761,38 @@ input[type="checkbox"] {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+
+.side-bar-button {
+  position: absolute;
+  right: -25px;
+  height: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 300px;
+  z-index: 50;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.side-bar-button.closed {
+  background-image: url('../assets/images/Arrow_Close.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+}
+
+.side-bar-button.open {
+  background-image: url('../assets/images/Arrow_Open.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+}
+
+.button-primary-green {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.60) 0%, rgba(255, 255, 255, 0.00) 100%), #1E4A28;
+  background-blend-mode: overlay, normal;
 }

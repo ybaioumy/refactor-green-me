@@ -61,7 +61,6 @@ function MembersListing() {
   const intialInvitationStatus = useGetItemIdByName(statusData, 'pending');
   const { data: types } = useGetTypesQuery();
   const expertTypeId = useGetItemIdByName(types, 'expert');
-
   const { data: permissionsArray, isLoading: isLoadingPermissions } =
     useGetUserPermissionsQuery();
   const [gridApi, setGridApi] = useState(null);
@@ -171,7 +170,7 @@ function MembersListing() {
         typeId,
         statusId: intialInvitationStatus,
         permissionId: selectedPermissions,
-        roleId: initialRoleId,
+        ProjectRoleId: initialRoleId,
         escoId,
       }).unwrap();
       message.success(

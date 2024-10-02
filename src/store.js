@@ -10,15 +10,9 @@ import { inviteApi } from './redux/features/inviteMembers';
 import { expertApi } from './redux/features/expert';
 import authReducer from './redux/slices/user';
 import searchReducer from './redux/slices/filtersSlice';
+import invitaionReducer from './redux/slices/invitaion'
 import eligibilityReducer from './redux/slices/eligbility'
 import project from './redux/slices/project';
-const persistConfig = {
-    key: 'root',
-    storage,
-    whitelist: ['auth']
-};
-
-const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 
 export const store = configureStore({
     reducer: {
@@ -29,10 +23,11 @@ export const store = configureStore({
         [inviteApi.reducerPath]: inviteApi.reducer,
         [expertApi.reducerPath]: expertApi.reducer,
 
-        auth: persistedAuthReducer,
+        auth: authReducer,
         search: searchReducer,
         eligibility: eligibilityReducer,
         project: project,
+        invitation: invitaionReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

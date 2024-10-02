@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Icon from './Icon';
 import addAnimation from '../../assets/animations/add.json';
 import Lottie from 'react-lottie';
@@ -8,12 +8,20 @@ function EmptyList({ message, type = 'empty' }) {
     loop: false,
     autoplay: true,
     animationData: addAnimation,
-  
+    // rendererSettings: {
+    //   preserveAspectRatio: 'xMidYMid slice',
+    // },
   };
+  const animationRef = useRef();
   return (
     <div className="w-full flex flex-col h-full items-center flex-wrap justify-center gap-10">
       {type === 'add' ? (
-        <Lottie options={defaultOptions} height={150} width={200} />
+        <Lottie
+          options={defaultOptions}
+          height={150}
+          width={200}
+          ref={animationRef}
+        />
       ) : (
         <Icon name={'empty'} />
       )}

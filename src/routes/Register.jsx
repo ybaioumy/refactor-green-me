@@ -3,9 +3,8 @@ import Steps from '../components/shared/Steps';
 import { useState, useEffect } from 'react';
 import Logo from '../assets/images/greenme.png';
 import GreenMeTitle from '../assets/images/GreenMeTitle.png';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useRegisterMutation, useGetRolesQuery } from '../redux/features/auth';
-import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
 import useMediaQuery from '../hooks/useMediaQuery';
 import UserType from '../components/Registeration/StepOne';
@@ -29,11 +28,11 @@ function Register() {
   const [registerData, setRegisterData] = useState({
     gender: 1,
     statusId: 1,
-    invitationStatusId: 0,
+    invitationStatusId: null,
     permissionId: [],
     clientId: null,
     invitationToken: '',
-    roleId: initialRoleId,
+    ProjectRoleId: initialRoleId,
     escoId: null,
   });
   useEffect(() => {
@@ -47,8 +46,6 @@ function Register() {
       }));
     }
   }, [decodedToken, initialRoleId]);
-
-  console.log(registerData);
 
   const [imagePreview, setImagePreview] = useState(null);
   const [registerMutation, { isLoading }] = useRegisterMutation();
@@ -92,15 +89,10 @@ function Register() {
           content: <UserType tokenData={decodedToken} />,
         },
         {
-          content: (
-            <UserInformation
-              registerData={registerData}
-              tokenData={decodedToken}
-            />
-          ),
+          content: <UserInformation tokenData={decodedToken} />,
         },
         {
-          content: <StepThree registerData={registerData} />,
+          content: <StepThree />,
         },
       ],
     },
@@ -108,13 +100,12 @@ function Register() {
   const onSubmit = async (data) => {
     const dataToSend = { ...registerData, ...data };
     try {
-      console.log(dataToSend);
-      // const response = await registerMutation(dataToSend).unwrap();
-      // console.log(response);
-      // message.success('Registration successful');
-      // setTimeout(() => {
-      //   navigate('/');
-      // }, 200);
+      const response = await registerMutation(dataToSend).unwrap();
+      console.log(response);
+      message.success('Registration successful');
+      setTimeout(() => {
+        navigate('/');
+      }, 200);
     } catch (error) {
       console.error(error);
       message.error(error.data.message || 'Registration failed');

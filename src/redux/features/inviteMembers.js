@@ -13,10 +13,10 @@ export const inviteApi = createApi({
     // new body : esco id , clientId
     endpoints: (builder) => ({
         inviteUser: builder.mutation({
-            query: ({ emails, projectId, typeId, statusId, permissionId, roleId, escoId }) => ({
+            query: ({ emails, projectId, typeId, statusId, permissionId, ProjectRoleId, escoId }) => ({
                 url: 'Invitation/invite',
                 method: 'POST',
-                body: { emails, projectId, typeId, statusId, permissionId, roleId, escoId },
+                body: { emails, projectId, typeId, statusId, permissionId, ProjectRoleId, escoId },
             }),
         }),
         getInvitationStatus: builder.query({
@@ -26,10 +26,10 @@ export const inviteApi = createApi({
             query: () => `Permission`,
         }),
         reponseToProjectInvitation: builder.mutation({
-            query: ({ permissionId, roleId, typeId, isAccept, invitationToken, invitationStatusId }) => ({
+            query: ({ permissionId, ProjectRoleId, typeId, isAccept, invitationToken, invitationStatusId }) => ({
                 url: `Invitation/RespondToInvitation`,
                 method: 'POST',
-                body: { permissionId, roleId, isAccept, typeId, invitationToken, invitationStatusId },
+                body: { permissionId, ProjectRoleId, isAccept, typeId, invitationToken, invitationStatusId },
             }),
         })
     }),
