@@ -1,15 +1,18 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { authHeader } from '../../utilits/authHeader';
+
 export const proposalApi = createApi({
     reducerPath: 'proposalApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: process.env.REACT_APP_API_BASE, prepareHeaders: (headers) => {
+        baseUrl: process.env.REACT_APP_API_BASE,
+        prepareHeaders: (headers) => {
             headers.set('Content-Type', 'application/json');
             headers.set('Accept', 'application/json');
             headers.set('Authorization', authHeader());
             return headers;
         },
     }),
+    tagTypes: ['Proposals'], 
     endpoints: (builder) => ({
         getProposalStatus: builder.query({
             query: () => 'ProposalStatus',
@@ -20,10 +23,11 @@ export const proposalApi = createApi({
                 method: 'POST',
                 body: proposalData,
             }),
+            invalidatesTags: ['Proposals'], 
         }),
-
         getProjectProposals: builder.query({
             query: (id) => `Proposal/project/${id}`,
+            providesTags: ['Proposals'], 
         }),
         clientResponseToProposal: builder.mutation({
             query: ({ id, status, statusId }) => ({
@@ -31,8 +35,14 @@ export const proposalApi = createApi({
                 method: 'POST',
                 params: { id, status, statusId },
             }),
+            invalidatesTags: ['Proposals'], // Invalidate proposals after mutation
         }),
-    })
-})
+    }),
+});
 
-export const { useGetProposalStatusQuery, usePostProposalMutation, useGetProjectProposalsQuery, useClientResponseToProposalMutation } = proposalApi;
+export const {
+    useGetProposalStatusQuery,
+    usePostProposalMutation,
+    useGetProjectProposalsQuery,
+    useClientResponseToProposalMutation,
+} = proposalApi;

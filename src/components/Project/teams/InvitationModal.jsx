@@ -120,17 +120,16 @@ const InvitationModal = ({ onClose, typeId }) => {
     }
     try {
       //escoId, clientId
-      await inviteUser(invitationData).unwrap();
-      console.log(invitationData);
+      const response = await inviteUser(invitationData).unwrap();
       message.success(
-        `Users with emails ${emailsArray.join(
-          ', '
-        )} successfully invited to project id ${id}`
+        response.message ||
+          `Users with emails ${emailsArray.join(
+            ', '
+          )} successfully invited to project id ${id}`
       );
       setSelectedMembers([]);
       // onClose(false);
     } catch (error) {
-      console.log(error);
       message.error(
         error.data?.message || 'An error occurred while inviting the users.'
       );

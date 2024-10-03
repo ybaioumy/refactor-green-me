@@ -7,6 +7,7 @@ import { useTypeId } from '../../../hooks/useCookies';
 import AddMembersPopup from './InvitationModal'; // Import the Add Members Popup component
 import { useGetTypesQuery } from '../../../redux/features/auth';
 import useGetItemIdByName from '../../../hooks/useGetItemIdByName';
+import { useStep } from '../../../context/formContext';
 
 function TeamTable({ label, membersType, data }) {
   const { id } = useParams();
@@ -43,39 +44,41 @@ function TeamTable({ label, membersType, data }) {
 
     const buttons = opertaionToDo();
     const navigate = useNavigate();
+    const { canEdit } = useStep();
     return (
       <div className="flex justify-between items-center py-2 border-y-[1px] border-[#AAAAAA]">
         <label className="font-bold text-[#1E4A28] text-[20px] mb-2">
           {label || null}
         </label>
         <div className="flex items-center gap-3">
-          {buttons?.map((button, idx) => (
-            <Button
-              className={'shadow capitalize'}
-              type={'button'}
-              onClick={() => {
-                if (button.action) {
-                  button.action();
-                  setSelectedType(button.id);
-                } else if (button.path) {
-                  navigate(button.path, {
-                    state: {
-                      typeId: button.id,
-                      projectId: id,
-                      escoId: userType, //esco id 
-                    },
-                  });
-                }
-              }}
-              hasIcon
-              size="sm"
-              iconPosition="left"
-              iconName={'addProjectGreen'}
-              variant="secondary"
-              key={idx}>
-              <span>{button.name}</span>
-            </Button>
-          ))}
+          {canEdit &&
+            buttons?.map((button, idx) => (
+              <Button
+                className={'shadow capitalize'}
+                type={'button'}
+                onClick={() => {
+                  if (button.action) {
+                    button.action();
+                    setSelectedType(button.id);
+                  } else if (button.path) {
+                    navigate(button.path, {
+                      state: {
+                        typeId: button.id,
+                        projectId: id,
+                        escoId: userType, //esco id
+                      },
+                    });
+                  }
+                }}
+                hasIcon
+                size="sm"
+                iconPosition="left"
+                iconName={'addProjectGreen'}
+                variant="secondary"
+                key={idx}>
+                <span>{button.name}</span>
+              </Button>
+            ))}
         </div>
       </div>
     );

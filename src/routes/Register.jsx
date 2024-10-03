@@ -14,17 +14,29 @@ import StepThree from '../components/Registeration/StepThree';
 import Loader from '../components/shared/Loader';
 import EmptyList from '../components/shared/EmptyList';
 import useGetItemIdByName from '../hooks/useGetItemIdByName';
+import { useGetInvitationStatusQuery } from '../redux/features/inviteMembers';
+import { useDispatch } from 'react-redux';
+import { setInvitaion } from '../redux/slices/invitaion';
 function Register() {
+  const dispatch = useDispatch();
   const {
     data: roles,
     isLoading: isLoadingRoles,
     isError,
   } = useGetRolesQuery();
-
+  const {
+    data: invitationStatus,
+    isLoading: isLoadingStatus,
+    error: errorInvitaionStatus,
+  } = useGetInvitationStatusQuery();
   const initialRoleId = useGetItemIdByName(roles, 'admin');
   const [searchParams] = useSearchParams();
   const token = searchParams.get('encryptedData');
   const { decodedToken } = useJwt(token);
+  const initialInvitaionStatusId = useGetItemIdByName(
+    invitationStatus,
+    'pending'
+  );
   const [registerData, setRegisterData] = useState({
     gender: 1,
     statusId: 1,
@@ -35,17 +47,30 @@ function Register() {
     ProjectRoleId: initialRoleId,
     escoId: null,
   });
+
   useEffect(() => {
     if (decodedToken) {
       setRegisterData((prevData) => ({
         ...prevData,
-        clientId: decodedToken.ClientId || null,
         invitationToken: decodedToken.InvitationToken || '',
         roleId: decodedToken.RoleId || initialRoleId,
+        clientId: decodedToken.ClientId || null,
         escoId: decodedToken.EscoId || null,
+        invitationStatusId: initialInvitaionStatusId,
       }));
+      dispatch(
+        setInvitaion({
+          invitationToken: decodedToken.InvitationToken,
+          email: decodedToken.Email || null,
+          expiry: decodedToken.exp || null,
+          typeId: decodedToken.TypeId || null,
+          roleId: decodedToken.RoleId || null,
+          escoId: decodedToken.EscoId || null,
+          permissionId: decodedToken.PermissionId || null,
+        })
+      );
     }
-  }, [decodedToken, initialRoleId]);
+  }, [decodedToken, dispatch, initialInvitaionStatusId, initialRoleId]);
 
   const [imagePreview, setImagePreview] = useState(null);
   const [registerMutation, { isLoading }] = useRegisterMutation();
@@ -92,7 +117,7 @@ function Register() {
           content: <UserInformation tokenData={decodedToken} />,
         },
         {
-          content: <StepThree />,
+          content: <StepThree tokenData={decodedToken} />,
         },
       ],
     },

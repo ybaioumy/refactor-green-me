@@ -3,6 +3,9 @@ import successAnimation from '../../../assets/animations/Animation-success.json'
 import Lottie from 'react-lottie';
 import { useGetProjectImpactViabilityQuery } from '../../../redux/features/project';
 import Loader from '../../shared/Loader';
+import { Result } from 'antd';
+import Button from '../../shared/Button';
+import { useStep } from '../../../context/formContext';
 const ViabilityStatus = ({ id }) => {
   const defaultOptions = {
     loop: false,
@@ -14,8 +17,24 @@ const ViabilityStatus = ({ id }) => {
   };
   const { data, isLoading, error, isError } =
     useGetProjectImpactViabilityQuery(id);
+  const { setCurrentChildIndex } = useStep();
   if (isLoading) return <Loader />;
-  if (isError) return <div>Error: {error.message}</div>;
+  if (isError)
+    return (
+      <>
+        <Result
+          status="error"
+          title="Submission Failed"
+          subTitle={`Please check and modify the following information before resubmitting: ${error.message} `}
+          extra={[
+            <Button variant="secondary" onClick={() => setCurrentChildIndex(0)}>
+              Go Agin
+            </Button>,
+          ]}
+        />
+      </>
+    );
+  if (!data) return null;
   return (
     <div className="flex w-full items-center justify-between sm:flex-col md:flex-row">
       {/* <ProjectInfo /> */}
@@ -54,6 +73,7 @@ const ViabilityStatus = ({ id }) => {
 export default ViabilityStatus;
 
 const ProjectMetrics = ({ metrics }) => {
+  if (!metrics) return null;
   const Item = ({ label, value, unit }) => {
     return (
       <div className="w-full">

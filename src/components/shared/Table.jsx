@@ -24,6 +24,7 @@ import { getTimeAgo } from '../../utilits/helpers';
 import { useSelector } from 'react-redux';
 import ExportAsExcelButton from './ExcelButton';
 const ProjectTable = ({ data, isOpportunitiesRoute }) => {
+  console.log(data);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const isSmallDevice = useMediaQuery('(max-width: 768px)');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -179,7 +180,7 @@ const ProjectTable = ({ data, isOpportunitiesRoute }) => {
 
   useEffect(() => {
     if (data && data !== undefined) {
-      setFilteredProjects(data?.data);
+      setFilteredProjects(data.data || data);
     } else {
       setFilteredProjects([]);
     }

@@ -8,7 +8,6 @@ import CustomPaginationComponent from '../shared/table/CustomPagination';
 
 import {
   useGetMissionsQuery,
-  useGetMissionStatusQuery,
 } from '../../redux/features/expert';
 import EmptyList from '../shared/EmptyList';
 function MissionListing() {

@@ -37,7 +37,7 @@ export const FileUploader = ({
         message.success(`${file.name} file uploaded successfully`);
         handleFileChange({ fileList: fileWithUrl });
       } else if (file.status === 'error') {
-        message.error(`${file.name} file upload failed.`);
+        message.error(file.error.message || `${file.name} file upload failed.`);
       } else {
         handleFileChange({ fileList });
       }

@@ -34,7 +34,6 @@ const ProjectOverView = ({ steps }) => {
   const containerVariants = {
     close: {
       opacity: 0,
-
       transition: {
         type: 'spring',
         damping: 15,
@@ -43,7 +42,6 @@ const ProjectOverView = ({ steps }) => {
     },
     open: {
       opacity: 1,
-
       transition: {
         type: 'spring',
         damping: 15,
@@ -78,8 +76,9 @@ const ProjectOverView = ({ steps }) => {
       svgControls.start('close');
     }
   }, [showProjectInfo]);
-  const cardRefs = useRef([]);
 
+  
+  const cardRefs = useRef([]);
   useEffect(() => {
     if (cardRefs.current[currentParentIndex]) {
       cardRefs.current[currentParentIndex].scrollIntoView({
@@ -266,10 +265,14 @@ const ProjectOverView = ({ steps }) => {
   );
 };
 
-const ESCOProjectOverView = ({ steps }) => (
-  <StepProvider steps={steps}>
-    <ProjectOverView steps={steps} />
-  </StepProvider>
-);
+const ESCOProjectOverView = ({ steps }) => {
+  const { canEdit } = useStep();
+
+  return (
+    <StepProvider steps={steps} canEdit={canEdit}>
+      <ProjectOverView steps={steps} />
+    </StepProvider>
+  );
+};
 
 export default ESCOProjectOverView;

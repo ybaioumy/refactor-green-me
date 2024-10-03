@@ -8,7 +8,7 @@ import {
 import EmptyList from '../../shared/EmptyList';
 import Loader from '../../shared/Loader';
 import { useStep } from '../../../context/formContext';
-const ProjectSummary = ({ onEdit }) => {
+const ProjectSummary = ({ onEdit, canEdit }) => {
   const { handleNext, handlePrevious, setCurrentChildIndex } = useStep();
 
   const { projectObject } = useSelector((state) => state.project);
@@ -41,32 +41,35 @@ const ProjectSummary = ({ onEdit }) => {
     return <EmptyList />;
   return (
     <>
-      <DetailsRow onEdit={() => setCurrentChildIndex(1)}>
+      <DetailsRow canEdit={canEdit} onEdit={() => setCurrentChildIndex(1)}>
         <ProjectRow label="Project Name" value={projectObject?.projectName} />
         <ProjectRow label="Project Beneficiary" value="Fujairah Hold." />
       </DetailsRow>
-      <DetailsRow onEdit={() => setCurrentChildIndex(1)}>
+      <DetailsRow canEdit={canEdit} onEdit={() => setCurrentChildIndex(1)}>
         <ProjectRow label="Project Category" value={selectedCategory} />
         <ProjectRow label="Economic Sector" value={selectedSector} />
       </DetailsRow>
 
-      <DetailsRow onEdit={() => setCurrentChildIndex(1)}>
+      <DetailsRow canEdit={canEdit} onEdit={() => setCurrentChildIndex(1)}>
         {/* <LocationDetail projectObject={projectObject} /> */}
       </DetailsRow>
-      <DetailsRow onEdit={() => setCurrentChildIndex(1)}>
+      <DetailsRow canEdit={canEdit} onEdit={() => setCurrentChildIndex(1)}>
         <ProjectRow
           label="Site Description"
           value={`${projectObject.description}` || ''}
         />
       </DetailsRow>
-      <DetailsRow onEdit={() => setCurrentChildIndex(1)}>
+      <DetailsRow canEdit={canEdit} onEdit={() => setCurrentChildIndex(1)}>
         <ProjectRow label="Site Type" value={siteType || ''} />
         <ProjectRow
           label="Multi-Location"
           value={projectObject.multiLocation ? 'Yes' : 'No' || ''}
         />
       </DetailsRow>
-      <DetailsRow onEdit={() => setCurrentChildIndex(1)} noBorder>
+      <DetailsRow
+        canEdit={canEdit}
+        onEdit={() => setCurrentChildIndex(1)}
+        noBorder>
         <ProjectRow
           label="Site Area"
           value={`Land Area (sqm): ${projectObject?.landArea}` || ''}
@@ -79,19 +82,21 @@ const ProjectSummary = ({ onEdit }) => {
     </>
   );
 };
-const DetailsRow = ({ children, onEdit, noBorder = false }) => {
+const DetailsRow = ({ children, onEdit, noBorder = false, canEdit }) => {
   return (
     <div
       className={`flex gap-2 items-center border-b border-[#CBCBCB] py-2 ${
         noBorder && 'border-b-0'
       }`}>
       <div className="flex gap-2 flex-1">{children}</div>
-      <Button
-        variant="secondary"
-        className={'w-[40px] h-[40px] '}
-        hasIcon
-        iconName={'edit'}
-        onClick={onEdit}></Button>
+      {canEdit && (
+        <Button
+          variant="secondary"
+          className={'w-[40px] h-[40px] '}
+          hasIcon
+          iconName={'edit'}
+          onClick={onEdit}></Button>
+      )}
     </div>
   );
 };

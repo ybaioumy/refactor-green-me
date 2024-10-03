@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import Icon from '../shared/Icon';
@@ -20,27 +20,20 @@ import StepTwoECO from '../Project/economicViability/StepTwoEco';
 import StepThreeECO from '../Project/economicViability/StepThreeEco';
 import StepFourECO from '../Project/economicViability/StepFourEco';
 import ViabilityStatus from '../Project/technicalInfo/TechnicalResult';
-import { useGetProjectProposalsQuery } from '../../redux/features/proposal';
 import { setProject } from '../../redux/slices/project';
-import Button from '../shared/Button';
 import StepOneESCO from '../Project/economicViability/ESCOStepOne';
 import Teams from '../Project/teams/Teams';
 import FinancialSharedSavings from '../Project/economicViability/FinancialSharedSavings';
 function ProjectESCO() {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const dispatch = useDispatch(); // Initialize dispatch
+  const dispatch = useDispatch(); 
   const {
     data: projectData,
     isLoading: isLoadingProject,
     isError,
     error,
   } = useGetProjectByIdQuery(id);
-  const {
-    data,
-    isLoading: isLoadingProposals,
-    isError: isErrorProposals,
-  } = useGetProjectProposalsQuery(id);
+
   const methods = useForm({
     defaultValues: {},
     mode: 'onChange',
@@ -55,25 +48,16 @@ function ProjectESCO() {
   }, [projectData, reset, dispatch, id]);
 
   const { projectObject } = useSelector((state) => state.project);
-  // console.log(projectObject);
-  const ProposalButton = () => (
-    <>
-      {data?.length > 0 ? (
-        <Button
-          className={'w-[100px]'}
-          isLoading={isLoadingProposals}
-          variant="blue"
-          onClick={() =>
-            navigate(`/proposals/${projectData?.id}`, {
-              state: { projectId: projectData?.id },
-            })
-          }>
-          <div className="w-[20px] h-[20px] bg-[#bbea00] rounded-full mr-2" />
-          <p className={''}>{`${data?.length} Submitted proposals`}</p>
-        </Button>
-      ) : null}
-    </>
-  );
+
+  const [canEdit, setCanEdit] = useState(true);
+  useEffect(() => {
+    if (error?.status === 403) {
+      setCanEdit(false);
+    } else {
+      setCanEdit(true);
+    }
+  }, [error]);
+ 
   const steps = [
     {
       parentStep: 'generalInfo',
@@ -81,8 +65,7 @@ function ProjectESCO() {
       icon: <Icon name={'escoGeneral'} />,
       children: [
         {
-          content: <ProjectSummary />,
-          stepIcon: <ProposalButton />,
+          content: <ProjectSummary canEdit />,
         },
         {
           stepLabel: (
@@ -91,7 +74,6 @@ function ProjectESCO() {
             </p>
           ),
           content: <GeneralInfoStepOne />,
-          stepIcon: <ProposalButton />,
         },
         {
           stepLabel: (
@@ -100,7 +82,6 @@ function ProjectESCO() {
             </p>
           ),
           content: <GeneralInfoStepTwo />,
-          stepIcon: <ProposalButton />,
         },
       ],
     },
@@ -192,12 +173,12 @@ function ProjectESCO() {
   if (!projectData) {
     return <EmptyList message={'Error loading project data'} />;
   }
-  if (isError || error || isErrorProposals)
+  if (isError || error )
     return <EmptyList message={error.message} />;
   return (
     <FormProvider {...methods}>
-      <StepProvider steps={steps}>
-        <ESCOProjectOverView steps={steps} />
+      <StepProvider steps={steps} canEdit={canEdit}>
+        <ESCOProjectOverView steps={steps}  />
       </StepProvider>
     </FormProvider>
   );

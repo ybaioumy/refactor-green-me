@@ -1,7 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
 import { authHeader } from '../../utilits/authHeader';
-// Custom base query to handle 204 No Content
 const baseQuery = fetchBaseQuery({
     baseUrl: process.env.REACT_APP_API_BASE,
     prepareHeaders: (headers) => {
@@ -12,6 +10,7 @@ const baseQuery = fetchBaseQuery({
     },
 });
 
+// Custom base query to handle 204 No Content
 const customBaseQuery = async (args, api, extraOptions) => {
     const result = await baseQuery(args, api, extraOptions);
     //handle empty list
@@ -20,7 +19,6 @@ const customBaseQuery = async (args, api, extraOptions) => {
     }
     // Handle other errors and return a message
     if (result.error) {
-        console.log(result);
         const errorMessage = result.error.data?.message || 'Something went wrong';
         return { error: { message: errorMessage, status: result.error.status } };
     }
@@ -68,11 +66,17 @@ export const expertApi = createApi({
                 body: missionData,
             }),
         }),
+        updateMission: builder.mutation({
+            query: ({ id, data }) => ({
+                url: `Mission/${id}`,
+                method: 'PUT',
+                body: data,
+            }),
+        }),
         getExpertAssignedProjects: builder.query({
             query: () => 'ProjectUser/AssignedProject'
-
         })
     })
 })
 
-export const { useGetAllExpertsQuery, useCreateNewMissionMutation, useGetMissionStatusQuery, useGetExpertFilterQuery, useGetMissionsQuery, useGetMissionByIdQuery, useGetExpertAssignedProjectsQuery } = expertApi
+export const { useGetAllExpertsQuery, useCreateNewMissionMutation, useGetMissionStatusQuery, useGetExpertFilterQuery, useGetMissionsQuery, useGetMissionByIdQuery, useGetExpertAssignedProjectsQuery, useUpdateMissionMutation } = expertApi

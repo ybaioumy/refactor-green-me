@@ -11,7 +11,7 @@ import EmptyList from '../shared/EmptyList';
 import { useFormContext } from 'react-hook-form';
 import ExpertDetails from './expertInfo/ExpertInfo';
 import { useGetExpertFilterQuery } from '../../redux/features/expert';
-function StepThree() {
+function StepThree({ tokenData }) {
   const { watch } = useFormContext();
   const typeId = watch('typesId');
 
@@ -31,7 +31,7 @@ function StepThree() {
     isLoading: isLoadingSectors,
     isError: isErrorSectors,
   } = useGetAllClientSectorsQuery();
-  
+
   const { data: usersTypes, isLoading, isError } = useGetTypesQuery();
 
   const getUserTypeIdByName = (id, name) => {
@@ -68,6 +68,7 @@ function StepThree() {
         countries={countries}
         expertise={areasofExpertise}
         certifcations={certification}
+        tokenData={tokenData}
       />
     );
 

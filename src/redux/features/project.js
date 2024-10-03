@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { authHeader } from '../../utilits/authHeader';
 import { setProject } from '../slices/project';
 import _ from 'lodash';
+import { message } from 'antd';
 // Custom base query to handle 204 No Content
 const baseQuery = fetchBaseQuery({
     baseUrl: process.env.REACT_APP_API_BASE,
@@ -19,9 +20,13 @@ const customBaseQuery = async (args, api, extraOptions) => {
     if (result.error && result.error.status === 204) {
         return { data: [] };
     }
+    if (result.error && result.error.status === 403) {
+        console.warn('403 Forbidden: Access is denied');
+        return { error: { message: 'Access is forbidden. You do not have permission to access this resource.', status: 403 } };
+    }
+
     // Handle other errors and return a message
     if (result.error) {
-        console.log(result);
         const errorMessage = result.error.data?.message || 'Something went wrong';
         return { error: { message: errorMessage, status: result.error.status } };
     }
@@ -57,7 +62,8 @@ export const projectApi = createApi({
                     const { data } = await queryFulfilled;
                     dispatch(setProject(_.cloneDeep(data)));
                 } catch (error) {
-                    console.error('Error fetching item by ID:', error);
+
+                    console.warn('Error fetching item by ID:, you are not authorized', error);
                 }
             },
         }),
@@ -114,4 +120,4 @@ export const projectApi = createApi({
     }),
 });
 
-export const { useGetAllProjectsQuery, useGetAllOpportunitiesQuery, useGetProjectByIdQuery, useGetProjectUsersQuery, useGetAllCategoriesWithCrietriaQuery, useGetProjectDropDownsQuery, useGetProjectsFiltersQuery, useGetProjectStatusQuery, useLazyGetProjectEligibilityQuery, useGetUsersQuery, useGetProjectEnergyAuditQuery, useGetProjectFinancialModelQuery, useGetProjectImpactViabilityQuery, useUpdateProjectByIdMutation,useCreateProjectMutation } = projectApi;
+export const { useGetAllProjectsQuery, useGetAllOpportunitiesQuery, useGetProjectByIdQuery, useGetProjectUsersQuery, useGetAllCategoriesWithCrietriaQuery, useGetProjectDropDownsQuery, useGetProjectsFiltersQuery, useGetProjectStatusQuery, useLazyGetProjectEligibilityQuery, useGetUsersQuery, useGetProjectEnergyAuditQuery, useGetProjectFinancialModelQuery, useGetProjectImpactViabilityQuery, useUpdateProjectByIdMutation, useCreateProjectMutation } = projectApi;

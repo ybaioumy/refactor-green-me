@@ -9,6 +9,8 @@ import Select from '../shared/Select';
 import MapComponent from '../shared/Map';
 import Input from '../shared/Input';
 import { LightingSystemTypes } from './lookingforaudit/SecondStep';
+import { useGetAllCategoriesWithCrietriaQuery } from '../../redux/features/project';
+import useGetItemIdByName from '../../hooks/useGetItemIdByName';
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   return (
     <>
@@ -75,13 +77,22 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 };
 
 const MainForm = () => {
-  const { control, setValue } = useFormContext();
+  const { control, setValue, watch } = useFormContext();
   const { data, error, isLoading } = useGetProjectDropDownsQuery('generalInfo');
   const { city, economicSector, servedCountry, siteType } = data || [];
-
+  const { data: categories, isLoading: isLoadingCategory } =
+    useGetAllCategoriesWithCrietriaQuery();
   const handleChange = (name, newValue) => {
     setValue(name, newValue);
   };
+  const energyEfficiencyCATID = useGetItemIdByName(
+    categories,
+    'Energy Efficiency'
+  );
+  console.log(watch(), 'from values');
+  useEffect(() => {
+    setValue('categoryId', energyEfficiencyCATID);
+  }, [energyEfficiencyCATID, setValue]);
 
   // const handlePositionChange = (newPosition) => {
   //   setEligibilityTestData((prevState) => ({

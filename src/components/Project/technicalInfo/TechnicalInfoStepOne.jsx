@@ -18,7 +18,7 @@ function TechnicalStepOne() {
       return <EnergyEfficiency/>
     case 4:
     default:
-      return <EmptyList message={'Seems Like you did not select a category'} />;
+      return <EmptyList message={'No data available'} />;
   }
 }
 

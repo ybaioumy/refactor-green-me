@@ -34,7 +34,6 @@ import ExpertDashboard from './components/expert/ExpertDashboard';
 
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
-  const { invitationToken } = useSelector((state) => state.invitation);
 
   const token = useGetToken();
   const expiry = useTokenExpiration();
@@ -53,13 +52,8 @@ const ProtectedRoute = ({ children }) => {
     } else if (Date.now() >= expirationTime) {
       handleLogout();
       console.log('Token expired');
-    } else if (invitationToken) {
-      // Redirect only if navigating from a valid state
-      if (window.location.pathname !== '/join-project') {
-        navigate('/join-project');
-      }
-    }
-  }, [token, expirationTime, handleLogout, invitationToken, navigate]);
+    } 
+  }, [token, expirationTime, handleLogout]);
 
   return token ? children : null;
 };
@@ -216,6 +210,10 @@ const expertRouter = createBrowserRouter([
       {
         index: true,
         element: <ExpertDashboard />,
+      },
+      {
+        path: 'join-project',
+        element: <ProjectInvitation />,
       },
     ],
   },

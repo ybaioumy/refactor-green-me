@@ -1,12 +1,11 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import Icon from '../shared/Icon';
 import { FormProvider, useForm } from 'react-hook-form';
 import { StepProvider } from '../../context/formContext';
 import { useGetProjectByIdQuery } from '../../redux/features/project';
-import Loader from '../shared/Loader';
-import EmptyList from '../shared/EmptyList';
+
 import ESCOProjectOverView from './ESCOProjectOverview';
 import GeneralInfoStepOne from '../Project/generalInfo/StepOne';
 import GeneralInfoStepTwo from '../Project/generalInfo/StepTwo';
@@ -20,28 +19,23 @@ import StepTwoECO from '../Project/economicViability/StepTwoEco';
 import StepThreeECO from '../Project/economicViability/StepThreeEco';
 import StepFourECO from '../Project/economicViability/StepFourEco';
 import ViabilityStatus from '../Project/technicalInfo/TechnicalResult';
-import { useGetProjectProposalsQuery } from '../../redux/features/proposal';
 import { setProject } from '../../redux/slices/project';
 import Button from '../shared/Button';
 import StepOneESCO from '../Project/economicViability/ESCOStepOne';
 import Teams from '../Project/teams/Teams';
 import FinancialSharedSavings from '../Project/economicViability/FinancialSharedSavings';
-import Steps from '../shared/Steps';
+import Loader from '../shared/Loader';
+
 function OpportunitiyOverview() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const dispatch = useDispatch(); // Initialize dispatch
+  const dispatch = useDispatch();
   const {
     data: projectData,
     isLoading: isLoadingProject,
-    isError,
     error,
   } = useGetProjectByIdQuery(id);
-  const {
-    data,
-    isLoading: isLoadingProposals,
-    isError: isErrorProposals,
-  } = useGetProjectProposalsQuery(id);
+
   const methods = useForm({
     defaultValues: {},
     mode: 'onChange',
@@ -57,21 +51,31 @@ function OpportunitiyOverview() {
 
   const { projectObject } = useSelector((state) => state.project);
 
+  const [canEdit, setCanEdit] = useState(true);
+  useEffect(() => {
+    if (error?.status === 403) {
+      setCanEdit(false);
+    } else {
+      setCanEdit(true);
+    }
+  }, [error]);
+
+  
   const ProposalButton = () => (
     <>
-      {data?.length > 0 && (
-        <Button
-          isLoading={isLoadingProposals}
-          variant="blue"
-          onClick={() =>
-            navigate(`/proposals/${projectData?.id}`, {
-              state: { projectId: projectData?.id },
-            })
-          }>
-          <div className="w-[20px] h-[20px] bg-[#bbea00] rounded-full mr-2" />
-          <p className="">{`${data?.length} Submitted proposals`}</p>
-        </Button>
-      )}
+      <Button
+        hasIcon
+        iconPosition="left"
+        iconName={'addProject'}
+        className={'w-[180px] flex justify-between'}
+        variant="blue"
+        onClick={() =>
+          navigate(`/submit-offer/${id}`, {
+            state: { projectId: id },
+          })
+        }>
+        <p>{`Submit Offer`}</p>
+      </Button>
     </>
   );
   const steps = [
@@ -184,10 +188,10 @@ function OpportunitiyOverview() {
       ],
     },
   ];
-
+  if (isLoadingProject) return <Loader />;
   return (
     <FormProvider {...methods}>
-      <StepProvider steps={steps}>
+      <StepProvider steps={steps} canEdit={canEdit}>
         <ESCOProjectOverView steps={steps} />;
       </StepProvider>
     </FormProvider>

@@ -26,6 +26,7 @@ const Badge = (type) => {
 // ProjectInfo component using the Item component to display projectObject as read-only
 const ProjectInfo = () => {
   const { projectObject } = useSelector((state) => state.project);
+  if (!projectObject) return null;
   return (
     <div className="md:p-2 lg:px-4 flex flex-col gap-2  transition-all duration-200 ">
       {/* Project Image and Title */}

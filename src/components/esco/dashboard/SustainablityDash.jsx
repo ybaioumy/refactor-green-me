@@ -155,7 +155,7 @@ const SusGraph = () => {
       </div>
       <div className="flex items-start gap-2">
         <LineChart
-          height={250}
+          height={350}
           series={[
             {
               data: uData,

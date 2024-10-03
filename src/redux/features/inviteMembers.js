@@ -1,16 +1,26 @@
 
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { authHeader } from '../../utilits/authHeader';
+import { authHeader } from '../../utilits/authHeader'; 
 export const inviteApi = createApi({
     reducerPath: 'inviteApi',
-    baseQuery: fetchBaseQuery({
-        baseUrl: process.env.REACT_APP_API_BASE, prepareHeaders: (headers) => {
-            headers.set('Authorization', authHeader());
+    baseQuery: async (args, api, extraOptions) => {
+        const result = await fetchBaseQuery({
+            baseUrl: process.env.REACT_APP_API_BASE,
+            prepareHeaders: (headers) => {
+                headers.set('Authorization', authHeader());
+                return headers;
+            },
+        })(args, api, extraOptions);
 
-            return headers;
-        },
-    }),
-    // new body : esco id , clientId
+        // Handle error response
+        if (result.error) {
+            // Extract error message from the response
+            const errorMessage = result.error.data?.message || 'An unknown error occurred.';
+            return { error: { status: result.error.status, message: errorMessage } };
+        }
+
+        return result;
+    },
     endpoints: (builder) => ({
         inviteUser: builder.mutation({
             query: ({ emails, projectId, typeId, statusId, permissionId, ProjectRoleId, escoId }) => ({

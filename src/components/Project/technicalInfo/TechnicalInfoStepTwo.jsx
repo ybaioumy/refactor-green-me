@@ -15,9 +15,9 @@ function TechnicalStepTwo() {
     case 2:
       return <RenewableEnergy />;
     case 3:
-      return <EnergyEfficiency/>;
+      return <EnergyEfficiency />;
     default:
-      return <EmptyList message={'Seems Like you did not select a category'} />;
+      return <EmptyList message={'No data available'} />;
   }
 }
 

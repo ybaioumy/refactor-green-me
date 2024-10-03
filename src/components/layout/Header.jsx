@@ -71,7 +71,7 @@ export default function Header() {
   const logout = useLogout();
   const pathName = useLocation().pathname;
   const isProfileEsco = pathName === '/profile';
-  const isProfileExpert = Number(userType) === 3 && pathName === '/';
+  const isProfileExpert = Number(userType) === 3;
   const headerImage = useMemo(() => {
     if (isProfileEsco || isProfileExpert) {
       return LogoSec;

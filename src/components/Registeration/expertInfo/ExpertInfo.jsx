@@ -59,7 +59,6 @@ const ExpertInfo = ({ countries }) => {
     control,
     setValue,
     formState: { errors },
-    watch,
   } = useFormContext({
     defaultValues: {
       firstName: '',
@@ -70,7 +69,6 @@ const ExpertInfo = ({ countries }) => {
       expertLanguages: '',
     },
   });
-  console.log(watch(), 'register values');
   const handleChange = (field, value) => {
     setValue(field, value);
   };
@@ -151,7 +149,7 @@ const ExpertInfo = ({ countries }) => {
             <div className="flex flex-col w-full">
               <Select
                 {...field}
-                // removeMaxWidth
+                removeMaxWidth
                 search
                 variant="green"
                 options={countries}
@@ -193,7 +191,7 @@ const ExpertInfo = ({ countries }) => {
           render={({ field }) => (
             <Select
               {...field}
-              // removeMaxWidth
+              removeMaxWidth
               search
               variant="green"
               options={countries}
@@ -224,9 +222,7 @@ const ExpertInfo = ({ countries }) => {
 const Contacts = ({ tokenData }) => {
   const {
     control,
-    setValue,
     formState: { errors },
-    watch,
   } = useFormContext({
     defaultValues: {
       email: '',
@@ -254,8 +250,8 @@ const Contacts = ({ tokenData }) => {
                   {...field}
                   type="email"
                   placeHolder="Email"
-                  readOnly={!!tokenData?.Email}
-                  disabled={!!tokenData?.Email || canEdit} // Make field read-only if tokenData.Email exists
+                  readOnly={tokenData?.Email}
+                  disabled={tokenData?.Email || canEdit} // Make field read-only if tokenData.Email exists
                   variant="secondary"
                   value={tokenData?.Email || field.value} // Pre-fill the value if tokenData.Email exists, else use field value
                   onChange={(e) => {
@@ -348,12 +344,7 @@ const Contacts = ({ tokenData }) => {
   );
 };
 const ServedCountries = ({ countries }) => {
-  const {
-    control,
-    setValue,
-    formState: { errors },
-    watch,
-  } = useFormContext({
+  const { control, setValue, watch } = useFormContext({
     defaultValues: {
       expertCountriesServeds: [],
     },
@@ -409,7 +400,7 @@ const ServedCountries = ({ countries }) => {
             render={({ field }) => (
               <Select
                 {...field}
-                // removeMaxWidth
+                removeMaxWidth
                 search
                 variant="green"
                 options={countries}
@@ -497,6 +488,7 @@ const AreasOfExpertise = ({ expertise }) => {
               <div className="flex flex-col w-full">
                 <Select
                   {...field}
+                  removeMaxWidth
                   disabled={canEdit}
                   search
                   variant="green"
@@ -592,7 +584,7 @@ const Certifications = ({ certifcations }) => {
               <div className="flex flex-col w-full">
                 <Select
                   {...field}
-                  // removeMaxWidth
+                  removeMaxWidth
                   search
                   variant="green"
                   options={certifcations}

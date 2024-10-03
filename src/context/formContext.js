@@ -18,41 +18,38 @@ export const StepProvider = ({ children, steps, canEdit }) => {
     const userId = Cookies.get('userId')
     const [currentParentIndex, setCurrentParentIndex] = useState(0);
     const [currentChildIndex, setCurrentChildIndex] = useState(0);
-    const { trigger, getValues,
-        formState: { errors }
-    } = useFormContext();
+
+    const { trigger, getValues, formState: { errors }} = useFormContext();
+
     const [updateProjectById, { isLoading }] = useUpdateProjectByIdMutation();
-    const { data: projectPermissions, isLoading: isLoadingPermissions } =
-        useGetUserProjectPermissionsQuery({ projectId: id, userId: userId })
+    const { data: projectPermissions } = useGetUserProjectPermissionsQuery({ projectId: id, userId: userId })
 
-    // console.log(projectPermissions,'form state');
     const handleNext = async () => {
-        const isValid = await trigger();
-        if (!isValid) {
-            alertValidationMessage(errors);
-            return;
-        }
-
-        const currentData = getValues();
-        const updatedDocumentSections = currentData.documentSections || [];
-        try {
-            // Update the project by sending the current data
-            await updateProjectById({ id, data: { ...currentData, documentSections: updatedDocumentSections } }).unwrap();
-            dispatch(setProject({ ...currentData, documentSections: updatedDocumentSections }));
-            // Continue with navigation
-            // Navigate to the next step
-            if (currentChildIndex < steps[currentParentIndex].children.length - 1) {
-                setCurrentChildIndex(currentChildIndex + 1);
-            } else if (currentParentIndex < steps.length - 1) {
-                setCurrentParentIndex(currentParentIndex + 1);
-                setCurrentChildIndex(0);
+        if (canEdit) {
+            const isValid = await trigger();
+            if (!isValid) {
+                alertValidationMessage(errors);
+                return;
             }
-        } catch (error) {
-            console.error('Failed to update project:', error);
-            alert('Failed to update the project. Please try again.');
+            const currentData = getValues();
+            try {
+                if (canEdit) {
+                    await updateProjectById({ id, data: currentData }).unwrap();
+                    dispatch(setProject(currentData));
+                }
+            } catch (error) {
+                console.error(error.message || 'Some things went wrong')
+                message.error('Failed to update the project. Please try again.');
+            }
+        }
+        // Continue with navigation regardless of edit mode
+        if (currentChildIndex < steps[currentParentIndex].children.length - 1) {
+            setCurrentChildIndex(currentChildIndex + 1);
+        } else if (currentParentIndex < steps.length - 1) {
+            setCurrentParentIndex(currentParentIndex + 1);
+            setCurrentChildIndex(0);
         }
     };
-
 
     const handlePrevious = () => {
         if (currentChildIndex > 0) {
@@ -73,8 +70,8 @@ export const StepProvider = ({ children, steps, canEdit }) => {
         try {
             await updateProjectById({ id, data: currentData }).unwrap();
             message.success('Project Updated Successfully!');
-            setCurrentParentIndex(0);  // Reset to the first parent step
-            setCurrentChildIndex(0);   // Reset to the first child step
+            setCurrentParentIndex(0);  
+            setCurrentChildIndex(0);  
         } catch (error) {
             console.error('Failed to update project: ', error);
             alert('Failed to update the project. Please try again.');
@@ -91,13 +88,13 @@ export const StepProvider = ({ children, steps, canEdit }) => {
                 handlePrevious,
                 setCurrentChildIndex,
                 setCurrentParentIndex,
+                onSubmit,
                 steps,
                 isLoading,
-                onSubmit
+                canEdit,
+                projectPermissions,
             }}>
             {children}
-            {/* <DevTool control={control} /> */}
-
         </StepContext.Provider>
     );
 };

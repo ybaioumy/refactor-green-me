@@ -19,6 +19,7 @@ const customIcon = new L.Icon({
 
 // Function to get city name using OpenStreetMap Nominatim API
 export async function getCityName(lat, lng) {
+  if (!lat || !lng) return;
   const response = await fetch(
     `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
   );

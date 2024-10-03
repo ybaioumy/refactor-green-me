@@ -14,6 +14,7 @@ import { message } from 'antd';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import EXPhoto from '../../assets/images/m.png';
 const AssignMission = () => {
+  
   const {
     control,
     handleSubmit,
@@ -66,7 +67,7 @@ const AssignMission = () => {
       newSectionRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [fields]);
-
+  console.log(watch());
   const handleAdd = () => {
     append({
       id: fields.length ? fields[fields.length - 1].id + 1 : 1,
@@ -94,16 +95,18 @@ const AssignMission = () => {
 
   const handleCreateMission = async (data) => {
     const sections = data.sections;
-    const fileList = data.fileList;
+    const fileList = data.fileList || [];
 
     // if (fileList.length === 0) {
     //   message.error('Please select a file to upload.');
     //   return;
     // }
 
-    const filesData = fileList.map((file) => ({
-      filePath: file?.response?.fullPath,
-    }));
+    const filesData = fileList
+      ? fileList.map((file) => ({
+          filePath: file?.response?.fullPath,
+        }))
+      : [];
 
     for (let i = 0; i < sections.length; i++) {
       const section = sections[i];
@@ -119,7 +122,7 @@ const AssignMission = () => {
       }
     }
 
-    const missionsData = sections.map((section) => ({
+    const missionsData = sections.map((section, index) => ({
       assignedToUserId: expert?.id || null,
       projectId: Number(projectId),
       statusId: pendingStatusId,
@@ -131,7 +134,7 @@ const AssignMission = () => {
       startDate: section.startDate,
       endDate: section.endDate,
       documentSection: {
-        name: `Mission Documentation for Project ${projectId}`,
+        name: `Mission ${index} documents for Project ${projectId}`,
         isapproved: true,
         documentFiles: filesData,
       },

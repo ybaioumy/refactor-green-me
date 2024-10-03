@@ -7,15 +7,21 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Result } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { clearInvitaion } from '../redux/slices/invitaion';
+import Loader from '../components/shared/Loader';
+import EmptyList from '../components/shared/EmptyList';
 
 const ProjectInvitation = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isExpired, setIsExpired] = useState(false);
-  const [reponseToProjectInvitation, { isLoading, isError, isSuccess }] =
+  const [reponseToProjectInvitation, { isLoading, isError, isSuccess, error }] =
     useReponseToProjectInvitationMutation();
-  const { data: invitaionStatus, isLoading: isLoadingStatus } =
-    useGetInvitationStatusQuery();
+  const {
+    data: invitaionStatus,
+    isLoading: isLoadingStatus,
+    error: errorGettingStatus,
+    isError: isErrorStatus,
+  } = useGetInvitationStatusQuery();
   const acceptStatusId = useGetItemIdByName(invitaionStatus, 'Accept');
   const declineStatusId = useGetItemIdByName(invitaionStatus, 'Reject');
   const { invitationToken, expiry, typeId, roleId, permissionId } = useSelector(
@@ -44,14 +50,40 @@ const ProjectInvitation = () => {
         invitationToken,
       });
       dispatch(clearInvitaion());
-      setTimeout(() => {
-        navigate('/');
-      }, 200);
     } catch (error) {
       console.error('Failed to respond to the invitation', error);
     }
   };
+  if (isLoadingStatus) return <Loader />;
+  if (isErrorStatus)
+    return (
+      <EmptyList
+        message={errorGettingStatus.message || 'some thing went wrong'}
+      />
+    );
 
+  if (isSuccess) {
+    return (
+      <Result
+        status="success"
+        title="Successfully assigned to project"
+        extra={[
+          <Button type="link" to={'/'} key="console">
+            Go Home
+          </Button>,
+        ]}
+      />
+    );
+  }
+  if (isError) {
+    return (
+      <Result
+        status="error"
+        title="Submission Failed"
+        subTitle={error.message || 'Something went wrong'}
+      />
+    );
+  }
   return (
     <div className="flex items-center justify-center flex-col h-[60vh] mt-[5%] w-[70%] mx-auto">
       <h1 className="text-[#505050] text-2xl font-bold">Project Invitation</h1>
@@ -99,9 +131,6 @@ const ProjectInvitation = () => {
           />
         )}
       </div>
-
-      {isSuccess && <p>Response submitted successfully!</p>}
-      {isError && <p>There was an error submitting your response.</p>}
     </div>
   );
 };

@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom';
 import Loader from '../../shared/Loader';
 import EmptyList from '../../shared/EmptyList';
 import { useGetTypesQuery } from '../../../redux/features/auth';
-
 const Teams = () => {
   const { id } = useParams();
   const { data, isLoading, isError, error } = useGetProjectUsersQuery(id);
@@ -32,6 +31,7 @@ const Teams = () => {
     [data, expertId]
   );
 
+ 
   if (isLoading || isLoadingTypes) {
     return <Loader />;
   }
@@ -39,7 +39,6 @@ const Teams = () => {
   if (isError || !data || isErrorTypes) {
     return <EmptyList message={error.data.message} />;
   }
-
   return (
     <div className="w-full h-full flex flex-col gap-20">
       {/* ESCO Team Table */}

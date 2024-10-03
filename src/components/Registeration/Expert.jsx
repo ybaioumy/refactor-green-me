@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
-import Select from '../shared/Select';
 import Input from '../shared/Input';
 import dayjs from 'dayjs';
 import { Dropdown } from '../shared/Dropdown';
@@ -13,15 +12,13 @@ function ExpertContractor({
   const {
     control,
     formState: { errors },
-    setValue,
-    getValues,
+
     register,
     watch,
   } = useFormContext({});
 
   const password = watch('password');
 
-  console.log(getValues());
   return (
     <div className="flex flex-col w-full gap-8 my-auto mt-[10%]">
       <div className="flex flex-col">

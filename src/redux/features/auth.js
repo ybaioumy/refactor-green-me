@@ -56,7 +56,6 @@ export const authApi = createApi({
                         })
                     );
                     if (invitationTokenParamas && encryptedData) {
-                        console.table(encryptedData)
                         dispatch(
                             setInvitaion({
                                 invitationToken: encryptedData.InvitationToken,

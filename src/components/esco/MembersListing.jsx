@@ -164,7 +164,7 @@ function MembersListing() {
       return;
     }
     try {
-      await inviteUser({
+      const response = await inviteUser({
         emails: emailsArray,
         projectId: projectIdToSend,
         typeId,
@@ -174,9 +174,10 @@ function MembersListing() {
         escoId,
       }).unwrap();
       message.success(
-        `Users with emails ${emailsArray.join(
-          ', '
-        )} successfully invited to project id ${projectId}`
+        response.message ||
+          `Users with emails ${emailsArray.join(
+            ', '
+          )} successfully invited to project id ${projectId}`
       );
       setSelectedRows([]);
       setOpen(false);

@@ -124,23 +124,26 @@ const HorizontalSearchBar = ({ data, operationTodo, isLoading }) => {
                 </div>
               ))
             : null}
-
-          <Button
-            className={'font-semibold'}
-            size="sm"
-            onClick={() => dispatch(resetSearchObject())}>
-            Clear All Filters
-          </Button>
-          <Button
-            size="sm"
-            variant="transparent"
-            hasIcon
-            className={'font-semibold'}
-            iconName="filter-vertical"
-            iconPosition="left"
-            onClick={toggleFilter}>
-            More Filters
-          </Button>
+          {data && data.length > 0 && (
+            <>
+              <Button
+                className={'font-semibold'}
+                size="sm"
+                onClick={() => dispatch(resetSearchObject())}>
+                Clear All Filters
+              </Button>
+              <Button
+                size="sm"
+                variant="transparent"
+                hasIcon
+                className={'font-semibold'}
+                iconName="filter-vertical"
+                iconPosition="left"
+                onClick={toggleFilter}>
+                More Filters
+              </Button>
+            </>
+          )}
         </div>
       </div>
       <MoreFilters

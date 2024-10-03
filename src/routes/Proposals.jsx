@@ -20,7 +20,6 @@ function ProposalsPage() {
     state: { projectId },
   } = useLocation();
   const { data, isLoading, isError } = useGetProjectProposalsQuery(projectId);
-  console.log(data);
   const [
     clientResponseToProposal,
     { isLoading: isSubmitLoading, isSuccess, isError: isErrorSubmitting },
@@ -160,7 +159,9 @@ const Proposals = ({
               key={item.id}
               onClick={() => handleTabChange(item)}>
               <p>{`Proposal ${idx + 1}`}</p>
-              <p className="text-sm">{getTimeAgo(item.submittedOn)}</p>
+              <p className="text-sm">{`Date: ${getTimeAgo(
+                item.submittedOn
+              )}`}</p>
             </button>
           ))}
       </div>
@@ -189,17 +190,20 @@ const Proposals = ({
           disabled={true}
         />
         <div className="mt-4">
-          {activeTab.documentSection?.documentFiles?.map((file) => (
-            <a
-              key={file.id}
-              href={file.filePath}
-              download
-              target="_blank"
-              rel="noreferrer"
-              className="text-blue-500 underline flex items-center gap-4">
-              <p>{file.filePath.split('/').pop()}</p> <Icon name="download" />
-            </a>
-          ))}
+          {activeTab.documentSection?.documentFiles?.map((file) => {
+            if (!file || !file.filePath) return null;
+            return (
+              <a
+                key={file.id}
+                href={file.filePath}
+                download
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-500 underline flex items-center gap-4">
+                <p>{file.filePath.split('/').pop()}</p> <Icon name="download" />
+              </a>
+            );
+          })}
         </div>
       </div>
 
