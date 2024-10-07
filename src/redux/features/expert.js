@@ -74,9 +74,21 @@ export const expertApi = createApi({
             }),
         }),
         getExpertAssignedProjects: builder.query({
-            query: () => 'ProjectUser/AssignedProject'
+            query: (searchParams) => ({
+                url: 'ProjectUser/AssignedProject',
+                method: 'POST',
+                body: searchParams,
+            })
+        }),
+        getExpertAssignedMissions: builder.query({
+            query: ({ userId }) => ({
+                url: `Mission/user`,
+                method: 'GET',
+                params: { userId }
+
+            }),
         })
     })
 })
 
-export const { useGetAllExpertsQuery, useCreateNewMissionMutation, useGetMissionStatusQuery, useGetExpertFilterQuery, useGetMissionsQuery, useGetMissionByIdQuery, useGetExpertAssignedProjectsQuery, useUpdateMissionMutation } = expertApi
+export const { useGetAllExpertsQuery, useCreateNewMissionMutation, useGetMissionStatusQuery, useGetExpertFilterQuery, useGetMissionsQuery, useGetMissionByIdQuery, useGetExpertAssignedProjectsQuery, useUpdateMissionMutation ,useGetExpertAssignedMissionsQuery} = expertApi

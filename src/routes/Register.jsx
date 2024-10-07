@@ -159,6 +159,7 @@ function Register() {
               accept="image/*"
               onChange={(e) => handleFileChange(registerData.typesId, e)}
               className="hidden"
+              
             />
             <label
               htmlFor="logoUpload"

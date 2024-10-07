@@ -12,7 +12,7 @@ export const proposalApi = createApi({
             return headers;
         },
     }),
-    tagTypes: ['Proposals'], 
+    tagTypes: ['Proposals'], // Define tag for proposals
     endpoints: (builder) => ({
         getProposalStatus: builder.query({
             query: () => 'ProposalStatus',
@@ -23,11 +23,11 @@ export const proposalApi = createApi({
                 method: 'POST',
                 body: proposalData,
             }),
-            invalidatesTags: ['Proposals'], 
+            invalidatesTags: ['Proposals'], // Invalidate proposals on mutation
         }),
         getProjectProposals: builder.query({
             query: (id) => `Proposal/project/${id}`,
-            providesTags: ['Proposals'], 
+            providesTags: ['Proposals'], // Provide a tag for this query
         }),
         clientResponseToProposal: builder.mutation({
             query: ({ id, status, statusId }) => ({

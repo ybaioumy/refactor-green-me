@@ -68,7 +68,7 @@ const HorizontalSearchBar = ({ data, operationTodo, isLoading }) => {
       </div>
 
       <div
-        className={`flex flex-col md:flex-row w-full gap-5 justify-between px-2 md:px-10 py-5 md:bg-[#D9D9D9] 
+        className={`flex flex-col md:flex-row w-full gap-5 justify-between px-2 md:px-5 py-5 md:bg-[#D9D9D9] 
         ${isOpen ? 'block' : 'hidden'}
          md:flex
          `}>
@@ -76,7 +76,7 @@ const HorizontalSearchBar = ({ data, operationTodo, isLoading }) => {
           <div className="flex flex-col   justify-between">
             <label
               htmlFor="search"
-              className="text-[#202020] font-semibold text-md ml-1 mb-2">
+              className="text-[#202020] font-semibold text-md ml-1">
               Search Project Code
             </label>
             <input
@@ -86,7 +86,7 @@ const HorizontalSearchBar = ({ data, operationTodo, isLoading }) => {
             />
           </div>
           <div className="flex gap-4">
-            <Button
+            {/* <Button
               className={'w-[120px]'}
               size="sm"
               variant="primary"
@@ -94,7 +94,7 @@ const HorizontalSearchBar = ({ data, operationTodo, isLoading }) => {
               iconName="search"
               iconPosition="right">
               Go
-            </Button>
+            </Button> */}
             {isAddMembers && (
               <Button onClick={operationTodo} variant="blue" size="sm">
                 <Icon name={'addProject'} />
@@ -112,8 +112,11 @@ const HorizontalSearchBar = ({ data, operationTodo, isLoading }) => {
         <div className="flex flex-col md:flex-row md:items-end gap-5 flex-wrap justify-end">
           {data
             ? data?.map((item) => (
-                <div key={item.label}>
+                <div
+                  key={item.label}
+                  className="md:max-w-[210px] md:min-w-[180px]">
                   <Select
+                    removeMaxWidth
                     search
                     clearSearch={() => handleClearByItem(item.key)}
                     options={item.data || []}

@@ -72,7 +72,7 @@ const CustomPaginationComponent = React.memo((props) => {
     return Math.min(currentPage * pageSize, totalRecords);
   }, [currentPage, pageSize, totalRecords]);
   if (totalPages <= 0) {
-    return null; 
+    return null;
   }
   return (
     <div
@@ -124,7 +124,9 @@ const CustomPaginationComponent = React.memo((props) => {
       {renderPages.map((page) => (
         <button
           key={page}
-          className={page === currentPage ? 'active' : ''}
+          className={`${
+            page === currentPage ? 'active' : ''
+          } w-[25px] h-[25px] rounded-full mx-1`}
           onClick={() => dispatch(setPageNumber(page))}>
           {page}
         </button>

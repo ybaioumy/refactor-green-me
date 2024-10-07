@@ -6,7 +6,10 @@ import CustomerNetCashFlowTable from './components/CustomerNetCashFlowTable';
 import ParametersTable from './components/ParametersTable';
 import VerticalBarChart from './components/VerticalBarChart';
 import Loader from '../../shared/Loader';
+import { useStep } from '../../../context/formContext';
+import { generateFieldStepMapping } from '../../../utilits/helpers';
 function FinancialSharedSavings({ project }) {
+  const { goToField, steps } = useStep();
   const {
     data: projectFinancialData,
     isLoading: isLoadingFinancial,
@@ -14,20 +17,38 @@ function FinancialSharedSavings({ project }) {
     error: errorFinancial,
   } = useGetProjectFinancialModelQuery(project.id);
 
-  console.table(
-    // projectImpactViabilityData,
-    // projectEnergyAudtData,
-    projectFinancialData
-  );
   if (isLoadingFinancial) return <Loader />;
-  if (errorFinancial)
+  if (errorFinancial) {
+    const missingDataPrefix = 'The following required data is missing: ';
+    const missingDataString = errorFinancial?.message.replace(
+      missingDataPrefix,
+      ''
+    );
+    // Split the remaining string by commas to get each item
+    const missingDataArray = missingDataString.split(', ');
+    const fieldStepMapping = generateFieldStepMapping(steps, missingDataArray);
+    const normalizeFieldName = (name) => name.toLowerCase().replace(/\s+/g, '');
+
     return (
       <Result
         status="error"
         title="Calculations Failed"
-        subTitle={errorFinancial.message}
-      />
+        subTitle={'Check the following data'}>
+        {missingDataArray.map((item, index) => (
+          <button
+            type="button"
+            className="p-2"
+            key={index}
+            onClick={() =>
+              goToField(normalizeFieldName(item), fieldStepMapping)
+            }>
+            Go To &gt;{' '}
+            <span className="text-[#1677ff] hover:text-[#69b1ff]">{item}</span>
+          </button>
+        ))}
+      </Result>
     );
+  }
   return (
     <div className="flex flex-col ">
       <div className="flex flex-col gap-6">
@@ -222,7 +243,9 @@ const MetricCard = ({ title, subtitle, value, unit }) => {
         <p className="border-l border-[#000000] pl-2 text-[#1e4a28] text-[14px] font-[400]">
           {unit}
         </p>
-        <p className="text-[#1e4a28] text-[20px] font-[700] ">{value}</p>
+        <p className="text-[#1e4a28] text-[20px] font-[700] ">
+          {value || 'NA'}
+        </p>
       </div>
     </div>
   );

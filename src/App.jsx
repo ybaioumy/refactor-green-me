@@ -31,6 +31,7 @@ import ProjectESCO from './components/ESCO/Project';
 import Mission from './components/ESCO/Mission';
 import ProjectInvitation from './routes/JoinProject';
 import ExpertDashboard from './components/expert/ExpertDashboard';
+import ExpertMissionListing from './components/expert/components/ExpertMissionListing';
 
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
@@ -42,7 +43,9 @@ const ProtectedRoute = ({ children }) => {
 
   const handleLogout = useCallback(() => {
     logout();
-    navigate('/');
+    setTimeout(() => {
+      navigate('/');
+    }, 200);
   }, [logout, navigate]);
 
   useEffect(() => {
@@ -52,7 +55,7 @@ const ProtectedRoute = ({ children }) => {
     } else if (Date.now() >= expirationTime) {
       handleLogout();
       console.log('Token expired');
-    } 
+    }
   }, [token, expirationTime, handleLogout]);
 
   return token ? children : null;
@@ -214,6 +217,23 @@ const expertRouter = createBrowserRouter([
       {
         path: 'join-project',
         element: <ProjectInvitation />,
+      },
+      {
+        path: 'projects',
+        children: [
+          {
+            path: 'eligible/:id',
+            element: <ProjectESCO />,
+          },
+        ],
+      },
+      {
+        path: 'profile',
+        element: <Profile />,
+      },
+      {
+        path: 'assigned-missions',
+        element: <ExpertMissionListing />,
       },
     ],
   },

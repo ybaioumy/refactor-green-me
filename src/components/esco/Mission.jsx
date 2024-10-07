@@ -11,6 +11,8 @@ import { Controller, useForm, FormProvider } from 'react-hook-form';
 import { FileUploader } from '../shared/Upload';
 import { message } from 'antd';
 import EXPhoto from '../../assets/images/m.png';
+import Loader from '../shared/Loader';
+import EmptyList from '../shared/EmptyList';
 
 function Mission() {
   const { state } = useLocation();
@@ -40,16 +42,17 @@ function Mission() {
     useUpdateMissionMutation(); // Hook for updating mission
   const { documentSections } = data || [];
   const [fileList, setFileList] = useState([]);
-
   useEffect(() => {
     if (data) {
-      setValue('missionTitle', data.name);
+      setValue('name', data.name);
       setValue('missionLocation', data.location);
       setValue('missionBrief', data.brief);
       setValue('deliverableFormat', data.deliverableFormat);
       setValue('languages', data.languages);
       setValue('startDate', data.startDate);
       setValue('endDate', data.endDate);
+      setValue('projectId', data.projectId);
+      setValue('statusId', data.statusId);
 
       const initialFiles = documentSections.map((section) => ({
         sectionName: section.name,
@@ -82,16 +85,16 @@ function Mission() {
 
     try {
       await updateMission({ id, data: updatedData }).unwrap();
-      // Navigate or display success message
-      navigate('/missions'); // Redirect after successful update
+      message.success('Mission updated successfully');
+      navigate(-1); // Navigate back to mission listing
     } catch (error) {
       console.error('Failed to update mission: ', error);
       message.error(error.message);
     }
   };
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error loading mission data</p>;
+  if (isLoading) return <Loader />;
+  if (isError) return <EmptyList message={'Error loading mission Data'} />;
 
   return (
     <div className="p-4 md:w-[70%]">
@@ -129,7 +132,7 @@ function Mission() {
           <Section label={`Expert Mission ${data?.name || ''}`}>
             <ItemRow label="Mission Title">
               <Controller
-                name="missionTitle"
+                name="name"
                 control={control}
                 render={({ field }) => (
                   <Input

@@ -5,8 +5,9 @@ import { useStep, StepProvider } from '../../context/formContext';
 import ScrollToTop from '../shared/ScrollToTop';
 import ProjectInfo from '../Project/ProjectMiniInfo';
 import { motion, useAnimationControls } from 'framer-motion';
-import { Tooltip } from 'antd';
+import { Progress, Tooltip } from 'antd';
 import { useMediaQuery } from '@mui/material';
+import { IoTime } from 'react-icons/io5';
 
 const ProjectOverView = ({ steps }) => {
   const [showProjectInfo, setShowProjectInfo] = React.useState(true);
@@ -77,7 +78,6 @@ const ProjectOverView = ({ steps }) => {
     }
   }, [showProjectInfo]);
 
-  
   const cardRefs = useRef([]);
   useEffect(() => {
     if (cardRefs.current[currentParentIndex]) {
@@ -170,7 +170,7 @@ const ProjectOverView = ({ steps }) => {
                   setCurrentParentIndex(index);
                   setCurrentChildIndex(0);
                 }}
-                className={`text-white lg:h-[150px] sm:h-[100px] transition-all md:w-[200px] relative flex md:flex-col items-center lg:items-start md:gap-2 justify-center md:justify-center min-w-[220px] md:min-w-[120px] gap-1 text-left px-4 py-2 font-bold rounded-[12px] card-green-gradient duration-150 ${
+                className={`text-white lg:h-[180px] sm:h-[100px] md:h-[150px] transition-all md:w-[200px] relative flex md:flex-col items-center lg:items-start md:gap-2 justify-center md:justify-center min-w-[220px] md:min-w-[120px] gap-1 text-left px-4 py-2 font-bold rounded-[12px] card-green-gradient duration-150 ${
                   index === currentParentIndex
                     ? 'border-[3px] md:border-[5px] border-[#cbff5e]'
                     : 'opacity-50 border-[3px] md:border-[5px]'
@@ -179,6 +179,48 @@ const ProjectOverView = ({ steps }) => {
                 <p className="font-bold capitalize sm:block md:hidden lg:block text-[20px] text-wrap leading-tight truncate">
                   {parentStep.label}
                 </p>
+                {parentStep.progress || parentStep.info ? (
+                  parentStep.progress ? (
+                    <div className="w-full">
+                      <div className="flex justify-between font-abel">
+                        <p> {parentStep.progress}%</p>
+                        <p className="text-[14px] flex items-center gap-1 ">
+                          <IoTime />
+                          <span>0:00</span>
+                        </p>
+                      </div>
+                      <Progress
+                        percent={parentStep.progress}
+                        strokeLinecap="round"
+                        size={'small'}
+                        showInfo={false}
+                        trailColor="#3D9751"
+                        strokeColor={
+                          parentStep.progress < 50 ? '#ff4d4f' : '#cbff5e'
+                        }
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-full">
+                      <div className="flex justify-between font-abel">
+                        <p> {parentStep.info}</p>
+                        <p className="text-[14px] flex items-center gap-1 ">
+                          <IoTime />
+                          <span>0:00</span>
+                        </p>
+                      </div>
+                      <Progress
+                        percent={60}
+                        steps={5}
+                        strokeColor={['green', 'green', 'green']}
+                        strokeLinecap="round"
+                        showInfo={false}
+                        className="custom-progress-steps" // Custom class for rounded steps
+                      />
+                    </div>
+                  )
+                ) : null}
+
                 {currentParentIndex === index && (
                   <div className="hidden md:block absolute right-[-20px] top-1/2 transform -translate-y-1/2 w-[30px] h-[40px] active-eligible-container" />
                 )}

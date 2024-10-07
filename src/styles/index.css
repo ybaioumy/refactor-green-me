@@ -527,6 +527,24 @@ input[type="checkbox"] {
   /* margin-top: 10px; */
 }
 
+.custom-pagination .navigation {
+  font-family: 'Quicksand';
+  font-weight: 700;
+  text-transform: capitalize;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin: 0 5px;
+  cursor: pointer;
+  font-size: 16px;
+  border: none;
+  box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.10);
+  background: linear-gradient(0deg, #D8F992 0%, #D8F992 100%), linear-gradient(180deg, rgba(255, 255, 255, 0.60) 0%, rgba(255, 255, 255, 0) 100%)
+}
+
 .custom-pagination.membersPagination {
   background-color: #EDEDED;
   display: flex;
@@ -535,7 +553,7 @@ input[type="checkbox"] {
   padding: 10px;
 }
 
-.custom-pagination.membersPagination button {
+.custom-pagination.membersPagination .navigation {
   color: #142478;
   font-family: 'Quicksand';
   font-weight: 700;
@@ -563,35 +581,13 @@ input[type="checkbox"] {
   background: linear-gradient(0deg, #23B0FF 0%, #23B0FF 100%), linear-gradient(180deg, rgba(255, 255, 255, 0.60) 0%, rgba(255, 255, 255, 0) 100%);
 }
 
-.custom-pagination button {
-  color: #1E4A28;
-  font-size: 25;
-  font-family: 'Quicksand';
-  font-weight: 700;
-  text-transform: capitalize;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  margin: 0 5px;
-  cursor: pointer;
-  font-size: 16px;
-  border: 1px solid #A6A6A6;
-}
+
 
 .custom-pagination button.active {
   background: #1E4A28;
   color: #fff;
 }
 
-
-.custom-pagination .navigation {
-  border: none;
-  box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.10);
-  background: linear-gradient(0deg, #D8F992 0%, #D8F992 100%), linear-gradient(180deg, rgba(255, 255, 255, 0.60) 0%, rgba(255, 255, 255, 0) 100%)
-}
 
 .custom-pagination button[disabled],
 .custom-pagination.custom-pagination.membersPagination button[disabled] {
@@ -795,4 +791,8 @@ input[type="checkbox"] {
 .button-primary-green {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.60) 0%, rgba(255, 255, 255, 0.00) 100%), #1E4A28;
   background-blend-mode: overlay, normal;
+}
+
+.custom-progress-steps .ant-progress-steps-item {
+  border-radius: 30%;
 }

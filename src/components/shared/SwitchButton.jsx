@@ -1,10 +1,13 @@
 import React from 'react';
 
-const SwitchButton = ({ handleChange, isChecked }) => {
+const SwitchButton = ({ handleChange, isChecked, disabled = false }) => {
   return (
     <button
-      type='button'
-      className="flex items-center cursor-pointer"
+      disabled={disabled}
+      type="button"
+      className={`flex items-center cursor-pointer ${
+        disabled && 'opacity-45 cursor-not-allowed'
+      }`}
       onClick={handleChange}
       style={{ outline: 'none', border: 'none', background: 'none' }}>
       <span className="relative inline-block w-12 h-6 border-2 border-[#8E8E8E] rounded-xl">

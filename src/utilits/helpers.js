@@ -18,6 +18,8 @@ export function findTopLevelParent(childId, data) {
     }
     return null;
 }
+
+
 export const getTimeAgo = (time) => {
     if (!time) {
         return "Not Available"; // Handle null, undefined, or empty string
@@ -55,11 +57,47 @@ export const getTimeAgo = (time) => {
 };
 
 
+export const generateFieldStepMapping = (steps, missingDataArray) => {
+    const mapping = {};
 
-export function findIdByName(name, dataArray) {
-    // Find the object in the array where the name matches
-    const foundItem = dataArray.find(item => item.name === name);
+    steps.forEach((parentStep, parentIndex) => {
+        parentStep.children.forEach((childStep, childIndex) => {
+            // Iterate through the missing data fields
+            missingDataArray.forEach((field) => {
+                // Check if the field belongs in the current step
+                if (childStepContainsField(childStep, field)) {
+                    mapping[field] = {
+                        parentStep: parentStep.parentStep,
+                        parentIndex,
+                        childIndex,
+                    };
+                }
+            });
+        });
+    });
+    return mapping;
+};
 
-    // If an item is found, return its id; otherwise, return null or undefined
-    return foundItem ? foundItem.id : null;
-}
+const childStepContainsField = (childStep, field) => {
+    // Recursively search for the field in the content of the child step
+    return findFieldInContent(childStep.content, field);
+};
+
+const findFieldInContent = (content, field) => {
+    if (!content || typeof content !== 'object') return false;
+
+    // Check if it's a field directly within this component's props
+    if (content.props?.name === field || (content.props?.fields && content.props.fields.includes(field))) {
+        return true;
+    }
+
+    // Recursively check for child components
+    const children = content.props?.children;
+    if (Array.isArray(children)) {
+        return children.some(child => findFieldInContent(child, field));
+    } else if (children && typeof children === 'object') {
+        return findFieldInContent(children, field);
+    }
+
+    return false;
+};

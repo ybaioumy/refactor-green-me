@@ -31,7 +31,6 @@ function Login() {
       const decodedToken = jwtDecode(response.token);
       const expires = response.expiry;
       const expDate = new Date(expires);
-
       setCookies({
         fullName: response.fullName,
         typeId: response.typeId,
@@ -42,8 +41,9 @@ function Login() {
           decodedToken[
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
           ],
-        ...(response.escoid ? { escoid: response.escoid } : {}), // Only include escoid/client if it exists
-        ...(response.clientid ? { clientid: response.clientid } : {}),
+        ...(response.escoid ? { escoid: Number(response.escoid) } : {}), // Only include escoid/client if it exists
+        ...(response.clientid ? { clientid: Number(response.clientid) } : {}),
+        ...(response.expertId ? { expertId: Number(response.expertId) } : {}),
       });
 
       const userTypeRoutes = {

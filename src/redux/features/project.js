@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { authHeader } from '../../utilits/authHeader';
 import { setProject } from '../slices/project';
 import _ from 'lodash';
-import { message } from 'antd';
+
 // Custom base query to handle 204 No Content
 const baseQuery = fetchBaseQuery({
     baseUrl: process.env.REACT_APP_API_BASE,
@@ -62,7 +62,6 @@ export const projectApi = createApi({
                     const { data } = await queryFulfilled;
                     dispatch(setProject(_.cloneDeep(data)));
                 } catch (error) {
-
                     console.warn('Error fetching item by ID:, you are not authorized', error);
                 }
             },

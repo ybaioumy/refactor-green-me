@@ -25,6 +25,8 @@ import StepOneESCO from '../Project/economicViability/ESCOStepOne';
 import Teams from '../Project/teams/Teams';
 import FinancialSharedSavings from '../Project/economicViability/FinancialSharedSavings';
 import Loader from '../shared/Loader';
+import { Result } from 'antd';
+import EmptyList from '../shared/EmptyList';
 
 function OpportunitiyOverview() {
   const { id } = useParams();
@@ -34,6 +36,7 @@ function OpportunitiyOverview() {
     data: projectData,
     isLoading: isLoadingProject,
     error,
+    isError,
   } = useGetProjectByIdQuery(id);
 
   const methods = useForm({
@@ -52,15 +55,8 @@ function OpportunitiyOverview() {
   const { projectObject } = useSelector((state) => state.project);
 
   const [canEdit, setCanEdit] = useState(true);
-  useEffect(() => {
-    if (error?.status === 403) {
-      setCanEdit(false);
-    } else {
-      setCanEdit(true);
-    }
-  }, [error]);
 
-  
+
   const ProposalButton = () => (
     <>
       <Button
@@ -189,6 +185,22 @@ function OpportunitiyOverview() {
     },
   ];
   if (isLoadingProject) return <Loader />;
+  if (error && error?.status === 403) {
+    return (
+      <Result
+        status="403"
+        title="403"
+        subTitle="Sorry, you are not authorized to access this page."
+        extra={
+          <Button type="link" to={'/'}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  } else if (error || isError) {
+    return <EmptyList message={error?.message} />;
+  }
   return (
     <FormProvider {...methods}>
       <StepProvider steps={steps} canEdit={canEdit}>

@@ -109,7 +109,9 @@ const ProjectRow = ({ label, value }) => {
         </h2>
         <div className="bg-[#E6E6E6] overflow-hidden rounded-lg">
           <p className="text-gray-700  p-1 pl-3  w-full line-clamp-1">
-            {value}
+            {!value || value.includes('undefined') || value.includes('null')
+              ? 'Not Available'
+              : value}
           </p>
         </div>
       </div>

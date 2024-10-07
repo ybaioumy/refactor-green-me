@@ -19,10 +19,11 @@ export const StepProvider = ({ children, steps, canEdit }) => {
     const [currentParentIndex, setCurrentParentIndex] = useState(0);
     const [currentChildIndex, setCurrentChildIndex] = useState(0);
 
-    const { trigger, getValues, formState: { errors }} = useFormContext();
+    const { trigger, getValues, formState: { errors } } = useFormContext();
 
     const [updateProjectById, { isLoading }] = useUpdateProjectByIdMutation();
     const { data: projectPermissions } = useGetUserProjectPermissionsQuery({ projectId: id, userId: userId })
+
 
     const handleNext = async () => {
         if (canEdit) {
@@ -70,14 +71,25 @@ export const StepProvider = ({ children, steps, canEdit }) => {
         try {
             await updateProjectById({ id, data: currentData }).unwrap();
             message.success('Project Updated Successfully!');
-            setCurrentParentIndex(0);  
-            setCurrentChildIndex(0);  
+            setCurrentParentIndex(0);
+            setCurrentChildIndex(0);
         } catch (error) {
             console.error('Failed to update project: ', error);
             alert('Failed to update the project. Please try again.');
         }
     };
 
+    //utility function to navigate to certain controller input 
+    const goToField = (fieldName, fieldStepMapping) => {
+        const mapping = fieldStepMapping[fieldName];
+        if (mapping) {
+            console.log(`Navigating to field: ${fieldName}, Parent Index: ${mapping.parentIndex}, Child Index: ${mapping.childIndex}`);
+            setCurrentParentIndex(mapping.parentIndex);
+            setCurrentChildIndex(mapping.childIndex);
+        } else {
+            console.warn(`Field ${fieldName} not found in any step.`);
+        }
+    };
 
     return (
         <StepContext.Provider
@@ -93,6 +105,9 @@ export const StepProvider = ({ children, steps, canEdit }) => {
                 isLoading,
                 canEdit,
                 projectPermissions,
+                goToField,
+
+
             }}>
             {children}
         </StepContext.Provider>

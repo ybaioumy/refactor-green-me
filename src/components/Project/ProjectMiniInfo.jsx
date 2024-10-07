@@ -1,13 +1,14 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import ProjectImage from '../../assets/images/Ellipse.png';
+import { getTimeAgo } from '../../utilits/helpers';
 // Item component to display read-only inputs with labels
 const Item = ({ label, children }) => {
   return (
     <div className="flex flex-col gap-1 flex-1">
       <label className="font-semibold">{label}</label>
       <div className="outline-none px-4 py-2 text-[14px] text-[#8e8e8e] font-[400] rounded-[7px] bg-[#e6e6e6] w-full">
-        {children}
+        {children || 'Not Available'}
       </div>
     </div>
   );
@@ -44,13 +45,13 @@ const ProjectInfo = () => {
       {/* Project Details using Item component */}
       <Item label="Project ID">
         <span className="ml-2 bg-red-200 text-red-600 px-2 py-1 rounded">
-          {projectObject?.projectId}
+          {projectObject?.id}
         </span>
       </Item>
 
       <Item label="Project Owner">{projectObject?.projectOwner}</Item>
 
-      <Item label="Last Update">{projectObject?.lastUpdate}</Item>
+      <Item label="Last Update">{getTimeAgo(projectObject?.lastUpdate)}</Item>
 
       <Item label="Key Person">{projectObject?.keyPerson}</Item>
 

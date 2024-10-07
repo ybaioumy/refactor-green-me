@@ -54,7 +54,7 @@ const Button = ({
 
   if (type === 'link') {
     return (
-      <Link {...props} to={to} className={buttonClass}>
+      <Link {...props} to={to} className={`${buttonClass} hover:text-white`}>
         {content}
       </Link>
     );

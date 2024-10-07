@@ -4,29 +4,27 @@ import { useCookies } from 'react-cookie';
 import { useDispatch } from 'react-redux';
 import { projectApi } from '../redux/features/project';
 import { clearInvitaion } from '../redux/slices/invitaion';
-
-
+import { expertApi } from '../redux/features/expert';
 const useLogout = () => {
   const dispatch = useDispatch();
   const [cookies, setCookie, removeCookie] = useCookies([
-    'typeId', 'expiry', 'token', 'userName', 'role', 'userId', 'escoid', 'clientid'
+    'typeId', 'expiry', 'token', 'userName', 'role', 'userId', 'id'
   ]);
 
   const logout = () => {
     dispatch(projectApi.util.resetApiState());
+    dispatch(expertApi.util.resetApiState());
     dispatch(clearInvitaion())
+    
     removeCookie('userName', { path: '/' });
     removeCookie('typeId', { path: '/' });
     removeCookie('token', { path: '/' });
     removeCookie('expiry', { path: '/' });
     removeCookie('role', { path: '/' });
     removeCookie('userId', { path: '/' });
-    if (cookies.escoid) {
-      removeCookie('escoid', { path: '/' });
-    }
-    if (cookies.clientid) {
-      removeCookie('clientid', { path: '/' });
-    }
+    removeCookie('id', { path: '/' });
+    
+    window.location.reload();
   };
 
   return logout;
@@ -53,7 +51,7 @@ const useTokenExpiration = () => {
 const useSetCookiesAfterLogin = () => {
   const [isCookiesSet, setIsCookiesSet] = useState(false);
 
-  const setCookies = ({ fullName, typeId, token, expiry, role, userId, escoid, clientid }) => {
+  const setCookies = ({ fullName, typeId, token, expiry, role, userId, escoid, clientid, expertId }) => {
     try {
       const cookieOptions = {
         expires: new Date(expiry),
@@ -70,10 +68,13 @@ const useSetCookiesAfterLogin = () => {
       Cookies.set('role', role, cookieOptions);
       Cookies.set('userId', userId, cookieOptions);
       if (escoid) {
-        Cookies.set('escoid', escoid, cookieOptions);
+        Cookies.set('id', escoid, cookieOptions);
       }
       if (clientid) {
-        Cookies.set('clientid', clientid, cookieOptions);
+        Cookies.set('id', clientid, cookieOptions);
+      }
+      if (expertId) {
+        Cookies.set('id', expertId, cookieOptions);
       }
 
       setIsCookiesSet(true);
@@ -91,9 +92,13 @@ const useGetUserName = () => {
   const [cookies] = useCookies(['userName']);
   return cookies.userName;
 }
-const useGetuserId = () => { 
+const useGetuserId = () => {
   const [cookies] = useCookies(['userId']);
   return cookies.userId;
+}
+const useGetId = () => {
+  const [cookies] = useCookies(['id']);
+  return cookies.id;
 }
 export {
   useGetToken,
@@ -103,4 +108,5 @@ export {
   useTypeId,
   useGetUserName,
   useGetuserId,
+  useGetId,
 };

@@ -1,6 +1,6 @@
 
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { authHeader } from '../../utilits/authHeader'; 
+import { authHeader } from '../../utilits/authHeader';
 export const inviteApi = createApi({
     reducerPath: 'inviteApi',
     baseQuery: async (args, api, extraOptions) => {
@@ -41,8 +41,25 @@ export const inviteApi = createApi({
                 method: 'POST',
                 body: { permissionId, ProjectRoleId, isAccept, typeId, invitationToken, invitationStatusId },
             }),
+        }),
+        getUserStatus: builder.query({
+            query: () => 'UserStatus',
+        }),
+        updateUserStatus: builder.mutation({
+            query: ({ id, statusId }) => ({
+                url: `Users/UpdateStatus`,
+                method: 'PUT',
+                body: { id, statusId },
+            }),
+        }),
+        updateProjectUserStatus: builder.mutation({
+            query: ({ projectUserId, statusId }) => ({
+                url: `ProjectUser/UpdateUserStatus`,
+                method: 'PUT',
+                body: { projectUserId, statusId },
+            }),
         })
     }),
 });
 
-export const { useInviteUserMutation, useGetInvitationStatusQuery, useGetUserPermissionsQuery, useReponseToProjectInvitationMutation } = inviteApi;
+export const { useInviteUserMutation, useGetInvitationStatusQuery, useGetUserPermissionsQuery, useReponseToProjectInvitationMutation, useGetUserStatusQuery, useUpdateUserStatusMutation ,useUpdateProjectUserStatusMutation} = inviteApi;

@@ -8,15 +8,25 @@ import AddMembersPopup from './InvitationModal'; // Import the Add Members Popup
 import { useGetTypesQuery } from '../../../redux/features/auth';
 import useGetItemIdByName from '../../../hooks/useGetItemIdByName';
 import { useStep } from '../../../context/formContext';
-
-function TeamTable({ label, membersType, data }) {
+import {
+  useGetUserStatusQuery,
+  useUpdateProjectUserStatusMutation,
+  useUpdateUserStatusMutation,
+} from '../../../redux/features/inviteMembers';
+function TeamTable({ label, membersType, data, isLoading, refetch }) {
   const { id } = useParams();
   const userType = useTypeId();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedType, setSelectedType] = useState(null);
-  const { data: types } = useGetTypesQuery();
+  const { data: types, isLoading: isLoadingTypes } = useGetTypesQuery();
+  const { data: status, isLoading: isLoadingStatus } = useGetUserStatusQuery();
+  const [updateProjectUserStatus, { isLoading: isLoadingUpdate }] =
+    useUpdateProjectUserStatusMutation();
   const escoId = useGetItemIdByName(types, 'esco');
   const expertId = useGetItemIdByName(types, 'expert');
+  const activeId = useGetItemIdByName(status, 'active');
+  const inActive = useGetItemIdByName(status, 'Deactive');
+
   const Header = () => {
     const opertaionToDo = () => {
       switch (membersType) {
@@ -45,6 +55,7 @@ function TeamTable({ label, membersType, data }) {
     const buttons = opertaionToDo();
     const navigate = useNavigate();
     const { canEdit } = useStep();
+
     return (
       <div className="flex justify-between items-center py-2 border-y-[1px] border-[#AAAAAA]">
         <label className="font-bold text-[#1E4A28] text-[20px] mb-2">
@@ -83,17 +94,29 @@ function TeamTable({ label, membersType, data }) {
       </div>
     );
   };
-
+  const handleStatusChange = async (userId, isActive) => {
+    const newStatus = isActive ? inActive : activeId;
+    try {
+      await updateProjectUserStatus({
+        projectUserId: userId,
+        statusId: newStatus,
+      }).unwrap();
+      refetch();
+    } catch (error) {
+      // Handle error (e.g., show an error notification)
+    }
+  };
   return (
     <div>
       <Header />
       <Table
-        columns={teamsCols}
+        columns={teamsCols(handleStatusChange, membersType, isLoadingUpdate)}
         dataSource={data}
         bordered={false}
         pagination={false}
         rowKey={'userId'}
-        scroll={{ x: 'max-content' }}
+        // scroll={{ x: 'max-content' }}
+        loading={isLoading || isLoadingStatus || isLoadingTypes}
       />
 
       {isPopupVisible && (

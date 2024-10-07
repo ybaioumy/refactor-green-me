@@ -4,7 +4,7 @@ import ProjectTable from '../shared/Table';
 import { useGetExpertAssignedProjectsQuery } from '../../redux/features/expert';
 import Sidebar from './components/SideBar';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useGetuserId } from '../../hooks/useCookies';
+import { useGetId, useGetuserId } from '../../hooks/useCookies';
 import Loader from '../shared/Loader';
 import { useSelector } from 'react-redux';
 import { Modal } from 'antd'; // Import Modal from antd
@@ -14,13 +14,23 @@ function ExpertDashboard() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isToggled, setIsToggled] = useState(false);
-  const expertId = useGetuserId();
+  const expertId = useGetId();
+
+  const intialSearchState = {
+    categoryId: 0,
+    economicSectorId: 0,
+    servedCountryId: 0,
+    projectStatusId: 0,
+    pageNumber: 0,
+    pageSize: 0,
+  };
+
   const {
     data: expertProjects,
     isLoading,
     isError,
     error,
-  } = useGetExpertAssignedProjectsQuery();
+  } = useGetExpertAssignedProjectsQuery(intialSearchState);
 
   const [isModalVisible, setIsModalVisible] = useState(false); // State for modal visibility
 
@@ -44,7 +54,7 @@ function ExpertDashboard() {
     {
       name: 'Expert Details',
       icon: 'details',
-      link: `expert/${id}/details`,
+      link: `expert/${expertId}/details`,
     },
     {
       name: 'Assigned Projects',
@@ -54,7 +64,7 @@ function ExpertDashboard() {
     {
       name: 'Missions / Work',
       icon: 'progress',
-      link: `expert/${id}/missions`,
+      link: `/assigned-missions`,
     },
   ];
 
@@ -67,14 +77,13 @@ function ExpertDashboard() {
         isToggled={isToggled}
         setIsToggled={setIsToggled}
       />
-      <div>
-        <ProjectTable data={expertProjects} />
-      </div>
+
+      <ProjectTable data={expertProjects} />
 
       <Modal
         width={640}
-        title="Invitation Required"
-        visible={isModalVisible}
+        title="Attention Required: Project Invitaion"
+        open={isModalVisible}
         onCancel={handleCancel}
         footer={[
           <button key="accept" onClick={handleAccept}>

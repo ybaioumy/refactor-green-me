@@ -14,7 +14,6 @@ import { message } from 'antd';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import EXPhoto from '../../assets/images/m.png';
 const AssignMission = () => {
-  
   const {
     control,
     handleSubmit,
@@ -28,7 +27,7 @@ const AssignMission = () => {
       sections: [
         {
           id: 1,
-          missionTitle: '',
+          name: '',
           missionLocation: '',
           missionBrief: '',
           deliverableFormat: '',
@@ -71,7 +70,7 @@ const AssignMission = () => {
   const handleAdd = () => {
     append({
       id: fields.length ? fields[fields.length - 1].id + 1 : 1,
-      missionTitle: '',
+      name: '',
       missionLocation: '',
       missionBrief: '',
       deliverableFormat: '',
@@ -102,11 +101,12 @@ const AssignMission = () => {
     //   return;
     // }
 
-    const filesData = fileList
-      ? fileList.map((file) => ({
-          filePath: file?.response?.fullPath,
-        }))
-      : [];
+    const filesData =
+      fileList.length > 0
+        ? fileList.map((file) => ({
+            filePath: file?.response?.fullPath,
+          }))
+        : [];
 
     for (let i = 0; i < sections.length; i++) {
       const section = sections[i];
@@ -126,7 +126,7 @@ const AssignMission = () => {
       assignedToUserId: expert?.id || null,
       projectId: Number(projectId),
       statusId: pendingStatusId,
-      name: section.missionTitle,
+      name: section.name,
       location: section.missionLocation,
       brief: section.missionBrief,
       generatedReports: section.deliverableFormat,
@@ -134,7 +134,7 @@ const AssignMission = () => {
       startDate: section.startDate,
       endDate: section.endDate,
       documentSection: {
-        name: `Mission ${index} documents for Project ${projectId}`,
+        name: `Mission ${index+1} documents for Project ${projectId}`,
         isapproved: true,
         documentFiles: filesData,
       },
@@ -194,7 +194,7 @@ const AssignMission = () => {
               ref={index === fields.length - 1 ? newSectionRef : null}>
               <ItemRow label="Mission Title">
                 <Controller
-                  name={`sections.${index}.missionTitle`}
+                  name={`sections.${index}.name`}
                   control={control}
                   render={({ field }) => (
                     <Input

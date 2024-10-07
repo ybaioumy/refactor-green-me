@@ -7,7 +7,8 @@ import EmptyList from '../../shared/EmptyList';
 import { useGetTypesQuery } from '../../../redux/features/auth';
 const Teams = () => {
   const { id } = useParams();
-  const { data, isLoading, isError, error } = useGetProjectUsersQuery(id);
+  const { data, isLoading, isError, error, refetch } =
+    useGetProjectUsersQuery(id);
   const {
     data: types,
     isLoading: isLoadingTypes,
@@ -31,8 +32,7 @@ const Teams = () => {
     [data, expertId]
   );
 
- 
-  if (isLoading || isLoadingTypes) {
+  if (isLoading) {
     return <Loader />;
   }
 
@@ -42,10 +42,22 @@ const Teams = () => {
   return (
     <div className="w-full h-full flex flex-col gap-20">
       {/* ESCO Team Table */}
-      <TeamTable label={'ESCO team'} membersType={'esco'} data={escoTeam} />
+      <TeamTable
+        label={'ESCO team'}
+        membersType={'esco'}
+        data={escoTeam}
+        isLoading={isLoading}
+        refetch={refetch}
+      />
 
       {/* Expert Team Table */}
-      <TeamTable label={'Expert'} membersType={'expert'} data={expertTeam} />
+      <TeamTable
+        label={'Expert'}
+        membersType={'expert'}
+        data={expertTeam}
+        isLoading={isLoading}
+        refetch={refetch}
+      />
     </div>
   );
 };
