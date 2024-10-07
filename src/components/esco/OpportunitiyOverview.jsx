@@ -203,7 +203,7 @@ function OpportunitiyOverview() {
   }
   return (
     <FormProvider {...methods}>
-      <StepProvider steps={steps} canEdit={canEdit}>
+      <StepProvider steps={steps} canEdit={false}>
         <ESCOProjectOverView steps={steps} />;
       </StepProvider>
     </FormProvider>

@@ -48,7 +48,7 @@ const DashboardContent = ({ emissionsData, maxProgress, data, loading }) => {
 
   return (
     <div className="p-4 bg-[#F3F3F3] rounded-2xl">
-      <div className="w-full flex flex-wrap gap-2 justify-between items-end md:w-[70%] border-b-[1px] border-[#B5B5B5] pb-2 mb-2">
+      <div className="w-full flex flex-wrap gap-2 justify-between items-end border-b-[1px] border-[#B5B5B5] pb-2 mb-2">
         <div className="md:w-[400px]">
           <Select
             value="Select Facility"
@@ -57,7 +57,7 @@ const DashboardContent = ({ emissionsData, maxProgress, data, loading }) => {
           />
         </div>
 
-        <p className="text-[#202020] md:text-[25px] ml-2 font-bold">
+        <p className="text-[#202020] md:text-[18px] ml-2 font-bold">
           {selectedProject || 'Select Project to display details'}
         </p>
       </div>

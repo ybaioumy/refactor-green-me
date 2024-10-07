@@ -7,7 +7,10 @@ import ParametersTable from './components/ParametersTable';
 import VerticalBarChart from './components/VerticalBarChart';
 import Loader from '../../shared/Loader';
 import { useStep } from '../../../context/formContext';
-import { generateFieldStepMapping } from '../../../utilits/helpers';
+import {
+  generateFieldStepMapping,
+  normalizeFieldName,
+} from '../../../utilits/helpers';
 function FinancialSharedSavings({ project }) {
   const { goToField, steps } = useStep();
   const {
@@ -27,7 +30,6 @@ function FinancialSharedSavings({ project }) {
     // Split the remaining string by commas to get each item
     const missingDataArray = missingDataString.split(', ');
     const fieldStepMapping = generateFieldStepMapping(steps, missingDataArray);
-    const normalizeFieldName = (name) => name.toLowerCase().replace(/\s+/g, '');
 
     return (
       <Result

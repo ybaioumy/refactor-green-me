@@ -8,23 +8,27 @@ import { expertApi } from '../redux/features/expert';
 const useLogout = () => {
   const dispatch = useDispatch();
   const [cookies, setCookie, removeCookie] = useCookies([
-    'typeId', 'expiry', 'token', 'userName', 'role', 'userId', 'id'
+    'typeId', 'expiry', 'token', 'userName', 'role', 'userId', 'clientId', 'escoId', 'expertId'
   ]);
 
   const logout = () => {
     dispatch(projectApi.util.resetApiState());
     dispatch(expertApi.util.resetApiState());
     dispatch(clearInvitaion())
-    
+
     removeCookie('userName', { path: '/' });
     removeCookie('typeId', { path: '/' });
     removeCookie('token', { path: '/' });
     removeCookie('expiry', { path: '/' });
     removeCookie('role', { path: '/' });
     removeCookie('userId', { path: '/' });
-    removeCookie('id', { path: '/' });
-    
-    window.location.reload();
+    removeCookie('expertId', { path: '/' });
+    removeCookie('clientId', { path: '/' });
+    removeCookie('escoId', { path: '/' });
+    setTimeout(() => {
+
+      window.location.reload();
+    }, 200)
   };
 
   return logout;
@@ -68,14 +72,15 @@ const useSetCookiesAfterLogin = () => {
       Cookies.set('role', role, cookieOptions);
       Cookies.set('userId', userId, cookieOptions);
       if (escoid) {
-        Cookies.set('id', escoid, cookieOptions);
+        Cookies.set('escoId', escoid, cookieOptions);
       }
       if (clientid) {
-        Cookies.set('id', clientid, cookieOptions);
+        Cookies.set('clientid', clientid, cookieOptions);
       }
       if (expertId) {
-        Cookies.set('id', expertId, cookieOptions);
+        Cookies.set('expertId', expertId, cookieOptions);
       }
+
 
       setIsCookiesSet(true);
     } catch (error) {

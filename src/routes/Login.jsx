@@ -31,6 +31,7 @@ function Login() {
       const decodedToken = jwtDecode(response.token);
       const expires = response.expiry;
       const expDate = new Date(expires);
+      console.log(response);
       setCookies({
         fullName: response.fullName,
         typeId: response.typeId,
@@ -90,12 +91,12 @@ function Login() {
     <div
       className={`flex flex-col md:flex-row h-screen ${bgColor} items-center py-5 md:py-0`}>
       <div className="hidden md:flex flex-1 flex-col justify-center items-center gap-10 md:p-0">
-        <img src={Logo} alt="logo" className="w-40 h-auto md:w-52 md:h-auto" />
+        <img src={Logo} alt="logo" className="w-40 h-auto md:w-44 md:h-auto" />
         <p className="text-white text-2xl font-bold">Green Me</p>
       </div>
       <div className="flex md:hidden flex-col items-center justify-center flex-2 text-white font-abel py-5">
         Welcome To{' '}
-        <img src={GreenMeTitle} alt="Logo" width={'50%'} height={'auto'} />
+        <img src={GreenMeTitle} alt="Logo" width={'100%'} height={'auto'} />
       </div>
       <div className="md:flex-1 flex flex-col justify-between p-4 md:p-10 w-[95%] rounded-2xl md:rounded-none bg-white h-full">
         <p className="text-xl font-bold text-[#1d4628] mb-4 text-center md:text-left">
@@ -113,7 +114,7 @@ function Login() {
                 Email
               </label>
               <input
-                className={`border-b-2 ${
+                className={`border-b-2 placeholder:text-[14px] ${
                   errors.email ? 'border-red-500' : 'border-[#8c8c8c]'
                 } w-full outline-none p-2 `}
                 type="email"
@@ -136,7 +137,7 @@ function Login() {
             <div className="flex flex-col">
               <p className="text-sm text-gray-400">Password</p>
               <div
-                className={`border-b-2 ${
+                className={`border-b-2  ${
                   errors.password ? 'border-red-500' : 'border-[#8c8c8c]'
                 } outline-none flex justify-between w-full`}>
                 <input
@@ -145,7 +146,7 @@ function Login() {
                     required: 'Password is required',
                   })}
                   placeholder="Password"
-                  className="w-full focus:outline-none p-2"
+                  className="w-full focus:outline-none p-2 placeholder:text-[14px]"
                   autoComplete="current-password"
                 />
                 <button

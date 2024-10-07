@@ -48,8 +48,8 @@ const Dashboard = () => {
     text2: 'Total',
     text3: 'Portfolio',
     tabs: ['Shared Savings', 'Guaranteed Savings', 'Turnkey Contracts'],
-    headline1: 'Portfolios',
-    headline2: 'By Contract',
+    headline1: 'Portfolios By Contract',
+    headline2: '',
   };
   const portfolioData = {
     labels: ['25%', '15%', '45%'],
@@ -68,8 +68,8 @@ const Dashboard = () => {
       'Awaiting Loan Approval ',
       'Sponsor Actions Needed',
     ],
-    headline1: 'Projects’ pipeline',
-    headline2: 'overview',
+    headline1: 'Projects’ pipeline overview',
+    headline2: '',
   };
   if (isLoading || isOpportunitiesLoading) return <Loader />;
   if (error && error.status === 'FETCH_ERROR')
@@ -80,35 +80,34 @@ const Dashboard = () => {
     );
   if (isError) return <EmptyList message={'Something went wrong'} />;
   return (
-    <div className="grid gap-4 p-4 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-1 transition-all duration-150">
+    <div className="grid gap-4 p-4 lg:grid-cols-7 md:grid-cols-4 sm:grid-cols-1 transition-all duration-150">
       {/* Line Chart (spanning two columns) */}
-      <div className="xl:col-span-2 lg:col-span-2 md:col-span-2 sm:col-span-1 py-4">
+      <div className="xl:col-span-2 lg:col-span-2 md:col-span-2 sm:col-span-1">
         <LineChart />
       </div>
-
-      <div className="lg:col-span-1 md:col-span-1 sm:col-span-1 p-4 rounded-lg ">
+      <div className="lg:col-span-1 md:col-span-1 sm:col-span-1 p-1 rounded-lg ">
         <DisbursedPie data={pipelineData} />
       </div>
 
-      <div className="lg:col-span-1 md:col-span-1 sm:col-span-1 p-4 rounded-lg ">
+      <div className="lg:col-span-1 md:col-span-1 sm:col-span-1 p-1 rounded-lg ">
         <DisbursedPie data={portfolioData} />
       </div>
 
-      <div className="lg:col-span-1 md:col-span-1 sm:col-span-1  p-4 rounded-lg ">
-        <OpportunitiesList data={opportunities.data} />
-      </div>
-      <div className="xl:col-span-3 lg:col-span-3 md:col-span-2 sm:col-span-1  p-4 rounded-lg ">
+      <div className="xl:col-span-2 lg:col-span-2 md:col-span-2 sm:col-span-1  p-1 rounded-lg ">
         <ProjectPipline data={data} isLoading={isLoading} />
       </div>
+      <div className="lg:col-span-1 md:col-span-1 sm:col-span-1  p-1 rounded-lg ">
+        <OpportunitiesList data={opportunities.data} />
+      </div>
 
-      <div className="lg:col-span-1 md:col-span-1 sm:col-span-1  p-4 rounded-lg ">
+      <div className="xl:col-span-5 lg:col-span-3 md:col-span-3 sm:col-span-1  p-1 rounded-lg ">
+        <SustainabilityDash />
+      </div>
+      <div className="lg:col-span-1 md:col-span-1 sm:col-span-1  p-1 rounded-lg ">
         <OMCenter omData={omData} />
       </div>
-      <div className="lg:col-span-1 md:col-span-1 sm:col-span-1  p-4 rounded-lg ">
+      <div className="lg:col-span-1 md:col-span-1 sm:col-span-1  p-1 rounded-lg md:order-1">
         <ReadyForBundlingList bundlingData={bundlingData} />
-      </div>
-      <div className="xl:col-span-5 lg:col-span-3 md:col-span-3 sm:col-span-1  p-4 rounded-lg ">
-        <SustainabilityDash />
       </div>
     </div>
   );

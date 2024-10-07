@@ -117,7 +117,9 @@ function Project() {
       children: [
         {
           // stepLabel: 'Step 1',
-          content: <TechnicalStepOne />,
+          content: (
+            <TechnicalStepOne fields={['TechnicalInfo.EquipmentType']} />
+          ),
         },
         {
           stepLabel: (
@@ -125,7 +127,11 @@ function Project() {
               Resources consumption
             </p>
           ),
-          content: <TechnicalStepTwo />,
+          content: (
+            <TechnicalStepTwo
+              fields={['TechnicalInfo.NetMeteringGridElectricityCost']}
+            />
+          ),
         },
         {
           stepLabel: (
@@ -185,16 +191,33 @@ function Project() {
       icon: <Icon name={'economic'} />,
       children: [
         {
-          content: <StepOneECO />,
+          content: <StepOneECO fields={['EconomicViability.capex']} />,
         },
         {
-          content: <StepTwoECO />,
+          content: <StepTwoECO fields={['EconomicViability.opex']} />,
         },
         {
-          content: <StepThreeECO />,
+          content: (
+            <StepThreeECO
+              fields={[
+                'EconomicViabilty.TargetLoanTerm',
+                'EconomicViabilty.TargetEquityReturn',
+                'EconomicViabilty.TargetInterestRate',
+                'EconomicViabilty.LoanToCostRatio',
+              ]}
+            />
+          ),
         },
         {
-          content: <StepFourECO />,
+          content: (
+            <StepFourECO
+              fields={[
+                'EconomicViabilty.OpexAnnualEscalation',
+                'EconomicViabilty.AnnualGeneralInflation',
+                'EconomicViabilty.TaxRate',
+              ]}
+            />
+          ),
         },
         {
           content: <FinancialSharedSavings project={projectObject} />,

@@ -142,7 +142,7 @@ function Register() {
     <div
       className={`flex flex-col md:flex-row min-h-screen ${bgColor} py-2 items-center  md:py-0`}>
       <div className="hidden md:flex flex-1 flex-col justify-center items-center gap-10 p-4 md:p-0">
-        <img src={Logo} alt="logo" className="w-40 h-auto md:w-52 md:h-auto" />
+        <img src={Logo} alt="logo" className="w-40 h-auto md:w-44 md:h-auto" />
         <p className="text-white text-2xl font-bold">Green Me</p>
       </div>
       <div className="flex md:hidden flex-col items-center justify-center flex-2 text-white font-abel py-5">
@@ -159,7 +159,6 @@ function Register() {
               accept="image/*"
               onChange={(e) => handleFileChange(registerData.typesId, e)}
               className="hidden"
-              
             />
             <label
               htmlFor="logoUpload"
@@ -191,7 +190,12 @@ function Register() {
             </label>
           </div>
         </div>
-        <Steps steps={steps} hasLink onSave={onSubmit} isLoading={isLoading} />
+        <Steps
+          steps={steps}
+          hasLink
+          onSave={onSubmit}
+          isLoading={isLoading || isLoadingStatus}
+        />
       </div>
     </div>
   );

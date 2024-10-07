@@ -7,7 +7,6 @@ import EnergyEfficiency from './steptwo/EnergyEffciency';
 function TechnicalStepTwo() {
   const { watch } = useFormContext();
   const categoryId = watch('categoryId');
-  const criteriaId = watch('criteriaId');
 
   switch (categoryId) {
     case 1:

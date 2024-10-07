@@ -15,28 +15,22 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
   } = methods;
   const [currentParentIndex, setCurrentParentIndex] = useState(0);
   const [currentChildIndex, setCurrentChildIndex] = useState(0);
+
+  const childrenLength = steps[currentParentIndex]?.children?.length || 0;
+  const currentChildContent =
+    steps[currentParentIndex]?.children[currentChildIndex]?.content;
+
   useEffect(() => {
-    console.warn(
-      'checking validations for step ' +
-        currentParentIndex +
-        ' at ' +
-        location.pathname
-    );
     if (Object.keys(errors).length > 0) {
-      console.error(
-        errors,
-        'errors at ' + location.pathname + currentParentIndex
-      );
       alertValidationMessage(errors);
     }
-  }, [currentParentIndex, errors, location.pathname]); 
+  }, [currentParentIndex, errors, location.pathname]);
 
   const handleNext = async () => {
     const isValid = await trigger();
     if (!isValid) {
       alertValidationMessage(errors);
     } else {
-      // Move to the next child step or parent step
       if (currentChildIndex < steps[currentParentIndex].children.length - 1) {
         setCurrentChildIndex(currentChildIndex + 1);
       } else if (currentParentIndex < steps.length - 1) {
@@ -45,6 +39,7 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
       }
     }
   };
+
   const handlePrevious = () => {
     if (currentChildIndex > 0) {
       setCurrentChildIndex(currentChildIndex - 1);
@@ -56,21 +51,18 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
 
   const onSubmit = async (data) => {
     const isValid = await trigger();
-    // console.log(isValid);
     if (!isValid) {
       alertValidationMessage(errors);
     } else {
       onSave(data);
     }
   };
-  const childrenLength = steps[currentParentIndex]?.children?.length || 0;
 
   return (
     <FormProvider {...methods}>
       <div className="w-full h-full ">
         <div className="flex flex-col gap-2">
           <div className="flex justify-between">
-            {' '}
             <Title
               text={steps[currentParentIndex]?.label}
               type="h3"
@@ -106,14 +98,13 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
           )}
 
           <div className="h-full w-full min-h-[60vh] transition-all duration-200 mb-[10%]">
-            {steps[currentParentIndex]?.children[currentChildIndex]?.content ||
-              null}
+            {currentChildContent || null}
           </div>
 
           {/* Navigation Buttons */}
           <div className="flex flex-col md:flex-row-reverse mt-4 gap-3 justify-between items-center justify-self-end pb-2">
             <div className="flex items-center gap-5">
-              {currentChildIndex > 0 || currentParentIndex > 0 ? (
+              {(currentChildIndex > 0 || currentParentIndex > 0) && (
                 <Button
                   className={'min-w-[150px]'}
                   variant="secondary"
@@ -121,10 +112,12 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
                   hasIcon
                   iconPosition="left"
                   iconName={'arrow-left'}
-                  onClick={handlePrevious}>
+                  onClick={handlePrevious}
+                  disabled={!currentChildContent || isLoading} // Disable if no content
+                >
                   Previous
                 </Button>
-              ) : null}
+              )}
 
               {currentChildIndex <
                 steps[currentParentIndex].children.length - 1 ||
@@ -135,6 +128,8 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
                   onClick={handleNext}
                   hasIcon
                   iconName={'arrow-right'}
+                  disabled={!currentChildContent || isLoading} // Disable if no content
+                  isLoading={isLoading}
                   iconPosition="right"
                   className={'min-w-[150px]'}>
                   Next
@@ -145,7 +140,7 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
                   className={'min-w-[150px]'}
                   type="button"
                   isLoading={isLoading}
-                  disabled={isLoading}
+                  disabled={!currentChildContent || isLoading} // Disable if no content
                   onClick={methods.handleSubmit(onSubmit)}>
                   SAVE
                 </Button>

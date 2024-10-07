@@ -4,6 +4,7 @@ import { AgGridReact } from 'ag-grid-react';
 import { useGetExpertAssignedMissionsQuery } from '../../../redux/features/expert';
 import { useGetuserId } from '../../../hooks/useCookies';
 import { useSelector } from 'react-redux';
+import { HorizontalSearchBar } from '../../shared/table/tablePageComponents';
 function ExpertMissionListing() {
   const expertId = useGetuserId();
   const [gridApi, setGridApi] = useState(null);
@@ -11,7 +12,6 @@ function ExpertMissionListing() {
     { userId: expertId }
   );
   const searchObject = useSelector((state) => state.search);
-  console.log(data, 'expert assignment');
   const { pageSize } = searchObject;
   const [columnDefs] = useState([
     {
@@ -98,7 +98,8 @@ function ExpertMissionListing() {
 
   return (
     <div className="h-screen">
-      {' '}
+      <HorizontalSearchBar data={[]} isLoading={false} />
+
       <div className="ag-theme-alpine ag-theme-MembersListing h-full bg-[#EFFCFF] md:p-10 rounded-lg w-[95%] m-auto md:my-10">
         <AgGridReact
           totalPages={totalPages}

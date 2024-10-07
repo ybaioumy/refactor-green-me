@@ -75,7 +75,6 @@ function GeneralInfoStepOne() {
               control={control}
               rules={{
                 required: 'Category is required',
-
               }}
               render={({ field }) => (
                 <Select
@@ -137,6 +136,7 @@ function GeneralInfoStepOne() {
               <div className="flex">
                 <Select
                   {...field}
+                  removeMaxWidth
                   label={'Economic Sector'}
                   options={dropDowns?.economicSector}
                   onChange={(e) => {
@@ -149,7 +149,7 @@ function GeneralInfoStepOne() {
             )}
           />
         </div>
-        <div className="flex flex-col md:items-center gap-4 md:w-2/4 lg:border-l border-black pl-2">
+        <div className="flex flex-col md:items-center gap-3 md:w-2/4 lg:border-l border-black pl-2">
           <Controller
             name="servedCountryId"
             control={control}
@@ -220,11 +220,11 @@ const DetailsRow = ({ children, onEdit, noBorder = false }) => {
       className={`flex w-full items-center border-b border-[#CBCBCB] py-2 ${
         noBorder && 'border-b-0'
       }`}>
-      <div className="flex  md:flex-row flex-1 gap-5 md:gap-10 items-center w-full">
-        <div className="flex flex-col gap-2  w-full">{children}</div>
+      <div className="flex  md:flex-row flex-1 gap-5 md:gap-1 items-center w-full">
+        <div className="flex flex-col gap-2 w-full">{children}</div>
         <Button
           variant="secondary"
-          className={'w-[40px] h-[40px] '}
+          className={'w-[40px] h-[40px] md:mt-[20px]'}
           title={'Change'}
           onClick={onEdit}>
           <Icon name={'edit'} />

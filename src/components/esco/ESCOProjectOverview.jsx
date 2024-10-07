@@ -176,7 +176,7 @@ const ProjectOverView = ({ steps }) => {
                     : 'opacity-50 border-[3px] md:border-[5px]'
                 }`}>
                 <span>{parentStep.icon}</span>
-                <p className="font-bold capitalize sm:block md:hidden lg:block text-[20px] text-wrap leading-tight truncate">
+                <p className="font-bold capitalize sm:block md:hidden lg:block md:text-[16px] text-wrap leading-tight truncate">
                   {parentStep.label}
                 </p>
                 {parentStep.progress || parentStep.info ? (

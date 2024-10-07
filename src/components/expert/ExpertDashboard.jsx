@@ -11,28 +11,20 @@ import { Modal } from 'antd'; // Import Modal from antd
 
 function ExpertDashboard() {
   const { invitationToken } = useSelector((state) => state.invitation);
-  const { id } = useParams();
+  const searchObject = useSelector((state) => state.search);
+
   const navigate = useNavigate();
   const [isToggled, setIsToggled] = useState(false);
   const expertId = useGetId();
-
-  const intialSearchState = {
-    categoryId: 0,
-    economicSectorId: 0,
-    servedCountryId: 0,
-    projectStatusId: 0,
-    pageNumber: 0,
-    pageSize: 0,
-  };
 
   const {
     data: expertProjects,
     isLoading,
     isError,
     error,
-  } = useGetExpertAssignedProjectsQuery(intialSearchState);
+  } = useGetExpertAssignedProjectsQuery(searchObject);
 
-  const [isModalVisible, setIsModalVisible] = useState(false); // State for modal visibility
+  const [isModalVisible, setIsModalVisible] = useState(false); 
 
   useEffect(() => {
     if (invitationToken) {
@@ -54,7 +46,7 @@ function ExpertDashboard() {
     {
       name: 'Expert Details',
       icon: 'details',
-      link: `expert/${expertId}/details`,
+      link: `profile`,
     },
     {
       name: 'Assigned Projects',

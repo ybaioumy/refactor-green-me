@@ -796,3 +796,7 @@ input[type="checkbox"] {
 .custom-progress-steps .ant-progress-steps-item {
   border-radius: 30%;
 }
+
+.swiper-slide {
+  width: 305px !important;
+}

@@ -22,16 +22,25 @@ const Teams = () => {
   const escoId = useMemo(() => getTypeId('ESCO'), [getTypeId]);
   const expertId = useMemo(() => getTypeId('Expert'), [getTypeId]);
   // Filter users by typesId for ESCO and Expert teams
+
+  const removeDuplicates = (users) => {
+    const uniqueUsers = new Set();
+    return users?.filter((user) => {
+      if (!uniqueUsers.has(user.id)) {
+        uniqueUsers.add(user.id);
+        return true;
+      }
+      return false;
+    });
+  };
   const escoTeam = useMemo(
-    () => data?.filter((user) => user.typesId === escoId),
+    () => removeDuplicates(data?.filter((user) => user.typesId === escoId)),
     [data, escoId]
   );
-
   const expertTeam = useMemo(
-    () => data?.filter((user) => user.typesId === expertId),
+    () => removeDuplicates(data?.filter((user) => user.typesId === expertId)),
     [data, expertId]
   );
-
   if (isLoading) {
     return <Loader />;
   }

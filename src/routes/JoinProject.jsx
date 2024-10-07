@@ -22,19 +22,19 @@ const ProjectInvitation = () => {
     error: errorGettingStatus,
     isError: isErrorStatus,
   } = useGetInvitationStatusQuery();
+
   const acceptStatusId = useGetItemIdByName(invitaionStatus, 'Accept');
   const declineStatusId = useGetItemIdByName(invitaionStatus, 'Reject');
-  const { invitationToken, expiry, typeId, roleId, permissionId } = useSelector(
-    (state) => state.invitation
-  );
+  const { invitationToken, expiry, typeId, roleId, permissionId, email } =
+    useSelector((state) => state.invitation);
 
-  // useEffect(() => {
-  //   // Check if the invitation is expired
-  //   const currentTime = Math.floor(Date.now() / 1000); // Convert current time to seconds
-  //   if (expiry && currentTime > expiry) {
-  //     setIsExpired(true);
-  //   }
-  // }, [expiry]);
+  useEffect(() => {
+    // Check if the invitation is expired
+    const currentTime = Math.floor(Date.now() / 1000); // Convert current time to seconds
+    if (expiry && currentTime > expiry) {
+      setIsExpired(true);
+    }
+  }, [expiry]);
 
   const handleResponse = async (isAccept) => {
     const invitationStatusId = isAccept ? acceptStatusId : declineStatusId;

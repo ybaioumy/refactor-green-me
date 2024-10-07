@@ -4,7 +4,7 @@ import SkeltonLoader from '../../shared/SkeltonLoader';
 import { getTimeAgo } from '../../../utilits/helpers';
 const OpportunitiesList = ({ data, loading }) => {
   return (
-    <div className="bg-[#F3F3F3] p-2  rounded-2xl shadow w-full relative ">
+    <div className="bg-[#F3F3F3] p-2 rounded-2xl shadow w-full relative ">
       <div className="flex justify-between items-center mb-4">
         <div className="flex flex-col w-full border-b border-opacity-50 border-[#000] pb-4">
           <h2 className="text-[24px] font-bold text-[#1E4A28]">
@@ -31,7 +31,7 @@ const OpportunitiesList = ({ data, loading }) => {
         {loading && <SkeltonLoader />}
         {data?.map((item, idx) => (
           <div
-            className="p-4 mb-4 border-b border-black border-opacity-50	"
+            className="p-1 mb-4 border-b border-black border-opacity-50	"
             key={item.id}>
             <h3 className="font-bold text-[20px] text-[#1E4A28]">
               {item.projectName || `Project 0${idx + 1}`}
@@ -65,7 +65,7 @@ const OpportunitiesList = ({ data, loading }) => {
   );
 };
 
-const ReadyForBundlingList = ({ data, loading  }) => {
+const ReadyForBundlingList = ({ data, loading }) => {
   // if (!data?.data) return <EmptyList />;
   return (
     <div className="bg-[#D8F99280] p-2 rounded-2xl shadow w-full h-full">
@@ -83,31 +83,30 @@ const ReadyForBundlingList = ({ data, loading  }) => {
       <div className="overflow-y-auto px-2 h-[400px]">
         {loading && <SkeltonLoader />}
 
-        {data ? (
-          data?.map((project, index) => (
-            <div key={index} className="mb-4 border-b border-black py-3">
-              <h3 className="font-semibold text-[#1E4A28]">
-                {project.projectName}
-              </h3>
-              <p className="text-m text-gray-600">{project.timeAgo}</p>
-              <p className="text-m text-gray-600">Client: {project.client}</p>
-              <p className="text-m text-gray-600">Finance: {project.finance}</p>
-              <p className="text-m text-gray-600">ESCO: {project.esco}</p>
-              <Button
-                className="mt-2 font-semibold"
-                type="link"
-                to={'/projects/eligible/' + project.id}>
-                Details
-              </Button>
-            </div>
-          ))
-        ) : (
-          null
-        )}
+        {data
+          ? data?.map((project, index) => (
+              <div key={index} className="mb-4 border-b border-black py-3">
+                <h3 className="font-semibold text-[#1E4A28]">
+                  {project.projectName}
+                </h3>
+                <p className="text-m text-gray-600">{project.timeAgo}</p>
+                <p className="text-m text-gray-600">Client: {project.client}</p>
+                <p className="text-m text-gray-600">
+                  Finance: {project.finance}
+                </p>
+                <p className="text-m text-gray-600">ESCO: {project.esco}</p>
+                <Button
+                  className="mt-2 font-semibold"
+                  type="link"
+                  to={'/projects/eligible/' + project.id}>
+                  Details
+                </Button>
+              </div>
+            ))
+          : null}
       </div>
     </div>
   );
 };
-
 
 export { ReadyForBundlingList, OpportunitiesList };
