@@ -233,7 +233,7 @@ const ProjectOverView = ({ steps }) => {
       <motion.form
         onSubmit={methods.handleSubmit(onSubmit)}
         className="w-full flex flex-col justify-between min-h-full flex-1 md:p-4 p-2">
-        <div className="h-full min-h-[70vh] w-full my-auto pb-4 transition-all duration-200">
+        <div className="h-full min-h-[80vh] w-full md:max-w-[1500px] my-auto pb-4 transition-all duration-200">
           <div className="flex flex-col gap-2 mb-4 capitalize">
             <div className="flex gap-2 w-full justify-between items-center mt-2">
               <div className="flex gap-2 w-fit">

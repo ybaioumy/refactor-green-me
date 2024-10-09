@@ -1,4 +1,6 @@
-import MapComponent from '../../shared/Map';
+import { useEffect, useState } from 'react';
+import MapComponent, { getCityName } from '../../shared/Map';
+
 import Button from '../../shared/Button';
 import { useSelector } from 'react-redux';
 import {
@@ -51,12 +53,12 @@ const ProjectSummary = ({ onEdit, canEdit }) => {
       </DetailsRow>
 
       <DetailsRow canEdit={canEdit} onEdit={() => setCurrentChildIndex(1)}>
-        {/* <LocationDetail projectObject={projectObject} /> */}
+        <LocationDetail projectObject={projectObject} />
       </DetailsRow>
       <DetailsRow canEdit={canEdit} onEdit={() => setCurrentChildIndex(1)}>
         <ProjectRow
           label="Site Description"
-          value={`${projectObject.description}` || ''}
+          value={projectObject.description}
         />
       </DetailsRow>
       <DetailsRow canEdit={canEdit} onEdit={() => setCurrentChildIndex(1)}>
@@ -66,17 +68,25 @@ const ProjectSummary = ({ onEdit, canEdit }) => {
           value={projectObject.multiLocation ? 'Yes' : 'No' || ''}
         />
       </DetailsRow>
+
       <DetailsRow
         canEdit={canEdit}
         onEdit={() => setCurrentChildIndex(1)}
         noBorder>
         <ProjectRow
           label="Site Area"
-          value={`Land Area (sqm): ${projectObject?.landArea}` || ''}
+          description={'Land Area (sqm):'}
+          value={projectObject?.landArea}
         />
         <ProjectRow
           label=""
-          value={`Gross Built-Up Area (sqm): ${projectObject.grossArea}` || ''}
+          description={'Gross Built-Up Area (sqm):'}
+          value={projectObject.grossArea}
+        />
+        <ProjectRow
+          label=""
+          description={'Number of floors: '}
+          value={projectObject.noOfFloors}
         />
       </DetailsRow>
     </>
@@ -85,7 +95,7 @@ const ProjectSummary = ({ onEdit, canEdit }) => {
 const DetailsRow = ({ children, onEdit, noBorder = false, canEdit }) => {
   return (
     <div
-      className={`flex gap-2 items-center border-b border-[#CBCBCB] py-2 ${
+      className={`flex gap-2 items-center border-b border-[#CBCBCB] py-2 md:max-w-[1100px] ${
         noBorder && 'border-b-0'
       }`}>
       <div className="flex gap-2 flex-1">{children}</div>
@@ -100,18 +110,17 @@ const DetailsRow = ({ children, onEdit, noBorder = false, canEdit }) => {
     </div>
   );
 };
-const ProjectRow = ({ label, value }) => {
+const ProjectRow = ({ label, value, description }) => {
   return (
-    <div className="flex items-end justify-between w-full my-3">
+    <div className="flex items-end justify-between w-full  my-3">
       <div className="flex-1 w-full md:mr-10">
         <h2 className="text-[16px] md:text-[22px] text-[#1E4A28] font-bold">
           {label}
         </h2>
         <div className="bg-[#E6E6E6] overflow-hidden rounded-lg">
           <p className="text-gray-700  p-1 pl-3  w-full line-clamp-1">
-            {!value || value.includes('undefined') || value.includes('null')
-              ? 'Not Available'
-              : value}
+            <span className="mr-2">{description || null}</span>
+            {value ? value : 'Not Available'}
           </p>
         </div>
       </div>
@@ -119,35 +128,38 @@ const ProjectRow = ({ label, value }) => {
   );
 };
 
-// const LocationDetail = ({ projectObject }) => {
-//   const [location, setLocation] = useState(null);
+const LocationDetail = ({ projectObject }) => {
+  const [location, setLocation] = useState(null);
 
-//   useEffect(() => {
-//     const fetchLocation = async () => {
-//       if (projectObject.lat && projectObject.long) {
-//         const response = await getCityName(projectObject.lat, projectObject.long);
-//         setLocation(response);
-//       }
-//     };
+  useEffect(() => {
+    const fetchLocation = async () => {
+      if (projectObject.lat && projectObject.long) {
+        const response = await getCityName(
+          projectObject.lat,
+          projectObject.long
+        );
+        setLocation(response);
+      }
+    };
 
-//     fetchLocation();
-//   }, [projectObject.lat, projectObject.long]);
-//   const { city, country } = location || {};
-//   return (
-//     <div className="flex items-center justify-between w-full py-2 ">
-//       <div className="flex-1">
-//         <ProjectRow label="Location" value="Region: Middle East / GCC" />
-//         <ProjectRow value={`Country: ${country || ''}`} />
-//         <ProjectRow value={`City: ${city || ''}`} />
-//       </div>
-//       <div className="h-full flex-1 mx-10">
-//         <MapComponent
-//           viewOnly
-//           positionValue={{ lat: projectObject.lat, long: projectObject.long }}
-//         />
-//       </div>
-//     </div>
-//   );
-// };
+    fetchLocation();
+  }, [projectObject.lat, projectObject.long]);
+  const { city, country } = location || {};
+  return (
+    <div className="flex items-center justify-between w-full py-2 ">
+      <div className="flex-1">
+        <ProjectRow label="Location" value="Region: Middle East / GCC" />
+        <ProjectRow value={`Country: ${country || 'Not Available'}`} />
+        <ProjectRow value={`City: ${city || 'Not Available'}`} />
+      </div>
+      <div className="h-full flex-1 mx-10">
+        <MapComponent
+          viewOnly
+          positionValue={{ lat: projectObject.lat, long: projectObject.long }}
+        />
+      </div>
+    </div>
+  );
+};
 
 export default ProjectSummary;

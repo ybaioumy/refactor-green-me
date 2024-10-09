@@ -60,9 +60,13 @@ function ProjectESCO() {
     }
   }, [error]);
 
+  useEffect(() => {
+    setCanEdit(projectData?.isProjectBelongsToThisEsco);
+  }, [projectData?.isProjectBelongsToThisEsco]);
+
   const steps = [
     {
-      parentStep: 'generalInfo',
+      parentStep: 'GeneralInfo',
       label: 'General Info',
       icon: <Icon name={'escoGeneral'} />,
       progress: 80,
@@ -94,7 +98,7 @@ function ProjectESCO() {
       ],
     },
     {
-      parentStep: 'technicalInfo',
+      parentStep: 'TechnicalInfo',
       label: 'Technical Info',
       icon: <Icon name={'escoTechnical'} />,
       progress: 10,
@@ -138,7 +142,7 @@ function ProjectESCO() {
       ],
     },
     {
-      parentStep: 'EconomicViabilty',
+      parentStep: 'Economic Viability',
       label: 'Economic Viability',
       icon: <Icon name={'escoEconomic'} />,
       info: '5 New',
@@ -149,7 +153,9 @@ function ProjectESCO() {
               Energy performance contracts model
             </p>
           ),
-          content: <StepOneESCO fields={['EconomicViabilty']} />,
+          content: (
+            <StepOneESCO fields={['EconomicViabilty.EconomicViabilty']} />
+          ),
         },
         {
           content: <StepOneECO fields={['EconomicViabilty.Capex']} />,
@@ -184,7 +190,7 @@ function ProjectESCO() {
           content: (
             <FinancialSharedSavings
               project={projectObject}
-              fields={['EconomicViability.Savings']}
+              fields={['EconomicViabilty.Savings']}
             />
           ),
           hideButtons: true,

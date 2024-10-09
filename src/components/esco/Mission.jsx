@@ -28,7 +28,7 @@ function Mission() {
       missionTitle: '',
       missionLocation: '',
       missionBrief: '',
-      deliverableFormat: '',
+      generatedReports: '',
       languages: '',
       startDate: '',
       endDate: '',
@@ -47,7 +47,7 @@ function Mission() {
       setValue('name', data.name);
       setValue('missionLocation', data.location);
       setValue('missionBrief', data.brief);
-      setValue('deliverableFormat', data.deliverableFormat);
+      setValue('generatedReports', data.generatedReports);
       setValue('languages', data.languages);
       setValue('startDate', data.startDate);
       setValue('endDate', data.endDate);
@@ -175,7 +175,7 @@ function Mission() {
 
             <ItemRow label="Deliverable format">
               <Controller
-                name="deliverableFormat"
+                name="generatedReports"
                 control={control}
                 render={({ field }) => (
                   <Input

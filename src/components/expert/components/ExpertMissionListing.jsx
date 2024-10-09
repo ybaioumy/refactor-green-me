@@ -5,7 +5,10 @@ import { useGetExpertAssignedMissionsQuery } from '../../../redux/features/exper
 import { useGetuserId } from '../../../hooks/useCookies';
 import { useSelector } from 'react-redux';
 import { HorizontalSearchBar } from '../../shared/table/tablePageComponents';
+import { useNavigate } from 'react-router-dom';
+import CustomPaginationComponent from '../../shared/table/CustomPagination';
 function ExpertMissionListing() {
+  const navigate = useNavigate();
   const expertId = useGetuserId();
   const [gridApi, setGridApi] = useState(null);
   const { data, isLoading, isError, error } = useGetExpertAssignedMissionsQuery(
@@ -83,18 +86,13 @@ function ExpertMissionListing() {
   const onGridReady = (params) => {
     setGridApi(params.api);
   };
-  //   const onRowClick = (params) => {
-  //     navigate(`/projects/eligible/${projectId}/mission/${params.data.id}`, {
-  //       state: { expert: expert, mission: params.data },
-  //     });
-  //   };
+  const onRowClick = (params) => {
+    navigate(`/assigned-missions/${params.data.id}`, {
+      state: { expert: expertId, mission: params.data },
+    });
+  };
   const totalPages =
     Math.ceil(data?.totalRecords ? data.totalRecords : 0 / pageSize) || 0;
-  //   const assignMission = () => {
-  //     navigate('/create-mission', {
-  //       state: { expert: expert, projectId: projectId },
-  //     });
-  //   };
 
   return (
     <div className="h-screen">
@@ -108,12 +106,15 @@ function ExpertMissionListing() {
           columnDefs={columnDefs}
           pagination={true}
           suppressPaginationPanel={true}
-          //   onRowClicked={onRowClick}
+          onRowClicked={onRowClick}
           // suppressHorizontalScroll={true}
           suppressVerticalScroll
           rowHeight={80}
           onGridReady={onGridReady}
         />
+        {gridApi && gridApi.paginationGetRowCount() > 0 && (
+          <CustomPaginationComponent totalRecords={totalPages} />
+        )}
       </div>
     </div>
   );

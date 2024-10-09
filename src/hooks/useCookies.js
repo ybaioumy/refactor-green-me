@@ -55,7 +55,7 @@ const useTokenExpiration = () => {
 const useSetCookiesAfterLogin = () => {
   const [isCookiesSet, setIsCookiesSet] = useState(false);
 
-  const setCookies = ({ fullName, typeId, token, expiry, role, userId, escoid, clientid, expertId }) => {
+  const setCookies = ({ fullName, typeId, token, expiry, role, userId, escoid, clientid, expertid }) => {
     try {
       const cookieOptions = {
         expires: new Date(expiry),
@@ -75,10 +75,10 @@ const useSetCookiesAfterLogin = () => {
         Cookies.set('escoId', escoid, cookieOptions);
       }
       if (clientid) {
-        Cookies.set('clientid', clientid, cookieOptions);
+        Cookies.set('clientId', clientid, cookieOptions);
       }
-      if (expertId) {
-        Cookies.set('expertId', expertId, cookieOptions);
+      if (expertid) {
+        Cookies.set('expertId', expertid, cookieOptions);
       }
 
 

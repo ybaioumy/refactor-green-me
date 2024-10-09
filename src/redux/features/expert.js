@@ -26,10 +26,10 @@ const customBaseQuery = async (args, api, extraOptions) => {
     return { data: result.data, totalRecords: result.total };
 };
 
-
 export const expertApi = createApi({
     reducerPath: 'expert',
     baseQuery: customBaseQuery,
+    tagTypes: ['Missions', 'Projects'],  // Define the tag types
     endpoints: (builder) => ({
         getAllExperts: builder.query({
             query: (filterBody) => ({
@@ -50,14 +50,15 @@ export const expertApi = createApi({
                 url: `Mission`,
                 method: 'GET',
                 params: { userId, projectId }
-
             }),
+            providesTags: ['Missions'],  // This query provides the 'Missions' tag
         }),
         getMissionById: builder.query({
             query: (id) => ({
                 url: `Mission/${id}`,
                 method: 'GET',
             }),
+            providesTags: (result, error, id) => [{ type: 'Missions', id }],  // Provide tag per mission id
         }),
         createNewMission: builder.mutation({
             query: (missionData) => ({
@@ -65,6 +66,7 @@ export const expertApi = createApi({
                 method: 'POST',
                 body: missionData,
             }),
+            invalidatesTags: ['Missions'],  // This mutation invalidates the 'Missions' tag
         }),
         updateMission: builder.mutation({
             query: ({ id, data }) => ({
@@ -72,23 +74,35 @@ export const expertApi = createApi({
                 method: 'PUT',
                 body: data,
             }),
+            invalidatesTags: (result, error, { id }) => [{ type: 'Missions', id }],  // Invalidate the specific mission after update
         }),
         getExpertAssignedProjects: builder.query({
             query: (searchParams) => ({
                 url: 'ProjectUser/AssignedProject',
                 method: 'POST',
                 body: searchParams,
-            })
+            }),
+            providesTags: ['Projects'],  // This query provides the 'Projects' tag
         }),
         getExpertAssignedMissions: builder.query({
             query: ({ userId }) => ({
                 url: `Mission/user`,
                 method: 'GET',
                 params: { userId }
-
             }),
+            providesTags: ['Missions'],  // This query provides the 'Missions' tag
         })
     })
 })
 
-export const { useGetAllExpertsQuery, useCreateNewMissionMutation, useGetMissionStatusQuery, useGetExpertFilterQuery, useGetMissionsQuery, useGetMissionByIdQuery, useGetExpertAssignedProjectsQuery, useUpdateMissionMutation ,useGetExpertAssignedMissionsQuery} = expertApi
+export const {
+    useGetAllExpertsQuery,
+    useCreateNewMissionMutation,
+    useGetMissionStatusQuery,
+    useGetExpertFilterQuery,
+    useGetMissionsQuery,
+    useGetMissionByIdQuery,
+    useGetExpertAssignedProjectsQuery,
+    useUpdateMissionMutation,
+    useGetExpertAssignedMissionsQuery
+} = expertApi;

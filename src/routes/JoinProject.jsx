@@ -11,7 +11,6 @@ import Loader from '../components/shared/Loader';
 import EmptyList from '../components/shared/EmptyList';
 
 const ProjectInvitation = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isExpired, setIsExpired] = useState(false);
   const [reponseToProjectInvitation, { isLoading, isError, isSuccess, error }] =
@@ -25,9 +24,11 @@ const ProjectInvitation = () => {
 
   const acceptStatusId = useGetItemIdByName(invitaionStatus, 'Accept');
   const declineStatusId = useGetItemIdByName(invitaionStatus, 'Reject');
-  const { invitationToken, expiry, typeId, roleId, permissionId, email } =
-    useSelector((state) => state.invitation);
-
+  const { invitationToken, expiry, typeId, roleId, permissionId } = useSelector(
+    (state) => state.invitation
+  );
+  // console.table(invitationToken, expiry, roleId, permissionId);
+  console.table(useSelector((state) => state.invitation));
   useEffect(() => {
     // Check if the invitation is expired
     const currentTime = Math.floor(Date.now() / 1000); // Convert current time to seconds
@@ -84,6 +85,7 @@ const ProjectInvitation = () => {
       />
     );
   }
+  if (!invitationToken) return null;
   return (
     <div className="flex items-center justify-center flex-col h-[60vh] mt-[5%] w-[70%] mx-auto">
       <h1 className="text-[#505050] text-2xl font-bold">Project Invitation</h1>

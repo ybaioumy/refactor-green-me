@@ -27,6 +27,7 @@ import FinancialSharedSavings from '../Project/economicViability/FinancialShared
 import Loader from '../shared/Loader';
 import { Result } from 'antd';
 import EmptyList from '../shared/EmptyList';
+import { progress } from 'framer-motion';
 
 function OpportunitiyOverview() {
   const { id } = useParams();
@@ -56,7 +57,6 @@ function OpportunitiyOverview() {
 
   const [canEdit, setCanEdit] = useState(true);
 
-
   const ProposalButton = () => (
     <>
       <Button
@@ -79,6 +79,7 @@ function OpportunitiyOverview() {
       parentStep: 'generalInfo',
       label: 'General Info',
       icon: <Icon name={'escoGeneral'} />,
+      progress: 10,
       children: [
         {
           content: <ProjectSummary />,
@@ -108,6 +109,7 @@ function OpportunitiyOverview() {
       parentStep: 'technicalInfo',
       label: 'Technical Info',
       icon: <Icon name={'escoTechnical'} />,
+      progress: 20,
       children: [
         {
           // stepLabel: 'Step 1',
@@ -145,6 +147,7 @@ function OpportunitiyOverview() {
       parentStep: 'economicViab',
       label: 'Economic Viability',
       icon: <Icon name={'escoEconomic'} />,
+      info: '5 New',
       children: [
         {
           stepLabel: (
@@ -176,6 +179,7 @@ function OpportunitiyOverview() {
       parentStep: 'teams',
       label: 'Teams & Invitations',
       icon: <Icon name={'escoTeams'} />,
+      info: '3 Members',
       children: [
         {
           content: <Teams />,

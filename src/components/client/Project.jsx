@@ -105,7 +105,7 @@ function Project() {
               Project Summary
             </p>
           ),
-          content: <ProjectSummary />,
+          content: <ProjectSummary canEdit={true} />,
           stepIcon: <ProposalButton />,
         },
       ],
@@ -236,7 +236,7 @@ function Project() {
   }
   return (
     <FormProvider {...methods}>
-      <StepProvider steps={steps}>
+      <StepProvider steps={steps} canEdit={true}>
         <ProjectOverView steps={steps} />
       </StepProvider>
     </FormProvider>

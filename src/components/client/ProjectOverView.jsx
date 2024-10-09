@@ -39,7 +39,7 @@ const ProjectOverView = ({ steps }) => {
                   setCurrentParentIndex(index);
                   setCurrentChildIndex(0);
                 }}
-                className={`text-white md:h-[100px] h-[100px] w-fit transition-all  md:w-[90%] relative flex justify-center lg:justify-start min-w-[220px] md:min-w-[120px] items-center gap-4 text-left px-4 py-2 font-bold  rounded-[12px] card-green-gradient  duration-150  ${
+                className={`text-white md:h-[100px] h-[100px] w-fit transition-all md:max-w-[300px]  md:w-[90%] relative flex justify-center lg:justify-start min-w-[220px] md:min-w-[120px] items-center gap-4 text-left px-4 py-2 font-bold  rounded-[12px] card-green-gradient  duration-150  ${
                   index === currentParentIndex
                     ? 'border-[3px]  md:border-[5px] border-[#cbff5e] '
                     : 'opacity-50  border-[3px] md:border-[5px]'
@@ -132,7 +132,7 @@ const ProjectOverView = ({ steps }) => {
   );
 };
 const ProjectOverViewWrapper = ({ steps }) => (
-  <StepProvider steps={steps}>
+  <StepProvider steps={steps} canEdit={true}>
     <ProjectOverView steps={steps} />
   </StepProvider>
 );

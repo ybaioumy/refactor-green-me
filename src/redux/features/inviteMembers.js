@@ -1,6 +1,6 @@
-
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { authHeader } from '../../utilits/authHeader';
+
 export const inviteApi = createApi({
     reducerPath: 'inviteApi',
     baseQuery: async (args, api, extraOptions) => {
@@ -21,6 +21,7 @@ export const inviteApi = createApi({
 
         return result;
     },
+    tagTypes: ['Projects'],  // Add 'Projects' tag
     endpoints: (builder) => ({
         inviteUser: builder.mutation({
             query: ({ emails, projectId, typeId, statusId, permissionId, ProjectRoleId, escoId }) => ({
@@ -41,6 +42,7 @@ export const inviteApi = createApi({
                 method: 'POST',
                 body: { permissionId, ProjectRoleId, isAccept, typeId, invitationToken, invitationStatusId },
             }),
+            invalidatesTags: ['Projects'],  // Invalidate 'Projects' after responding to invitation
         }),
         getUserStatus: builder.query({
             query: () => 'UserStatus',
@@ -58,8 +60,16 @@ export const inviteApi = createApi({
                 method: 'PUT',
                 body: { projectUserId, statusId },
             }),
-        })
+        }),
     }),
 });
 
-export const { useInviteUserMutation, useGetInvitationStatusQuery, useGetUserPermissionsQuery, useReponseToProjectInvitationMutation, useGetUserStatusQuery, useUpdateUserStatusMutation ,useUpdateProjectUserStatusMutation} = inviteApi;
+export const {
+    useInviteUserMutation,
+    useGetInvitationStatusQuery,
+    useGetUserPermissionsQuery,
+    useReponseToProjectInvitationMutation,
+    useGetUserStatusQuery,
+    useUpdateUserStatusMutation,
+    useUpdateProjectUserStatusMutation
+} = inviteApi;

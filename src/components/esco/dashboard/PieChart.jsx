@@ -89,7 +89,7 @@ const DisbursedPie = ({ data }) => {
 
 const Header = ({ headline1, headline2 }) => (
   <div className="flex flex-col items-center border-b-2 border-[#a6a6a6] text-center">
-    <p className=" text-[#1E4A28] text-xl lg:text-2xl font-bold mb-2 line-clamp-2">
+    <p className=" text-[#1E4A28] text-xl lg:text-2xl font-bold mb-2 line-clamp-2 max-w-[70%]">
       {headline1}
     </p>
     {/* <label className="block text-[#1E4A28] text-xl lg:text-2xl font-bold mb-2">

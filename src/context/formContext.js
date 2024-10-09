@@ -23,7 +23,7 @@ export const StepProvider = ({ children, steps, canEdit }) => {
 
     const [updateProjectById, { isLoading }] = useUpdateProjectByIdMutation();
     const { data: projectPermissions } = useGetUserProjectPermissionsQuery({ projectId: id, userId: userId })
-
+    console.table(projectPermissions, 'User permissions');
 
     const handleNext = async () => {
         if (canEdit) {
@@ -106,8 +106,6 @@ export const StepProvider = ({ children, steps, canEdit }) => {
                 canEdit,
                 projectPermissions,
                 goToField,
-
-
             }}>
             {children}
         </StepContext.Provider>

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Logo from '../assets/images/greenme.png';
 import GreenMeTitle from '../assets/images/GreenMeTitle.png';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useLoginMutation } from '../redux/features/auth';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
@@ -11,27 +11,35 @@ import { message, notification } from 'antd';
 import useMediaQuery from '../hooks/useMediaQuery';
 import { useSetCookiesAfterLogin } from '../hooks/useCookies';
 import { jwtDecode } from 'jwt-decode';
+import { useJwt } from 'react-jwt';
 
 function Login() {
   const navigation = useNavigate();
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
   });
   const [visible, setVisible] = useState(false);
-
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('encryptedData');
+  const { decodedToken } = useJwt(token);
   const [login, { isLoading, error }] = useLoginMutation();
   const { setCookies, isCookiesSet } = useSetCookiesAfterLogin();
+  useEffect(() => {
+    if (decodedToken && decodedToken.Email) {
+      setValue('email', decodedToken.Email);
+    }
+  }, [decodedToken, setValue]);
   const onSubmit = async (data) => {
     try {
       const response = await login(data).unwrap();
       const decodedToken = jwtDecode(response.token);
       const expires = response.expiry;
       const expDate = new Date(expires);
-      console.log(response);
       setCookies({
         fullName: response.fullName,
         typeId: response.typeId,
@@ -44,7 +52,7 @@ function Login() {
           ],
         ...(response.escoid ? { escoid: Number(response.escoid) } : {}), // Only include escoid/client if it exists
         ...(response.clientid ? { clientid: Number(response.clientid) } : {}),
-        ...(response.expertId ? { expertId: Number(response.expertId) } : {}),
+        ...(response.expertId ? { expertid: Number(response.expertId) } : {}),
       });
 
       const userTypeRoutes = {
@@ -127,6 +135,8 @@ function Login() {
                 })}
                 placeholder="Email / Phone"
                 autoComplete="email"
+                readOnly={decodedToken?.Email ? true : false}
+                disabled={decodedToken?.Email ? true : false}
               />
               {errors.email && (
                 <p className="text-red-500 text-base mt-1">

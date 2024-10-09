@@ -81,7 +81,7 @@ function ESCODetails({ countries }) {
               <div className="flex flex-col w-full">
                 <Select
                   {...field}
-                  // removeMaxWidth
+                  removeMaxWidth
                   search
                   variant="innerShadow"
                   options={countries}
@@ -149,7 +149,7 @@ function ESCODetails({ countries }) {
               render={({ field }) => (
                 <Select
                   {...field}
-                  // removeMaxWidth
+                  removeMaxWidth
                   search
                   variant="secondary"
                   options={countries}

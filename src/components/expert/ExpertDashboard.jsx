@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import ProjectsListing from '../shared/ProjectListing';
 import ProjectTable from '../shared/Table';
 import { useGetExpertAssignedProjectsQuery } from '../../redux/features/expert';
 import Sidebar from './components/SideBar';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useGetId, useGetuserId } from '../../hooks/useCookies';
+import {  useNavigate } from 'react-router-dom';
 import Loader from '../shared/Loader';
 import { useSelector } from 'react-redux';
 import { Modal } from 'antd'; // Import Modal from antd
@@ -15,7 +13,6 @@ function ExpertDashboard() {
 
   const navigate = useNavigate();
   const [isToggled, setIsToggled] = useState(false);
-  const expertId = useGetId();
 
   const {
     data: expertProjects,
@@ -46,7 +43,7 @@ function ExpertDashboard() {
     {
       name: 'Expert Details',
       icon: 'details',
-      link: `profile`,
+      link: `/my-details`,
     },
     {
       name: 'Assigned Projects',

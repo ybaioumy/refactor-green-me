@@ -228,12 +228,16 @@ const expertRouter = createBrowserRouter([
         ],
       },
       {
-        path: 'profile',
+        path: 'my-details',
         element: <Profile />,
       },
       {
         path: 'assigned-missions',
         element: <ExpertMissionListing />,
+      },
+      {
+        path: 'assigned-missions/:id',
+        element: <Mission />,
       },
     ],
   },
