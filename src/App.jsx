@@ -32,15 +32,44 @@ import Mission from './components/ESCO/Mission';
 import ProjectInvitation from './routes/JoinProject';
 import ExpertDashboard from './components/expert/ExpertDashboard';
 import ExpertMissionListing from './components/expert/components/ExpertMissionListing';
-
+import { jwtDecode } from 'jwt-decode';
+import { useDispatch } from 'react-redux';
+import { setInvitaion } from './redux/slices/invitaion';
+import { message } from 'antd';
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const token = useGetToken();
   const expiry = useTokenExpiration();
   const logout = useLogout();
   const expirationTime = new Date(expiry).getTime() - 60000;
+  const searchParams = new URLSearchParams(window.location.search);
+  const invitationTokenParamas = searchParams.get('encryptedData');
+  const encryptedData = invitationTokenParamas
+    ? jwtDecode(invitationTokenParamas)
+    : null;
+  if (invitationTokenParamas && encryptedData) {
+    const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
 
+    // Check if the invitation has not expired
+    if (encryptedData.exp > currentTime) {
+      dispatch(
+        setInvitaion({
+          invitationToken: encryptedData.InvitationToken,
+          email: encryptedData.Email || null,
+          expiry: encryptedData.exp || null,
+          typeId: encryptedData.TypeId || null,
+          roleId: encryptedData.RoleId || null,
+          escoId: encryptedData.EscoId || null,
+          permissionId: encryptedData.PermissionId || null,
+        })
+      );
+    } else {
+      console.error('Invitation token has expired.');
+      message.warning('Invitation token has expired');
+      // Optionally, you could handle expired tokens here, such as by showing an error message or redirecting
+    }
+  }
   const handleLogout = useCallback(() => {
     logout();
     setTimeout(() => {

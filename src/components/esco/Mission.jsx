@@ -13,15 +13,62 @@ import { message } from 'antd';
 import EXPhoto from '../../assets/images/m.png';
 import Loader from '../shared/Loader';
 import EmptyList from '../shared/EmptyList';
-
+import { AgGridReact } from 'ag-grid-react';
 function Mission() {
   const { state } = useLocation();
-  const {
-    mission: { id },
-    expert,
-  } = state || {};
+  const [gridApi, setGridApi] = useState();
+  const { mission, expert } = state || {};
   const navigate = useNavigate();
+  const [columnDefs] = useState([
+    {
+      headerName: 'Mission Code',
+      field: 'missionCode',
+      headerClass: 'mission-code-header',
+    },
 
+    {
+      headerName: 'Mission Name',
+      field: 'missionName',
+      sortable: true,
+    },
+    {
+      headerName: 'Location',
+      field: 'location',
+      sortable: true,
+    },
+    {
+      headerName: 'Generated Reports',
+      field: 'generatedReport',
+      // flex: 2,
+      sortable: true,
+    },
+    {
+      headerName: 'Assigned by',
+      field: 'assignedBy',
+      sortable: true,
+    },
+    {
+      headerName: 'Updated',
+      field: 'updated',
+      sortable: true,
+    },
+    {
+      headerName: 'Status',
+      field: 'statusName',
+      sortable: true,
+    },
+    {
+      headerName: 'Project Code',
+      field: 'projectName',
+      headerClass: 'project-code-header', //custom color
+      sortable: true,
+      // pinned:'right'
+    },
+  ]);
+
+  const onGridReady = (params) => {
+    setGridApi(params.api);
+  };
   // Initialize useForm
   const methods = useForm({
     defaultValues: {
@@ -37,7 +84,7 @@ function Mission() {
 
   const { control, setValue, getValues, handleSubmit } = methods;
 
-  const { data, isLoading, isError } = useGetMissionByIdQuery(id);
+  const { data, isLoading, isError } = useGetMissionByIdQuery(mission.id);
   const [updateMission, { isLoading: loadingUpdate, error }] =
     useUpdateMissionMutation(); // Hook for updating mission
   const { documentSections } = data || [];
@@ -75,7 +122,7 @@ function Mission() {
   const onSubmit = async (formData) => {
     const updatedData = {
       ...formData,
-      id,
+      id: mission.id,
       assignedToUserId: expert.id,
       documentSections: fileList.map((section) => ({
         name: section.sectionName,
@@ -84,7 +131,7 @@ function Mission() {
     };
 
     try {
-      await updateMission({ id, data: updatedData }).unwrap();
+      await updateMission({ id: mission.id, data: updatedData }).unwrap();
       message.success('Mission updated successfully');
       navigate(-1); // Navigate back to mission listing
     } catch (error) {
@@ -92,13 +139,28 @@ function Mission() {
       message.error(error.message);
     }
   };
+  const expertMissionDetails =
+    useLocation().pathname.includes('assigned-missions');
 
   if (isLoading) return <Loader />;
   if (isError) return <EmptyList message={'Error loading mission Data'} />;
-
   return (
-    <div className="p-4 md:w-[70%]">
+    <div className="p-4 md:w-[100%]">
       <FormProvider {...methods}>
+        {expertMissionDetails && (
+          <div className="ag-theme-alpine ag-theme-MembersListing h-full bg-[#EFFCFF] md:p-10 rounded-lg w-full m-auto md:my-10">
+            <AgGridReact
+              rowData={[mission]}
+              columnDefs={columnDefs}
+              pagination={true}
+              domLayout="autoHeight" // Automatically adjust the height to fit the data
+              suppressVerticalScroll
+              suppressPaginationPanel
+              rowHeight={80}
+              onGridReady={onGridReady}
+            />
+          </div>
+        )}
         <div className="grid grid-cols-4 gap-10 md:w-1/3">
           <div className="flex flex-col items-center gap-4 col-span-1 ">
             <span className="text-[#1E4A28] text-[18px] font-medium">No.</span>
@@ -128,7 +190,7 @@ function Mission() {
             />
           </div>
         </div>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} className="md:w-[70%]">
           <Section label={`Expert Mission ${data?.name || ''}`}>
             <ItemRow label="Mission Title">
               <Controller

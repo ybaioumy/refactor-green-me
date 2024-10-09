@@ -45,7 +45,7 @@ export const authApi = createApi({
                     const encryptedData = invitationTokenParamas
                         ? jwtDecode(invitationTokenParamas)
                         : null;
-                        
+
                     dispatch(
                         setCredentials({
                             token: data.token,

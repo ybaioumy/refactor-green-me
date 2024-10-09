@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import LineChart from './dashboard/LineChart';
 import SustainabilityDash from './dashboard/SustainablityDash';
 import { ReadyForBundlingList, OpportunitiesList } from './dashboard/SideTable';
@@ -11,7 +11,38 @@ import {
 import Button from '../shared/Button';
 import Loader from '../shared/Loader';
 import EmptyList from '../shared/EmptyList';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { Modal, message } from 'antd';
+import { clearInvitaion } from '../../redux/slices/invitaion';
+
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { invitationToken, expiry } = useSelector((state) => state.invitation);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  useEffect(() => {
+    if (invitationToken) {
+      setIsModalVisible(true);
+    }
+  }, [invitationToken]);
+
+  useEffect(() => {
+    // Check if the invitation is expired
+    const currentTime = Math.floor(Date.now() / 1000); // Convert current time to seconds
+    if (expiry && currentTime > expiry) {
+      dispatch(clearInvitaion());
+    }
+  }, [dispatch, expiry]);
+  const handleAccept = () => {
+    navigate(`/join-project`);
+    setIsModalVisible(false); // Close the modal
+  };
+  const handleCancel = () => {
+    // Prevent closing the modal by doing nothing or provide feedback
+    // Optionally, you could show a message or something
+  };
   const intialSearchState = {
     categoryId: 0,
     economicSectorId: 0,
@@ -109,6 +140,19 @@ const Dashboard = () => {
       <div className="lg:col-span-1 md:col-span-1 sm:col-span-1  p-1 rounded-lg md:order-1">
         <ReadyForBundlingList bundlingData={bundlingData} />
       </div>
+      <Modal
+        width={640}
+        title="Attention Required: Project Invitaion"
+        open={isModalVisible}
+        onCancel={handleCancel}
+        footer={[
+          <button key="accept" onClick={handleAccept}>
+            View Invitaion Details
+          </button>,
+        ]}
+        closable={false}>
+        <p>You have been Invited to project, Click to handle this invitation</p>
+      </Modal>
     </div>
   );
 };

@@ -28,7 +28,7 @@ const ProjectInvitation = () => {
     (state) => state.invitation
   );
   // console.table(invitationToken, expiry, roleId, permissionId);
-  console.table(useSelector((state) => state.invitation));
+  // console.table(useSelector((state) => state.invitation));
   useEffect(() => {
     // Check if the invitation is expired
     const currentTime = Math.floor(Date.now() / 1000); // Convert current time to seconds

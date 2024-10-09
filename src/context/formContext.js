@@ -19,12 +19,21 @@ export const StepProvider = ({ children, steps, canEdit }) => {
     const [currentParentIndex, setCurrentParentIndex] = useState(0);
     const [currentChildIndex, setCurrentChildIndex] = useState(0);
 
-    const { trigger, getValues, formState: { errors } } = useFormContext();
+    const { trigger, getValues, formState: { errors }, watch } = useFormContext();
 
     const [updateProjectById, { isLoading }] = useUpdateProjectByIdMutation();
     const { data: projectPermissions } = useGetUserProjectPermissionsQuery({ projectId: id, userId: userId })
-    console.table(projectPermissions, 'User permissions');
+  
+    const formValues = watch();
+    // Dynamically calculate the total number of inputs based on the fields
+    const totalInputs = Object.keys(formValues).length;
 
+    // Count the number of filled inputs
+    const filledInputs = Object.values(formValues).filter(value => value !== '').length;
+
+    // Calculate percentage
+    const filledPercentage = (filledInputs / totalInputs) * 100;
+ 
     const handleNext = async () => {
         if (canEdit) {
             const isValid = await trigger();
