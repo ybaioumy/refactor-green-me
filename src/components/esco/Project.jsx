@@ -28,6 +28,7 @@ import { Result } from 'antd';
 import Button from '../shared/Button';
 function ProjectESCO() {
   const { id } = useParams();
+
   const dispatch = useDispatch();
   const {
     data: projectData,
@@ -60,14 +61,15 @@ function ProjectESCO() {
     }
   }, [error]);
 
-  useEffect(() => {
-    setCanEdit(projectData?.isProjectBelongsToThisEsco);
-  }, [projectData?.isProjectBelongsToThisEsco]);
+  // useEffect(() => {
+  //   setCanEdit(projectData?.isProjectBelongsToThisEsco);
+  // }, [projectData?.isProjectBelongsToThisEsco]);
 
   const steps = [
     {
       parentStep: 'GeneralInfo',
       label: 'General Info',
+      entity: 'GeneralInfo',
       icon: <Icon name={'escoGeneral'} />,
       progress: 80,
       children: [
@@ -100,6 +102,7 @@ function ProjectESCO() {
     {
       parentStep: 'TechnicalInfo',
       label: 'Technical Info',
+      entity: 'TechnicalInfo',
       icon: <Icon name={'escoTechnical'} />,
       progress: 10,
       children: [
@@ -116,7 +119,13 @@ function ProjectESCO() {
           ),
           content: (
             <TechnicalStepTwo
-              fields={['TechnicalInfo.NetMeteringGridElectricityCost']}
+              fields={[
+                'TechnicalInfo.NetMeteringGridElectricityCost',
+                'TechnicalInfo.Consumption',
+                'TechnicalInfo.ValidConsumptionBenchmark',
+                'TechnicalInfo.ExPost',
+                'TechnicalInfo.pleasechoosevalidconsumptionbenchmarkandexpost',
+              ]}
             />
           ),
         },
@@ -144,6 +153,7 @@ function ProjectESCO() {
     {
       parentStep: 'Economic Viability',
       label: 'Economic Viability',
+      entity: 'EconomicViability',
       icon: <Icon name={'escoEconomic'} />,
       info: '5 New',
       children: [
@@ -158,10 +168,17 @@ function ProjectESCO() {
           ),
         },
         {
-          content: <StepOneECO fields={['EconomicViabilty.Capex']} />,
+          content: <StepOneECO fields={['EconomicViabilty.TotalCapexvalue']} />,
         },
         {
-          content: <StepTwoECO fields={['EconomicViabilty.Opex']} />,
+          content: (
+            <StepTwoECO
+              fields={[
+                'EconomicViabilty.TotalOpexvalue',
+                'EconomicViabilty.monetarysavingscalculationislessthanzero',
+              ]}
+            />
+          ),
         },
         {
           content: (
@@ -201,6 +218,7 @@ function ProjectESCO() {
       parentStep: 'teams',
       label: 'Teams & Invitations',
       icon: <Icon name={'escoTeams'} />,
+      entity: 'Teams',
       info: '3 Members',
       children: [
         {
@@ -236,7 +254,7 @@ function ProjectESCO() {
   }
   return (
     <FormProvider {...methods}>
-      <StepProvider steps={steps} canEdit={canEdit}>
+      <StepProvider steps={steps} >
         <ESCOProjectOverView steps={steps} />
       </StepProvider>
     </FormProvider>

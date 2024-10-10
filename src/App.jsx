@@ -50,7 +50,6 @@ const ProtectedRoute = ({ children }) => {
     : null;
   if (invitationTokenParamas && encryptedData) {
     const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
-
     // Check if the invitation has not expired
     if (encryptedData.exp > currentTime) {
       dispatch(
@@ -257,7 +256,7 @@ const expertRouter = createBrowserRouter([
         ],
       },
       {
-        path: 'my-details',
+        path: 'profile',
         element: <Profile />,
       },
       {

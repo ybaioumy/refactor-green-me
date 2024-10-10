@@ -43,11 +43,12 @@ const ProjectInfo = () => {
       </div>
 
       {/* Project Details using Item component */}
-      <Item label="Project ID">
-        <span className="ml-2 bg-red-200 text-red-600 px-2 py-1 rounded">
-          {projectObject?.id}
-        </span>
-      </Item>
+      <div className="flex flex-col gap-1 flex-1">
+        <label className="font-semibold">Projet ID</label>
+        <div className="outline-none px-4 py-2 text-[14px]  font-[400] rounded-[7px] bg-red-200 text-red-500 w-full">
+          {projectObject.id || 'Not Available'}
+        </div>
+      </div>
 
       <Item label="Project Owner">{projectObject?.projectOwner}</Item>
 
@@ -59,9 +60,7 @@ const ProjectInfo = () => {
 
       <Item label="Status">
         <div className="flex items-center gap-2">
-          <span className="text-gray-600 bg-gray-100 px-2 py-1 rounded">
-            {projectObject?.status}
-          </span>
+          {projectObject?.status || 'Pending Status'}
           <span className="text-red-500">⚠️</span>
         </div>
       </Item>

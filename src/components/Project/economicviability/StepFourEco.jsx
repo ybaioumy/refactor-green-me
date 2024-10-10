@@ -63,6 +63,8 @@ function StepFourECO() {
                 <Controller
                   rules={{
                     required: 'Tax Rate is required',
+                    validate: (value) =>
+                      value !== 0 || 'Tax Rate cannot be zero',
                   }}
                   name="economicViabilty.taxRate"
                   control={control}
@@ -71,7 +73,6 @@ function StepFourECO() {
                     <NumericInput {...field} unit="Year" />
                   )}
                 />
-                
               </div>
             </div>
           </div>

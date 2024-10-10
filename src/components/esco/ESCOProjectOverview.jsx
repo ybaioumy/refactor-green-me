@@ -5,10 +5,10 @@ import { useStep, StepProvider } from '../../context/formContext';
 import ScrollToTop from '../shared/ScrollToTop';
 import ProjectInfo from '../Project/ProjectMiniInfo';
 import { motion, useAnimationControls } from 'framer-motion';
-import { Progress, Tooltip } from 'antd';
+import { Progress, Result, Tooltip } from 'antd';
 import { useMediaQuery } from '@mui/material';
 import { IoTime } from 'react-icons/io5';
-
+import { Can } from '../../context/formContext';
 const ProjectOverView = ({ steps }) => {
   const [showProjectInfo, setShowProjectInfo] = React.useState(true);
   const showSideBar = useMediaQuery('(max-width: 768px)');
@@ -21,6 +21,7 @@ const ProjectOverView = ({ steps }) => {
     setCurrentParentIndex,
     isLoading,
     onSubmit,
+    ability,
   } = useStep();
 
   const methods = useForm({
@@ -181,7 +182,7 @@ const ProjectOverView = ({ steps }) => {
                 </p>
                 {parentStep.progress || parentStep.info ? (
                   parentStep.progress ? (
-                    <div className="w-full">
+                    <div className="w-full flex-1">
                       <div className="flex justify-between font-abel">
                         <p> {parentStep.progress}%</p>
                         <p className="text-[14px] flex items-center gap-1 ">
@@ -201,7 +202,7 @@ const ProjectOverView = ({ steps }) => {
                       />
                     </div>
                   ) : (
-                    <div className="w-full">
+                    <div className="w-full flex-1">
                       <div className="flex justify-between font-abel">
                         <p> {parentStep.info}</p>
                         <p className="text-[14px] flex items-center gap-1 ">
@@ -252,8 +253,42 @@ const ProjectOverView = ({ steps }) => {
             </div>
             {steps[currentParentIndex]?.children[currentChildIndex].stepLabel}
           </div>
-          {steps[currentParentIndex]?.children[currentChildIndex]?.content ||
-            null}
+          {/* Conditional Rendering based on Permissions */}
+          {ability.can('edit', steps[currentParentIndex].entity) ? (
+            <Can I="edit" a={steps[currentParentIndex].entity}>
+              <div className="edit-mode">
+                {/* Editable Content */}
+                {steps[currentParentIndex].children[currentChildIndex].content}
+              </div>
+            </Can>
+          ) : ability.can('view', steps[currentParentIndex].entity) ? (
+            <Can I="view" a={steps[currentParentIndex].entity}>
+              <div className="view-only">
+                {/* View-Only Content */}
+                {steps[currentParentIndex].children[currentChildIndex].content}
+              </div>
+            </Can>
+          ) : (
+            <div className="no-permissions">
+              <Result
+                status="warning"
+                title="You are not allowed to to view or edit"
+                subTitle={`Sorry, you don't have access to  ${steps[currentParentIndex].label}.`}
+                extra={[
+                  <Button
+                    type="link"
+                    to={'/'}
+                    variant="transperant"
+                    key={'back_Home'}>
+                    Back Home
+                  </Button>,
+                  <Button type="button" key={'req_permission'}>
+                    Request permissions
+                  </Button>,
+                ]}
+              />
+            </div>
+          )}
         </div>
 
         <div className="flex items-center place-content-center md:place-content-end gap-5 border-t border-[#CBCBCB] pt-2">
@@ -308,10 +343,9 @@ const ProjectOverView = ({ steps }) => {
 };
 
 const ESCOProjectOverView = ({ steps }) => {
-  const { canEdit } = useStep();
-
+  const { projectPermissions } = useStep();
   return (
-    <StepProvider steps={steps} canEdit={canEdit}>
+    <StepProvider steps={steps}>
       <ProjectOverView steps={steps} />
     </StepProvider>
   );

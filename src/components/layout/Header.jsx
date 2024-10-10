@@ -70,7 +70,7 @@ export default function Header() {
   const navigate = useNavigate();
   const logout = useLogout();
   const pathName = useLocation().pathname;
-  const isProfileEsco = pathName === '/profile';
+  const isProfileEsco = Number(userType) === 2 && pathName === '/profile';
   const isProfileExpert = Number(userType) === 3;
   const headerImage = useMemo(() => {
     if (isProfileEsco || isProfileExpert) {
@@ -96,7 +96,7 @@ export default function Header() {
             : ' bgGreenMe'
         }`}>
         <div
-          className={`flex items-center justify-center h-full ${
+          className={`flex items-center justify-center h-full text-[24px] md:text-[32px] ${
             isImageLoaded ? 'opacity-100' : 'opacity-0'
           } transition-opacity duration-500`}>
           <Link to="/">
@@ -108,12 +108,10 @@ export default function Header() {
             />
           </Link>
           {isProfileEsco && (
-            <p className="text-[#1E4A28] font-light text-[32px]">ESCO</p>
+            <p className="text-[#1E4A28] font-light ml-2">ESCO</p>
           )}
           {isProfileExpert && (
-            <p className="text-[#1E4A28] font-light text-[32px] ml-2">
-              Expert Space
-            </p>
+            <p className="text-[#1E4A28] font-light  ml-2">Expert Space</p>
           )}
         </div>
       </div>

@@ -54,7 +54,7 @@ function TeamTable({ label, membersType, data, isLoading, refetch }) {
 
     const buttons = opertaionToDo();
     const navigate = useNavigate();
-    const { canEdit } = useStep();
+    const { ability, steps, currentParentIndex } = useStep();
 
     return (
       <div className="flex justify-between items-center py-2 border-y-[1px] border-[#AAAAAA]">
@@ -62,7 +62,7 @@ function TeamTable({ label, membersType, data, isLoading, refetch }) {
           {label || null}
         </label>
         <div className="flex items-center gap-3">
-          {canEdit &&
+          {ability.can('edit', steps[currentParentIndex].entity) &&
             buttons?.map((button, idx) => (
               <Button
                 className={'shadow capitalize'}
@@ -115,7 +115,7 @@ function TeamTable({ label, membersType, data, isLoading, refetch }) {
         bordered={false}
         pagination={false}
         rowKey={'userId'}
-        // scroll={{ x: 'max-content' }}
+        scroll={{ x: 'max-content' }}
         loading={isLoading || isLoadingStatus || isLoadingTypes}
       />
 

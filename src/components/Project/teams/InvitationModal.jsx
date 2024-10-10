@@ -13,38 +13,17 @@ import {
   useGetUserPermissionsQuery,
 } from '../../../redux/features/inviteMembers';
 import { useParams } from 'react-router-dom';
-import { message, Tooltip } from 'antd';
+import { message } from 'antd';
 import useGetItemIdByName from '../../../hooks/useGetItemIdByName';
 
 const InvitationModal = ({ onClose, typeId }) => {
   const { id } = useParams();
-  const { data: members, isLoading, isError } = useGetMyUsersQuery();
-  const [
-    inviteUser,
-    { isLoading: isInviteLoading, isSuccess, isError: isErrorInviting },
-  ] = useInviteUserMutation();
-  const {
-    data: statusData,
-    isLoading: isLoadingStatus,
-    isError: isErrorStatus,
-  } = useGetInvitationStatusQuery();
-
-  const {
-    data: permissions,
-    isLoading: isLoadingPermissions,
-    isError: isErrorPermissions,
-  } = useGetUserPermissionsQuery();
-  const {
-    data: roles,
-    isLoading: isLodingRoles,
-    error: errorRoles,
-    isError: isErrorRoles,
-  } = useGetRolesQuery();
-  const {
-    data: types,
-    isLoading: isLoadingTypes,
-    isError: isErrorTypes,
-  } = useGetTypesQuery();
+  const { data: members, isLoading } = useGetMyUsersQuery();
+  const [inviteUser, { isLoading: isInviteLoading }] = useInviteUserMutation();
+  const { data: statusData } = useGetInvitationStatusQuery();
+  const { data: permissions } = useGetUserPermissionsQuery();
+  const { data: roles } = useGetRolesQuery();
+  const { data: types } = useGetTypesQuery();
   const escoId = useGetItemIdByName(types, 'esco');
   const expertId = useGetItemIdByName(types, 'expert');
 
@@ -69,21 +48,28 @@ const InvitationModal = ({ onClose, typeId }) => {
     );
   };
 
-  const getPermissionsIds = useCallback((type) => {
-    return permissions
-      ?.filter((permission) => permission.name.endsWith(type))
-      ?.map((permission) => permission.id);
-  });
+  const getPermissionsIds = useCallback(
+    (type) => {
+      return permissions
+        ?.filter((permission) => permission.name.endsWith(type))
+        ?.map((permission) => permission.id);
+    },
+    [permissions]
+  );
 
   const viewPermissionsIds = useMemo(
-    () => getPermissionsIds('View'),
+    () => getPermissionsIds('View') || [],
     [getPermissionsIds]
   );
-  const editPermissionsIds = useMemo(() => getPermissionsIds('Edit'), []);
+
+  const editPermissionsIds = useMemo(
+    () => getPermissionsIds('Edit') || [],
+    [getPermissionsIds]
+  );
 
   const permissionId = useMemo(() => {
     if (typeId === escoId) {
-      return null; // No permissions for escoId
+      return []; // No permissions for escoId
     }
     return isEdit ? editPermissionsIds : viewPermissionsIds;
   }, [typeId, escoId, isEdit, editPermissionsIds, viewPermissionsIds]);
@@ -94,7 +80,6 @@ const InvitationModal = ({ onClose, typeId }) => {
   const emailsArray = selectedMembers.map((member) => member.email);
   const projectIdToSend = Number(id);
 
-  // Function to handle role and permissions change based on escoId and radio button
   const handleRoleAndPermissionsChange = (isEdit) => {
     if (typeId === escoId) {
       setRoleId(isEdit ? adminRole : userRole);
@@ -103,23 +88,23 @@ const InvitationModal = ({ onClose, typeId }) => {
     }
     setIsEdit(isEdit);
   };
+
   const invitationData = {
     emails: emailsArray,
     projectId: projectIdToSend,
     typeId: typeId || 2,
     statusId: intialInvitationStatus,
-    permissionId: permissionId || null,
+    permissionId: Array.isArray(permissionId) ? permissionId : [],
     ProjectRoleId: roleId || userRole,
     escoId: escoId,
-    // clientId: expertId,
   };
+
   const handleAddMembers = async () => {
     if (!selectedMembers.length) {
       message.error('Please select at least one user.');
       return;
     }
     try {
-      //escoId, clientId
       const response = await inviteUser(invitationData).unwrap();
       message.success(
         response.message ||
@@ -128,7 +113,6 @@ const InvitationModal = ({ onClose, typeId }) => {
           )} successfully invited to project id ${id}`
       );
       setSelectedMembers([]);
-      // onClose(false);
     } catch (error) {
       message.error(
         error.data?.message || 'An error occurred while inviting the users.'
@@ -220,7 +204,7 @@ const InvitationModal = ({ onClose, typeId }) => {
             </div>
 
             <div className="bg-gray-100 border border-gray-300 rounded-lg overflow-y-auto h-48 mt-2">
-              {isLoading || isLoadingPermissions || isLoadingStatus ? (
+              {isLoading ? (
                 'Loading...'
               ) : (
                 <ul>
@@ -249,15 +233,14 @@ const InvitationModal = ({ onClose, typeId }) => {
               )}
             </div>
           </div>
-          <div className="flex justify-center mt-2 md:mt-0">
-            <Button
-              onClick={handleAddMembers}
-              className="w-[40px] h-[40px] md:w-[60px] md:h-[60px]"
-              variant="secondary"
-              disabled={isInviteLoading}>
-              <Icon name={'addProjectGreen'} />
-            </Button>
-          </div>
+        </div>
+
+        <div className="mt-4 flex justify-end">
+          <Button
+            text="Add Members"
+            isLoading={isInviteLoading}
+            onClick={handleAddMembers}
+          />
         </div>
       </div>
     </div>

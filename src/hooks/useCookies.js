@@ -101,9 +101,13 @@ const useGetuserId = () => {
   const [cookies] = useCookies(['userId']);
   return cookies.userId;
 }
-const useGetId = () => {
-  const [cookies] = useCookies(['id']);
-  return cookies.id;
+// const useGetId = () => {
+//   const [cookies] = useCookies(['id']);
+//   return cookies.id;
+// }
+const useGetRoleName = () => {
+  const [cookies] = useCookies(['role']);
+  return cookies.role;
 }
 export {
   useGetToken,
@@ -113,5 +117,6 @@ export {
   useTypeId,
   useGetUserName,
   useGetuserId,
-  useGetId,
+  // useGetId,
+  useGetRoleName,
 };

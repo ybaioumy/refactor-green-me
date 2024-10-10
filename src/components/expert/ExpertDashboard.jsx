@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ProjectTable from '../shared/Table';
 import { useGetExpertAssignedProjectsQuery } from '../../redux/features/expert';
 import Sidebar from './components/SideBar';
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Loader from '../shared/Loader';
 import { useSelector } from 'react-redux';
 import { Modal } from 'antd'; // Import Modal from antd
@@ -21,7 +21,7 @@ function ExpertDashboard() {
     error,
   } = useGetExpertAssignedProjectsQuery(searchObject);
 
-  const [isModalVisible, setIsModalVisible] = useState(false); 
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     if (invitationToken) {
@@ -43,7 +43,7 @@ function ExpertDashboard() {
     {
       name: 'Expert Details',
       icon: 'details',
-      link: `/my-details`,
+      link: `/profile`,
     },
     {
       name: 'Assigned Projects',

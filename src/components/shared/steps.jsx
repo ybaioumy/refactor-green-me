@@ -97,7 +97,7 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
             </div>
           )}
 
-          <div className="h-full w-full min-h-[60vh] transition-all duration-200 mb-[10%]">
+          <div className="h-full w-full min-h-[60vh] transition-all duration-200">
             {currentChildContent || null}
           </div>
 

@@ -772,6 +772,14 @@ input[type="checkbox"] {
   filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
 }
 
+@media screen and (max-width: 768px) {
+  .side-bar-button {
+    height: 250px;
+    width: 30px;
+    right: -20px;
+  }
+}
+
 .side-bar-button.closed {
   background-image: url('../assets/images/Arrow_Close.png');
   background-repeat: no-repeat;

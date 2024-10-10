@@ -104,7 +104,7 @@ function Login() {
       </div>
       <div className="flex md:hidden flex-col items-center justify-center flex-2 text-white font-abel py-5">
         Welcome To{' '}
-        <img src={GreenMeTitle} alt="Logo" width={'100%'} height={'auto'} />
+        <img src={GreenMeTitle} alt="Logo" width={'50%'} height={'auto'} />
       </div>
       <div className="md:flex-1 flex flex-col justify-between p-4 md:p-10 w-[95%] rounded-2xl md:rounded-none bg-white h-full">
         <p className="text-xl font-bold text-[#1d4628] mb-4 text-center md:text-left">

@@ -8,7 +8,7 @@ const initialState = {
     roleId: null,
     escoId: null,
     invitationToken: null,
-    permissionId: null
+    permissionId: []
 };
 
 const invitaionSlice = createSlice({
@@ -23,7 +23,9 @@ const invitaionSlice = createSlice({
             state.roleId = roleId;
             state.escoId = escoId;
             state.email = email;
-            state.permissionId = permissionId;
+            state.permissionId = typeof permissionId === 'string'
+                ? permissionId.split(',').map(id => Number(id.trim())) // Split by commas and convert each to a number
+                : permissionId;
         },
         clearInvitaion: (state) => {
             state.invitationToken = null;
@@ -32,7 +34,7 @@ const invitaionSlice = createSlice({
             state.roleId = null;
             state.escoId = null;
             state.email = null;
-            state.permissionId = null;
+            state.permissionId = [];
         }
     }
 })

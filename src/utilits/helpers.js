@@ -58,12 +58,11 @@ export const getTimeAgo = (time) => {
 
 export const generateFieldStepMapping = (steps, missingDataArray) => {
     const mapping = {};
-    console.log(mapping);
     steps.forEach((parentStep, parentIndex) => {
         // console.log(`Processing parent step: ${parentStep.parentStep}`);
         parentStep.children.forEach((childStep, childIndex) => {
             // console.log(`Processing child step at index: ${childIndex}`);
-
+            
             // Iterate through the missing data fields
             missingDataArray.forEach((field) => {
                 const normalizedField = normalizeFieldName(field); // Normalize the field name
@@ -81,13 +80,13 @@ export const generateFieldStepMapping = (steps, missingDataArray) => {
             });
         });
     });
-    // console.log("Mapping generated:", mapping);
+    // console.log(mapping);
+    console.log("Mapping generated:", mapping);
     return mapping;
 };
 
 // Utility function to normalize the field name
 export const normalizeFieldName = (fieldName) => {
-    console.log(fieldName);
     return fieldName
         .toLowerCase() // Convert to lowercase
         .replace(/\s+/g, '') // Remove all spaces
@@ -105,7 +104,6 @@ const findFieldInContent = (content, field) => {
         // console.log("Invalid content structure:", content);
         return false;
     }
-
     // Check if the field is directly within this component's props
     if (content.props?.fields && content.props.fields.includes(field)) {
         // console.log(`Field "${field}" found in content's props.`);

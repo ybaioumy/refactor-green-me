@@ -30,7 +30,7 @@ function FinancialSharedSavings({ project }) {
     // Split the remaining string by commas to get each item
     const missingDataArray = missingDataString.split(', ');
     const fieldStepMapping = generateFieldStepMapping(steps, missingDataArray);
-
+    console.log(missingDataArray);
     return (
       <Result
         status="error"

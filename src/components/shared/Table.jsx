@@ -24,7 +24,6 @@ import { getTimeAgo } from '../../utilits/helpers';
 import { useSelector } from 'react-redux';
 import ExportAsExcelButton from './ExcelButton';
 const ProjectTable = ({ data, isOpportunitiesRoute }) => {
-
   const [filteredProjects, setFilteredProjects] = useState([]);
   const isSmallDevice = useMediaQuery('(max-width: 768px)');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -210,7 +209,7 @@ const ProjectTable = ({ data, isOpportunitiesRoute }) => {
   };
 
   const onRowClicked = (event) => {
-    const projectId = event.data.id||event.data.projectId;
+    const projectId = event.data.id || event.data.projectId;
     navigate(
       isOpportunitiesRoute
         ? `/projects/opportunities/project-details/${projectId}`
@@ -220,6 +219,12 @@ const ProjectTable = ({ data, isOpportunitiesRoute }) => {
 
   const gridOptions = {
     columnDefs: columnDefs,
+
+    // selection: {
+    //   checkboxes: true,
+    //   headerCheckbox: true,
+    //   mode: 'multiRow',
+    // },
     defaultColDef: {
       editable: true,
       filter: true,
