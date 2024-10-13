@@ -52,15 +52,6 @@ function ProjectESCO() {
 
   const { projectObject } = useSelector((state) => state.project);
 
-  const [canEdit, setCanEdit] = useState(true);
-  useEffect(() => {
-    if (error?.status === 403) {
-      setCanEdit(false);
-    } else {
-      setCanEdit(true);
-    }
-  }, [error]);
-
   // useEffect(() => {
   //   setCanEdit(projectData?.isProjectBelongsToThisEsco);
   // }, [projectData?.isProjectBelongsToThisEsco]);
@@ -112,11 +103,6 @@ function ProjectESCO() {
           ),
         },
         {
-          stepLabel: (
-            <p className="py-2 border-b border-[#54A967] mb-4 text-[#1E4A28] text-[20px] font-bold">
-              Resources consumption
-            </p>
-          ),
           content: (
             <TechnicalStepTwo
               fields={[
@@ -254,7 +240,7 @@ function ProjectESCO() {
   }
   return (
     <FormProvider {...methods}>
-      <StepProvider steps={steps} >
+      <StepProvider steps={steps}>
         <ESCOProjectOverView steps={steps} />
       </StepProvider>
     </FormProvider>

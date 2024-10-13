@@ -318,7 +318,7 @@ const Icon = ({ name }) => {
       return (
         <svg
           width="29"
-          height="34"
+          height="20"
           viewBox="0 0 59 64"
           fill="none"
           xmlns="http://www.w3.org/2000/svg">

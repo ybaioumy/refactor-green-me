@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import ProjectTable from '../shared/Table';
 import { useGetExpertAssignedProjectsQuery } from '../../redux/features/expert';
-import Sidebar from './components/SideBar';
 import { useNavigate } from 'react-router-dom';
 import Loader from '../shared/Loader';
 import { useSelector } from 'react-redux';
-import { Modal } from 'antd'; // Import Modal from antd
+import { Modal } from 'antd';
+import EmptyList from '../shared/EmptyList';
 
 function ExpertDashboard() {
   const { invitationToken } = useSelector((state) => state.invitation);
   const searchObject = useSelector((state) => state.search);
 
   const navigate = useNavigate();
-  const [isToggled, setIsToggled] = useState(false);
 
   const {
     data: expertProjects,
@@ -31,7 +30,7 @@ function ExpertDashboard() {
 
   const handleAccept = () => {
     navigate(`/join-project`);
-    setIsModalVisible(false); // Close the modal
+    setIsModalVisible(false);
   };
 
   const handleCancel = () => {
@@ -39,34 +38,10 @@ function ExpertDashboard() {
     // Optionally, you could show a message or something
   };
 
-  const expertTabs = [
-    {
-      name: 'Expert Details',
-      icon: 'details',
-      link: `/profile`,
-    },
-    {
-      name: 'Assigned Projects',
-      icon: 'settings',
-      link: `/`,
-    },
-    {
-      name: 'Missions / Work',
-      icon: 'progress',
-      link: `/assigned-missions`,
-    },
-  ];
-
   if (isLoading) return <Loader />;
-
+  if (isError) return <EmptyList message={'No data to show'} />;
   return (
     <div className="relative">
-      <Sidebar
-        tabs={expertTabs}
-        isToggled={isToggled}
-        setIsToggled={setIsToggled}
-      />
-
       <ProjectTable data={expertProjects} />
 
       <Modal

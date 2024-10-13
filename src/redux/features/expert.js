@@ -58,7 +58,7 @@ export const expertApi = createApi({
                 url: `Mission/${id}`,
                 method: 'GET',
             }),
-            providesTags: (result, error, id) => [{ type: 'Missions', id }],  // Provide tag per mission id
+            providesTags: (result, error, id) => [{ type: 'Missions', id }],  
         }),
         createNewMission: builder.mutation({
             query: (missionData) => ({
@@ -66,7 +66,7 @@ export const expertApi = createApi({
                 method: 'POST',
                 body: missionData,
             }),
-            invalidatesTags: ['Missions'],  // This mutation invalidates the 'Missions' tag
+            invalidatesTags: ['Missions'],
         }),
         updateMission: builder.mutation({
             query: ({ id, data }) => ({
@@ -74,7 +74,7 @@ export const expertApi = createApi({
                 method: 'PUT',
                 body: data,
             }),
-            invalidatesTags: (result, error, { id }) => [{ type: 'Missions', id }],  // Invalidate the specific mission after update
+            invalidatesTags: (result, error, { id }) => [{ type: 'Missions', id }], 
         }),
         getExpertAssignedProjects: builder.query({
             query: (searchParams) => ({
@@ -82,7 +82,7 @@ export const expertApi = createApi({
                 method: 'POST',
                 body: searchParams,
             }),
-            providesTags: ['Projects'],  // This query provides the 'Projects' tag
+            providesTags: ['Projects'],  
         }),
         getExpertAssignedMissions: builder.query({
             query: ({ userId }) => ({
@@ -90,7 +90,7 @@ export const expertApi = createApi({
                 method: 'GET',
                 params: { userId }
             }),
-            providesTags: ['Missions'],  // This query provides the 'Missions' tag
+            providesTags: ['Missions'],  
         })
     })
 })

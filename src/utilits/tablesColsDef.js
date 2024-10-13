@@ -1,7 +1,6 @@
 import Icon from "../components/shared/Icon";
 import SwitchButton from "../components/shared/SwitchButton";
 import MemberPhoto from '../assets/images/m.png';
-import { useStep } from "../context/formContext";
 
 const teamsCols = (onStatusChange, membersType, isLoadingUpdate) => {
     const columns = [

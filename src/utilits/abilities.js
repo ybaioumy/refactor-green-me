@@ -2,7 +2,7 @@ import { AbilityBuilder, createMongoAbility } from '@casl/ability';
 
 export const defineAbilityFor = (user, projectPermissions, typeId, projectType) => {
     const { can, cannot, build } = new AbilityBuilder(createMongoAbility);
-console.log(projectPermissions);
+    // console.log(projectPermissions);
     if (user.role === 'Admin') {
         if (!projectPermissions || projectPermissions.length === 0) { //ESCO
             // Admin without specific project permissions

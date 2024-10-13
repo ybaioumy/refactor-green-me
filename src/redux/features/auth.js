@@ -54,6 +54,9 @@ export const authApi = createApi({
                             role: data.role,
                             fullName: data.fullName,
                             userId: decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"],
+                            escoId: data?.escoid || null,
+                            clientId: data?.clientid || null,
+                            expertId: data?.expertId || null,
                         })
                     );
                     if (invitationTokenParamas && encryptedData) {
@@ -104,10 +107,66 @@ export const authApi = createApi({
                 params: { userId, projectId }
 
             }),
+        }),
+        getClientById: builder.query({
+            query: (clientId) => ({
+                url: `Client/${clientId}`,
+                method: 'GET',
+            }),
+            providesTags: ['Clients'],
+        }),
+        getESCOById: builder.query({
+            query: (id) => ({
+                url: `Esco/${id}`,
+                method: 'GET',
+            }),
+            providesTags: ['ESCO'],
+        }),
+        getExpertById: builder.query({
+            query: (id) => ({
+                url: `Expert/${id}`,
+                method: 'GET',
+            }),
+            providesTags: ['Experts'],
+        }),
+        getUserProfile: builder.query({
+            query: () => 'Users/GetUserProfile'
+        }),
+        updateEscoProfile: builder.mutation({
+            query: ({ escoData, id }) => ({
+                url: `Esco/${id}`,
+                method: 'PUT',
+                body: escoData,
+            }),
+            invalidatesTags: ['ESCO'],
+        }),
+        updateExpertProfile: builder.mutation({
+            query: ({ expertData, id }) => ({
+                url: `Expert/${id}`,
+                method: 'PUT',
+                body: expertData,
+            }),
+            invalidatesTags: ['Experts'],
         })
     }),
 
 });
 
-export const { useLoginMutation, useRegisterMutation, useGetTypesQuery, useGetMyUsersQuery, useGetRolesQuery, useGetAllCountriesQuery, useGetAllClientSectorsQuery, useGetUserProjectPermissionsQuery } = authApi;
+export const {
+    useLoginMutation,
+    useRegisterMutation,
+    useGetTypesQuery,
+    useGetMyUsersQuery,
+    useGetRolesQuery,
+    useGetAllCountriesQuery,
+    useGetAllClientSectorsQuery,
+    useGetUserProjectPermissionsQuery,
+    useGetClientByIdQuery,
+    useGetESCOByIdQuery,
+    useLazyGetExpertByIdQuery,
+    useGetUserProfileQuery,
+    useUpdateEscoProfileMutation,
+    useUpdateExpertProfileMutation
+
+} = authApi;
 

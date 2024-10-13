@@ -48,8 +48,8 @@ function GeneralInfoStepTwo() {
           control={control}
           render={({ ...field }) => (
             <Select
+              // {...field}
               labelStyle={labelStyle}
-              //   {...field}
               label="Project Site Type"
               options={dropDowns?.siteType}
               onChange={(e) => {

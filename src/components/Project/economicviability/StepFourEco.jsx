@@ -70,7 +70,7 @@ function StepFourECO() {
                   control={control}
                   defaultValue={0}
                   render={({ field }) => (
-                    <NumericInput {...field} unit="Year" />
+                    <NumericInput {...field} unit="%" decimals />
                   )}
                 />
               </div>

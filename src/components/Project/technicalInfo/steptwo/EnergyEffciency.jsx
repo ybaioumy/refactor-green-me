@@ -14,6 +14,9 @@ function EnergyEfficiency() {
   if (isError) return <p>Error fetching dropdowns</p>;
   return (
     <>
+      <p className="py-2 border-b border-[#54A967] mb-4 text-[#1E4A28] text-[20px] font-bold">
+        Site Consumption
+      </p>
       <ConsumptionComponent type="electricity" isFirstItem />
       <ConsumptionComponent type="water" />
       <ConsumptionComponent type="naturalGas" />

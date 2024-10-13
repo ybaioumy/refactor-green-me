@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { useCookies } from 'react-cookie';
 import { useDispatch } from 'react-redux';
 import { projectApi } from '../redux/features/project';
 import { clearInvitaion } from '../redux/slices/invitaion';
 import { expertApi } from '../redux/features/expert';
+import { clearCredentials } from '../redux/slices/user';
+import { persistor } from '../store';
 const useLogout = () => {
   const dispatch = useDispatch();
   const [cookies, setCookie, removeCookie] = useCookies([
@@ -25,6 +27,12 @@ const useLogout = () => {
     removeCookie('expertId', { path: '/' });
     removeCookie('clientId', { path: '/' });
     removeCookie('escoId', { path: '/' });
+
+    // Clear auth state in Redux store
+    dispatch(clearCredentials());
+
+    // Purge persisted state from redux-persist
+    persistor.purge();
     setTimeout(() => {
 
       window.location.reload();
@@ -109,6 +117,30 @@ const useGetRoleName = () => {
   const [cookies] = useCookies(['role']);
   return cookies.role;
 }
+const useGetId = () => {
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    // Get user ID from cookies
+    const userIdFromCookie = Cookies.get('userId');
+    const escoId = Cookies.get('escoId');
+    const clientId = Cookies.get('clientId');
+    const expertId = Cookies.get('expertId');
+
+    if (escoId) {
+      setUserId(escoId);
+    } else if (clientId) {
+      setUserId(clientId);
+    } else if (expertId) {
+      setUserId(expertId);
+    } else if (userIdFromCookie) {
+      setUserId(userIdFromCookie);
+    }
+  }, []);
+
+  return { userId };
+};
+
 export {
   useGetToken,
   useTokenExpiration,
@@ -117,6 +149,6 @@ export {
   useTypeId,
   useGetUserName,
   useGetuserId,
-  // useGetId,
+  useGetId,
   useGetRoleName,
 };

@@ -14,10 +14,15 @@ import EXPhoto from '../../assets/images/m.png';
 import Loader from '../shared/Loader';
 import EmptyList from '../shared/EmptyList';
 import { AgGridReact } from 'ag-grid-react';
+import { getTimeAgo } from '../../utilits/helpers';
+import { useSelector } from 'react-redux';
 function Mission() {
   const { state } = useLocation();
   const [gridApi, setGridApi] = useState();
-  const { mission, expert } = state || {};
+  const { mission } = state || {};
+  const { userId, expertId, fullName, photo } = useSelector(
+    (state) => state.auth
+  );
   const navigate = useNavigate();
   const [columnDefs] = useState([
     {
@@ -48,9 +53,13 @@ function Mission() {
       sortable: true,
     },
     {
-      headerName: 'Updated',
+      headerName: 'Last Update',
       field: 'updated',
       sortable: true,
+      filter: true,
+      cellRenderer: (params) => {
+        return `${getTimeAgo(params.value)}`;
+      },
     },
     {
       headerName: 'Status',
@@ -92,8 +101,8 @@ function Mission() {
   useEffect(() => {
     if (data) {
       setValue('name', data.name);
-      setValue('missionLocation', data.location);
-      setValue('missionBrief', data.brief);
+      setValue('location', data.location);
+      setValue('brief', data.brief);
       setValue('generatedReports', data.generatedReports);
       setValue('languages', data.languages);
       setValue('startDate', data.startDate);
@@ -118,12 +127,12 @@ function Mission() {
       )
     );
   };
-
+  // console.log(expert);
   const onSubmit = async (formData) => {
     const updatedData = {
       ...formData,
       id: mission.id,
-      assignedToUserId: expert.id,
+      assignedToUserId: userId,
       documentSections: fileList.map((section) => ({
         name: section.sectionName,
         documentFiles: section.files,
@@ -145,7 +154,7 @@ function Mission() {
   if (isLoading) return <Loader />;
   if (isError) return <EmptyList message={'Error loading mission Data'} />;
   return (
-    <div className="p-4 md:w-[100%]">
+    <div className="p-4 md:w-[100%] md:pl-6">
       <FormProvider {...methods}>
         {expertMissionDetails && (
           <div className="ag-theme-alpine ag-theme-MembersListing h-full bg-[#EFFCFF] md:p-10 rounded-lg w-full m-auto md:my-10">
@@ -165,7 +174,7 @@ function Mission() {
           <div className="flex flex-col items-center gap-4 col-span-1 ">
             <span className="text-[#1E4A28] text-[18px] font-medium">No.</span>
             <span className="px-4 py-2 bg-[#868686] rounded-md text-white w-[60px] h-[50px] text-center font-semibold flex items-center justify-center">
-              {expert?.expertId}
+              {expertId}
             </span>
           </div>
           <div className="flex flex-col items-center gap-4 col-span-1">
@@ -174,7 +183,7 @@ function Mission() {
             </span>
             <div className="w-[50px] h-[50px] bg-gray-300 rounded-full">
               <img
-                src={expert?.profileImage || EXPhoto}
+                src={photo || EXPhoto}
                 alt="Expert_Image"
                 className="w-full h-full"
               />
@@ -184,14 +193,14 @@ function Mission() {
             <p className="text-[#1E4A28] text-[18px] font-medium">Name</p>
             <input
               type="text"
-              value={expert?.expertName || ''}
+              value={fullName || ''}
               readOnly
               className="font-semibold bg-[#E6E6E6] px-4 py-2 rounded-md text-[#3E3E3E] h-full"
             />
           </div>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="md:w-[70%]">
-          <Section label={`Expert Mission ${data?.name || ''}`}>
+          <Section label={`Expert Mission ${data?.name || ''}`} canEdit={false}>
             <ItemRow label="Mission Title">
               <Controller
                 name="name"
@@ -208,7 +217,7 @@ function Mission() {
 
             <ItemRow label="Mission Location">
               <Controller
-                name="missionLocation"
+                name="location"
                 control={control}
                 render={({ field }) => (
                   <Input
@@ -222,7 +231,7 @@ function Mission() {
 
             <ItemRow label="Mission Brief">
               <Controller
-                name="missionBrief"
+                name="brief"
                 control={control}
                 render={({ field }) => (
                   <Input

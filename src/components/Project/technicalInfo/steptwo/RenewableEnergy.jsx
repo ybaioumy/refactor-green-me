@@ -69,6 +69,9 @@ const RenewableEnergy = ({ title, project }) => {
 
   return (
     <>
+      <p className="py-2 border-b border-[#54A967] mb-4 text-[#1E4A28] text-[20px] font-bold">
+        Interconnection Scheme
+      </p>
       {interconnectionOptions.map(
         ({ key, label, costKey, costLabel, costKeys }) => (
           <div className="flex flex-col w-full gap-10 px-4 my-6" key={key}>

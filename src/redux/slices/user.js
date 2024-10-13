@@ -9,6 +9,10 @@ const initialState = {
     fullName: null,
     userId: null,
     invitationToken: null,
+    escoId: null,
+    clientId: null,
+    expertId: null,
+
 };
 
 const authSlice = createSlice({
@@ -16,7 +20,7 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         setCredentials: (state, action) => {
-            const { token, expiry, typeId, role, fullName, userId, invitationToken } = action.payload;
+            const { token, expiry, typeId, role, fullName, userId, invitationToken,escoId,clientId,expertId } = action.payload;
             state.token = token;
             state.expiry = expiry;
             state.typeId = typeId;
@@ -24,6 +28,9 @@ const authSlice = createSlice({
             state.fullName = fullName;
             state.userId = userId;
             state.invitationToken = invitationToken;
+            state.escoId = escoId;
+            state.clientId = clientId;
+            state.expertId = expertId;
         },
         clearCredentials: (state) => {
             Cookies.remove('token');
@@ -33,6 +40,10 @@ const authSlice = createSlice({
             state.role = null;
             state.fullName = null;
             state.invitationToken = null;
+            state.escoId = null;
+            state.clientId = null;
+            state.expertId = null;
+            state.userId = null;
         }
     },
 });

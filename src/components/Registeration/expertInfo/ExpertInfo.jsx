@@ -1,20 +1,83 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import Select from '../../shared/Select';
 import Icon from '../../shared/Icon';
-import { message } from 'antd';
+import { message, Skeleton } from 'antd';
 import Button from '../../shared/Button';
 import Input from '../../shared/Input';
 import Section, { ItemRow } from '../../shared/Section';
 import { FileUploader } from '../../shared/Upload';
+import { useSelector } from 'react-redux';
+import {
+  useLazyGetExpertByIdQuery,
+  useUpdateExpertProfileMutation,
+} from '../../../redux/features/auth';
+import EmptyList from '../../shared/EmptyList';
+import { useLocation } from 'react-router-dom';
+
 function ExpertDetails({ countries, expertise, certifcations, tokenData }) {
+  const { expertId } = useSelector((state) => state.auth);
+
+  const { setValue, getValues } = useFormContext();
+  const location = useLocation();
+  const expertData = { ...getValues(), id: expertId };
+  //set Expert data in profile screen
+  const [triggerGetExpertById, { data, isLoading, isError, error }] =
+    useLazyGetExpertByIdQuery();
+  const [updateExpertProfile, { isLoading: isLoadingUpdate }] =
+    useUpdateExpertProfileMutation();
+  // Trigger the API call when on the profile page
+  useEffect(() => {
+    if (location.pathname === '/profile' && expertId) {
+      triggerGetExpertById(expertId);
+    }
+  }, [location.pathname, expertId, triggerGetExpertById]);
+  useEffect(() => {
+    if (data && location.pathname === '/profile') {
+      console.log(data);
+      const {
+        aspNetUsers,
+        brief,
+        countryId,
+        expertNationalityId,
+        expertLanguages,
+      } = data;
+      const user = aspNetUsers?.[0];
+
+      setValue('firstName', user?.fullName?.split(' ')[0] || '');
+      setValue('lastName', user?.fullName?.split(' ')[1] || '');
+      setValue('countryId', countryId || null);
+      setValue('brief', brief || '');
+      setValue('expertNationalityId', expertNationalityId || null);
+      setValue('expertLanguages', expertLanguages || '');
+      setValue('email', user.email || '');
+      setValue('phoneNumber', user.phoneNumber || '');
+      setValue('expertCountriesServeds', data.expertCountriesServeds || []);
+    }
+  }, [data, location.pathname, setValue]);
+
+  const handleSubmit = async () => {
+    try {
+      // Call the mutation and pass the expert data
+      const result = await updateExpertProfile({
+        expertData,
+        id: expertId,
+      }).unwrap();
+
+      console.log('Profile updated successfully:', result);
+    } catch (err) {
+      console.error('Failed to update the profile:', err);
+    }
+  };
+  if (isLoading) return <Skeleton active avatar />;
+  if (isError) return <EmptyList message={error.message} />;
   return (
-    <div className="w-full ">
+    <div className="w-full">
       <ExpertInfo countries={countries} />
       <Contacts tokenData={tokenData} />
-      <ServedCountries countries={countries} />
-      <AreasOfExpertise expertise={expertise} />
-      <Certifications certifcations={certifcations} />
+      <ServedCountries countries={countries} data={data} />
+      <AreasOfExpertise expertise={expertise} data={data} />
+      <Certifications certifcations={certifcations} data={data} />
       <Section canEdit={false}>
         <div className="flex flex-col justify-between items-center font-abel md:flex-row gap-10">
           <div>
@@ -49,6 +112,19 @@ function ExpertDetails({ countries, expertise, certifcations, tokenData }) {
           </div>
         </div>
       </Section>
+      {location.pathname === '/profile' && (
+        <div className="grid w-full place-content-end ">
+          <Button
+            variant="secondary"
+            hasIcon
+            iconName={'edit'}
+            iconPosition="right"
+            isLoading={isLoadingUpdate}
+            onClick={handleSubmit}>
+            Update Profile
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
@@ -343,28 +419,45 @@ const Contacts = ({ tokenData }) => {
     </Section>
   );
 };
-const ServedCountries = ({ countries }) => {
+const ServedCountries = ({ countries, data }) => {
   const { control, setValue, watch } = useFormContext({
     defaultValues: {
       expertCountriesServeds: [],
     },
   });
+
   const [canEdit, setCanEdit] = useState(true);
 
-  const expertServedCounties = watch('expertCountriesServeds');
+  const expertServedCountries = watch('expertCountriesServeds');
   const [countriesServed, setCountriesServed] = useState(
-    expertServedCounties || []
+    expertServedCountries || []
   );
+
+  // Clean function to remove invalid entries
   const cleanCountriesServed = (countries) =>
     countries.filter((country) => country.countryId !== null);
+
+  // Effect to initialize served countries from data
+  useEffect(() => {
+    if (data?.expertCountriesServeds) {
+      const initialCountries = data.expertCountriesServeds.map((country) => ({
+        countryId: country.countryId,
+      }));
+      setCountriesServed(initialCountries);
+      setValue(
+        'expertCountriesServeds',
+        cleanCountriesServed(initialCountries)
+      );
+    }
+  }, [data, setValue]);
+
   const addCountry = () => {
     const newCountry = { countryId: null };
     const updatedCountries = [...countriesServed, newCountry];
     setCountriesServed(updatedCountries);
-
-    // Update form value with cleaned data
     setValue('expertCountriesServeds', cleanCountriesServed(updatedCountries));
   };
+
   const removeCountry = (index) => {
     if (countriesServed.length <= 1) {
       message.error('At least one served country must be selected.');
@@ -425,7 +518,7 @@ const ServedCountries = ({ countries }) => {
   );
 };
 
-const AreasOfExpertise = ({ expertise }) => {
+const AreasOfExpertise = ({ expertise, data }) => {
   const {
     control,
     setValue,
@@ -441,16 +534,29 @@ const AreasOfExpertise = ({ expertise }) => {
 
   const expertAreasofExpertises = watch('expertAreasofExpertises');
   const [areas, setAreas] = useState(expertAreasofExpertises || []);
+
+  // Clean function to remove invalid entries
   const cleanState = (areas) =>
     areas.filter((area) => area.areasofExpertiseId !== null);
+
+  // Effect to initialize areas of expertise from data
+  useEffect(() => {
+    if (data?.expertAreasofExpertises) {
+      const initialAreas = data.expertAreasofExpertises.map((area) => ({
+        areasofExpertiseId: area.areasofExpertiseId,
+      }));
+      setAreas(initialAreas);
+      setValue('expertAreasofExpertises', cleanState(initialAreas));
+    }
+  }, [data, setValue]);
+
   const addArea = () => {
     const newArea = { areasofExpertiseId: null };
     const updatedAreas = [...areas, newArea];
     setAreas(updatedAreas);
-
-    // Update form value with cleaned data
     setValue('expertAreasofExpertises', cleanState(updatedAreas));
   };
+
   const removeArea = (index) => {
     if (areas.length <= 1) {
       message.error('At least one Area of Expertise must be selected.');
@@ -483,7 +589,7 @@ const AreasOfExpertise = ({ expertise }) => {
           <Controller
             name={`expertAreasofExpertises[${index}].areasofExpertiseId`}
             control={control}
-            defaultValue={area.name}
+            defaultValue={area.areasofExpertiseId}
             render={({ field }) => (
               <div className="flex flex-col w-full">
                 <Select
@@ -519,7 +625,7 @@ const AreasOfExpertise = ({ expertise }) => {
   );
 };
 
-const Certifications = ({ certifcations }) => {
+const Certifications = ({ certifcations, data }) => {
   const {
     control,
     setValue,
@@ -530,22 +636,36 @@ const Certifications = ({ certifcations }) => {
       expertCertifications: [],
     },
   });
+
   const expertCertifications = watch('expertCertifications');
   const [canEdit, setCanEdit] = useState(true);
   const [certificationsState, setCertifications] = useState(
     expertCertifications || []
   );
+
+  // Clean function to remove invalid entries
   const cleanState = (certifications) =>
     certifications.filter((cert) => cert.certificationId !== null);
+
+  // Effect to initialize certifications from data
+  useEffect(() => {
+    if (data?.expertCertifications) {
+      const initialCertifications = data.expertCertifications.map((cert) => ({
+        certificationId: cert.certificationId,
+      }));
+      setCertifications(initialCertifications);
+      setValue('expertCertifications', cleanState(initialCertifications));
+    }
+  }, [data, setValue]);
+
   const addCertification = () => {
     const newCert = { certificationId: null };
     const updatedCertifications = [...certificationsState, newCert];
     setCertifications(updatedCertifications);
-
-    // Update form value with cleaned data
     setValue('expertCertifications', cleanState(updatedCertifications));
   };
-  const removeCeriticaion = (index) => {
+
+  const removeCertification = (index) => {
     if (certificationsState.length <= 1) {
       message.error('At least one Certification must be selected.');
       return;
@@ -558,11 +678,11 @@ const Certifications = ({ certifcations }) => {
   };
 
   const handleCertificationChange = (index, certificationId) => {
-    const updatedCountries = certificationsState.map((cert, i) =>
+    const updatedCertifications = certificationsState.map((cert, i) =>
       i === index ? { ...cert, certificationId } : cert
     );
-    setCertifications(updatedCountries);
-    setValue('expertCertifications', updatedCountries);
+    setCertifications(updatedCertifications);
+    setValue('expertCertifications', updatedCertifications);
   };
 
   return (
@@ -575,11 +695,11 @@ const Certifications = ({ certifcations }) => {
           label={`Certificate ${index + 1}`}
           hasBorder
           canEdit={index === 0 ? false : !canEdit}
-          onRemove={() => removeCeriticaion(index)}>
+          onRemove={() => removeCertification(index)}>
           <Controller
             name={`expertCertifications[${index}].certificationId`}
             control={control}
-            defaultValue={cert.name}
+            defaultValue={cert.certificationId}
             render={({ field }) => (
               <div className="flex flex-col w-full">
                 <Select
@@ -593,9 +713,9 @@ const Certifications = ({ certifcations }) => {
                   }
                   disabled={canEdit}
                 />
-                {errors.areasofExpertiseId && (
+                {errors.certificationId && (
                   <span className="transition-opacity duration-300 text-[14px] md:text-[18px] text-red-500">
-                    {errors.areasofExpertiseId.message}
+                    {errors.certificationId.message}
                   </span>
                 )}
               </div>

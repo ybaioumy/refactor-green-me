@@ -30,7 +30,7 @@ function FinancialSharedSavings({ project }) {
     // Split the remaining string by commas to get each item
     const missingDataArray = missingDataString.split(', ');
     const fieldStepMapping = generateFieldStepMapping(steps, missingDataArray);
-    console.log(missingDataArray);
+    // console.log(missingDataArray);
     return (
       <Result
         status="error"
@@ -70,7 +70,7 @@ function FinancialSharedSavings({ project }) {
         </div>
         <div className=" flex flex-col w-full  gap-12">
           <div className="md:flex w-full gap-10">
-            <div className="grid grid-cols-2 gap-10">
+            <div className="grid md:grid-cols-2 gap-10">
               <MetricCard
                 title={'DSCR'}
                 subtitle={'(Expected Debt Service Coverage Ratio)'}
@@ -98,7 +98,7 @@ function FinancialSharedSavings({ project }) {
                 value={projectFinancialData.paybackPeriod}
               />
             </div>
-            <div className="md:w-[20%] bg-[#BFE0C6] p-6 flex flex-col gap-8 rounded-[11px] border border-dashed border-[#bfe0c6]">
+            <div className="md:w-[20%] mt-4 bg-[#BFE0C6] p-6 flex flex-col gap-8 rounded-[11px] border border-dashed border-[#bfe0c6]">
               <div className="flex items-end gap-4">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

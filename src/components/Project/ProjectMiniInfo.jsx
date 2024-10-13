@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import ProjectImage from '../../assets/images/Ellipse.png';
 import { getTimeAgo } from '../../utilits/helpers';
+import { useGetAllCategoriesWithCrietriaQuery } from '../../redux/features/eligibility';
 // Item component to display read-only inputs with labels
 const Item = ({ label, children }) => {
   return (
@@ -27,6 +28,14 @@ const Badge = (type) => {
 // ProjectInfo component using the Item component to display projectObject as read-only
 const ProjectInfo = () => {
   const { projectObject } = useSelector((state) => state.project);
+  const {
+    data: categories,
+    isLoading: isLoadingCategory,
+    error: errorCategory,
+  } = useGetAllCategoriesWithCrietriaQuery();
+  const selectedCategory =
+    categories?.find((cat) => cat?.id === projectObject?.categoryId)?.name ||
+    '';
   if (!projectObject) return null;
   return (
     <div className="md:p-2 lg:px-4 flex flex-col gap-2  transition-all duration-200 ">
@@ -71,7 +80,9 @@ const ProjectInfo = () => {
 
       <Item label="Eligibility">{projectObject?.eligibility}</Item>
 
-      <Item label="Project Type">{projectObject?.projectType}</Item>
+      <Item label="Project Type">
+        {projectObject?.projectType || selectedCategory}
+      </Item>
     </div>
   );
 };

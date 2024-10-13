@@ -169,7 +169,7 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
                   `Since You Enabled ${type} Average Tariff Const Ex-Post: value must be greater than 0`,
               }}
               render={({ field }) => (
-                <NumericInput {...field} disabled={!isEnabled} />
+                <NumericInput {...field} disabled={!isEnabled} decimals />
               )}
             />
             <p className="line-clamp-2 text-center">
@@ -191,7 +191,7 @@ const ConsumptionComponent = ({ type, isFirstItem }) => {
                   `Since you Enabled ${type} Average Tariff Const Bench Mark: Value must be greater than 0`,
               }}
               render={({ field }) => (
-                <NumericInput {...field} disabled={!isEnabled} />
+                <NumericInput {...field} disabled={!isEnabled} decimals/>
               )}
             />
           </div>

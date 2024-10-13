@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useCallback, Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import {
   useGetToken,
@@ -7,10 +7,9 @@ import {
   useLogout,
 } from './hooks/useCookies';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import Login from './routes/Login';
 import ErrorPage from './routes/ErrorPage';
-import Layout from './routes/Layout';
+import Layout, { ExpertLayout } from './routes/Layout';
 import ProjectListing from './components/shared/ProjectListing';
 import Dashboard from './components/client/Dashboard';
 import Profile from './routes/Profile';
@@ -36,6 +35,8 @@ import { jwtDecode } from 'jwt-decode';
 import { useDispatch } from 'react-redux';
 import { setInvitaion } from './redux/slices/invitaion';
 import { message } from 'antd';
+import Loader from './components/shared/Loader';
+
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -66,7 +67,6 @@ const ProtectedRoute = ({ children }) => {
     } else {
       console.error('Invitation token has expired.');
       message.warning('Invitation token has expired');
-      // Optionally, you could handle expired tokens here, such as by showing an error message or redirecting
     }
   }
   const handleLogout = useCallback(() => {
@@ -233,7 +233,7 @@ const expertRouter = createBrowserRouter([
     path: '/',
     element: (
       <ProtectedRoute>
-        <Layout />
+        <ExpertLayout />
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
@@ -313,9 +313,11 @@ function App() {
     }
   };
   return (
-    <OnlineStatusProvider provider>
+    <OnlineStatusProvider>
       <ConnectionStatusNotification />
-      <RouterProvider router={handleRouter(userType)} />
+      <Suspense fallback={<Loader />}>
+        <RouterProvider router={handleRouter(userType)} />
+      </Suspense>
     </OnlineStatusProvider>
   );
 }

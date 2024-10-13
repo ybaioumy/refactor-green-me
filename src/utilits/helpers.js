@@ -1,3 +1,4 @@
+import { message } from "antd";
 export function findTopLevelParent(childId, data) {
     function search(items, parentId) {
         for (const item of items) {
@@ -62,7 +63,7 @@ export const generateFieldStepMapping = (steps, missingDataArray) => {
         // console.log(`Processing parent step: ${parentStep.parentStep}`);
         parentStep.children.forEach((childStep, childIndex) => {
             // console.log(`Processing child step at index: ${childIndex}`);
-            
+
             // Iterate through the missing data fields
             missingDataArray.forEach((field) => {
                 const normalizedField = normalizeFieldName(field); // Normalize the field name
@@ -123,4 +124,22 @@ const findFieldInContent = (content, field) => {
 
     // console.log(`Field "${field}" not found in this content.`);
     return false;
+};
+
+
+export const getBase64 = (img, callback) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
+};
+export const beforeUpload = (file) => {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+        message.error('You can only upload JPG/PNG file!');
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+        message.error('Image must smaller than 2MB!');
+    }
+    return isJpgOrPng && isLt2M;
 };

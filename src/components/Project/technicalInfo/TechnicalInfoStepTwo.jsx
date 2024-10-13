@@ -4,16 +4,32 @@ import EmptyList from '../../shared/EmptyList';
 import GreenBuilding from './steptwo/GreenBuilding';
 import RenewableEnergy from './steptwo/RenewableEnergy';
 import EnergyEfficiency from './steptwo/EnergyEffciency';
+import { useGetAllCategoriesWithCrietriaQuery } from '../../../redux/features/eligibility';
+import useGetItemIdByName from '../../../hooks/useGetItemIdByName';
+import Loader from '../../shared/Loader';
 function TechnicalStepTwo() {
   const { watch } = useFormContext();
+  const {
+    data: categories,
+    isLoading: isLoadingCategory,
+    error: errorCategory,
+  } = useGetAllCategoriesWithCrietriaQuery();
   const categoryId = watch('categoryId');
 
+  const energyEfficiencyId = useGetItemIdByName(
+    categories,
+    'Energy Efficiency'
+  );
+  const greenBuildingId = useGetItemIdByName(categories, 'Green Building');
+  const reneableId = useGetItemIdByName(categories, 'Renewable Energy');
+
+  if (isLoadingCategory || !categoryId) return <Loader />;
   switch (categoryId) {
-    case 1:
+    case greenBuildingId:
       return <GreenBuilding />;
-    case 2:
+    case reneableId:
       return <RenewableEnergy />;
-    case 3:
+    case energyEfficiencyId:
       return <EnergyEfficiency />;
     default:
       return <EmptyList message={'No data available'} />;

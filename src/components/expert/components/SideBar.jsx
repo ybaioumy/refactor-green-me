@@ -26,7 +26,7 @@ const Sidebar = ({ tabs, isToggled, setIsToggled }) => {
                 key={i}
                 to={x.link}
                 className={`${
-                  pathname.includes(x.link)
+                  pathname === x.link
                     ? 'button-primary-green'
                     : 'bg-[#545454]  hover:bg-[#5454542d] '
                 } rounded-full px-3 text-[#FFF] font-semibold text-[14px] flex ${

@@ -203,7 +203,7 @@ export default function Header() {
                             src={User}
                             alt="User name"
                           />
-                          <div className="text-left truncate md:max-w-[150px]">
+                          <div className="text-left truncate w-[100px] md:max-w-[150px]">
                             <span className="font-abel block font-normal text-white">
                               Welcome,{' '}
                             </span>

@@ -1,17 +1,15 @@
-import React from 'react';
-import { Alert } from 'antd';
 
 const alertValidationMessage = (errors) => {
-    console.log(errors);
+    // console.log(errors);
     const messages = [];
     const visited = new Set();
     const extractMessages = (errorObj, depth = 0, maxDepth = 10) => {
         if (depth > maxDepth || visited.has(errorObj)) {
-            
+
             return;
         }
 
-        visited.add(errorObj); 
+        visited.add(errorObj);
 
         for (const key in errorObj) {
             if (errorObj[key]?.message) {

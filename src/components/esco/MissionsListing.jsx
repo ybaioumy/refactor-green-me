@@ -8,6 +8,7 @@ import CustomPaginationComponent from '../shared/table/CustomPagination';
 
 import { useGetMissionsQuery } from '../../redux/features/expert';
 import EmptyList from '../shared/EmptyList';
+import { getTimeAgo } from '../../utilits/helpers';
 function MissionListing() {
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -51,9 +52,13 @@ function MissionListing() {
       sortable: true,
     },
     {
-      headerName: 'Updated',
-      field: 'updated',
+      headerName: 'Last Update',
+      field: 'lastUpdate',
       sortable: true,
+      filter: true,
+      cellRenderer: (params) => {
+        return `${getTimeAgo(params.value)}`;
+      },
     },
     {
       headerName: 'Status',

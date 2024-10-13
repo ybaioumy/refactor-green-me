@@ -54,6 +54,10 @@ input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px white inset !important;
 }
 
+input[disabled] {
+  cursor: not-allowed;
+}
+
 *,
 *:before,
 *:after {
@@ -462,40 +466,7 @@ input[type="checkbox"] {
   animation: spin 2s linear infinite reverse;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .loader {
-    width: 80px;
-    height: 80px;
-  }
 
-  .inner-circle {
-    width: 50px;
-    height: 50px;
-  }
-
-  .outer-circle {
-    width: 80px;
-    height: 80px;
-  }
-}
-
-@media (max-width: 480px) {
-  .loader {
-    width: 60px;
-    height: 60px;
-  }
-
-  .inner-circle {
-    width: 40px;
-    height: 40px;
-  }
-
-  .outer-circle {
-    width: 60px;
-    height: 60px;
-  }
-}
 
 /* Spin Animation */
 @keyframes spin {
@@ -628,6 +599,42 @@ input[type="checkbox"] {
 
   body.no-scroll {
     overflow: hidden;
+  }
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .loader {
+    width: 80px;
+    height: 80px;
+  }
+
+  .inner-circle {
+    width: 50px;
+    height: 50px;
+  }
+
+  .outer-circle {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .loader {
+    width: 60px;
+    height: 60px;
+  }
+
+  .inner-circle {
+    width: 40px;
+    height: 40px;
+  }
+
+  .outer-circle {
+    width: 60px;
+    height: 60px;
   }
 }
 
@@ -777,6 +784,10 @@ input[type="checkbox"] {
     height: 250px;
     width: 30px;
     right: -20px;
+  }
+
+  .ant-result .ant-result-content {
+    padding: 10px !important
   }
 }
 

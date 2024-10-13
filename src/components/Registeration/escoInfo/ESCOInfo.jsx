@@ -8,8 +8,18 @@ import Input from '../../shared/Input';
 import Section, { ItemRow } from '../../shared/Section';
 import DisbursedPie from '../../shared/PieChart';
 import dayjs from 'dayjs';
+import { useSelector } from 'react-redux';
+import { useGetESCOByIdQuery } from '../../../redux/features/auth';
 
 function ESCODetails({ countries }) {
+  const { userId, escoId } = useSelector((state) => state.auth);
+  const {
+    data: escoData,
+    isLoading,
+    isError,
+    error,
+  } = useGetESCOByIdQuery(escoId);
+  // console.log(escoData); //forbidden
   const {
     control,
     setValue,

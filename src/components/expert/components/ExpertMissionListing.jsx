@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import Loader from '../../shared/Loader';
 import { AgGridReact } from 'ag-grid-react';
 import { useGetExpertAssignedMissionsQuery } from '../../../redux/features/expert';
-import { useGetuserId } from '../../../hooks/useCookies';
+import { useGetId, useGetuserId } from '../../../hooks/useCookies';
 import { useSelector } from 'react-redux';
 import { HorizontalSearchBar } from '../../shared/table/tablePageComponents';
 import { useNavigate } from 'react-router-dom';
 import CustomPaginationComponent from '../../shared/table/CustomPagination';
+import { getTimeAgo } from '../../../utilits/helpers';
 function ExpertMissionListing() {
   const navigate = useNavigate();
   const expertId = useGetuserId();
+  const userId = useGetId()
   const [gridApi, setGridApi] = useState(null);
   const { data, isLoading, isError, error } = useGetExpertAssignedMissionsQuery(
     { userId: expertId }
@@ -45,9 +47,13 @@ function ExpertMissionListing() {
       sortable: true,
     },
     {
-      headerName: 'Updated',
+      headerName: 'Last Update',
       field: 'updated',
       sortable: true,
+      filter: true,
+      cellRenderer: (params) => {
+        return `${getTimeAgo(params.value)}`;
+      },
     },
     {
       headerName: 'Status',

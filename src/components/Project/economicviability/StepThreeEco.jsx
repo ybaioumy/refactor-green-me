@@ -15,7 +15,7 @@ function StepThreeECO() {
             <hr className="border-l-[2px] border-[#B5B5B5] h-full" />
           </div>
         </div>
-        <div className=" md:flex w-full p-2 md:p-8 gap-12">
+        <div className="flex flex-col md:flex w-full p-2 md:p-8 gap-12">
           <div className="md:w-[50%] flex flex-col gap-12">
             {/* Loan to Cost Ratio */}
             <div className="w-full">
@@ -30,7 +30,9 @@ function StepThreeECO() {
                   name="economicViabilty.loanToCostRatio"
                   control={control}
                   defaultValue={0}
-                  render={({ field }) => <NumericInput {...field} />}
+                  render={({ field }) => (
+                    <NumericInput {...field} unit={'%'} decimals />
+                  )}
                 />
               </div>
             </div>
@@ -45,7 +47,9 @@ function StepThreeECO() {
                   name="economicViabilty.targetInterestRate"
                   control={control}
                   defaultValue={0}
-                  render={({ field }) => <NumericInput {...field} unit="%" />}
+                  render={({ field }) => (
+                    <NumericInput {...field} unit="%" decimals />
+                  )}
                 />
               </div>
             </div>

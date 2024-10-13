@@ -65,12 +65,12 @@ function StepOneECO() {
     <div className="flex flex-col">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-1">
-          <div className="flex gap-12 items-center pb-2">
+          <div className="flex gap-12 items-center pb-2 md:pb-4">
             <p className="text-[#1E4A28] text-[25px] font-[700] px-4">CAPEX</p>
             <Button
               variant="secondary"
               onClick={() => append(capexEmpty)}
-              className="flex flex-col items-center justify-center w-[60px] h-[60px]">
+              className="flex flex-col items-center justify-center w-[40px] h-[40px] md:w-[60px] md:h-[60px]">
               <Icon name="addProjectGreen" />
             </Button>
           </div>
@@ -92,7 +92,7 @@ function StepOneECO() {
                     <Button
                       variant="secondary"
                       onClick={() => remove(index)}
-                      className="flex flex-col items-center justify-center w-[60px] h-[60px]">
+                      className="flex flex-col items-center justify-center w-[40px] h-[40px] md:w-[60px] md:h-[60px]">
                       <Icon name="delete" />
                     </Button>
                   </div>

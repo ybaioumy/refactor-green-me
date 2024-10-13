@@ -14,6 +14,13 @@ import invitaionReducer from './redux/slices/invitaion'
 import eligibilityReducer from './redux/slices/eligbility'
 import project from './redux/slices/project';
 
+const authPersistConfig = {
+    key: 'auth',
+    storage, // using localStorage
+    whitelist: ['token', 'expiry', 'typeId', 'role', 'fullName', 'userId', 'escoId', 'clientId', 'expertId'], // only persist these fields
+};
+const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
+
 export const store = configureStore({
     reducer: {
         [authApi.reducerPath]: authApi.reducer,
@@ -22,8 +29,7 @@ export const store = configureStore({
         [proposalApi.reducerPath]: proposalApi.reducer,
         [inviteApi.reducerPath]: inviteApi.reducer,
         [expertApi.reducerPath]: expertApi.reducer,
-
-        auth: authReducer,
+        auth: persistedAuthReducer, // use persisted auth reducer
         search: searchReducer,
         eligibility: eligibilityReducer,
         project: project,

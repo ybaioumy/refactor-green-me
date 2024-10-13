@@ -1,16 +1,19 @@
 import React, { useEffect, useRef } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm, useFormContext } from 'react-hook-form';
 import Button from '../shared/Button';
 import { useStep, StepProvider } from '../../context/formContext';
 import ScrollToTop from '../shared/ScrollToTop';
 import ProjectInfo from '../Project/ProjectMiniInfo';
 import { motion, useAnimationControls } from 'framer-motion';
-import { Progress, Result, Tooltip } from 'antd';
+import { Alert, Progress, Result, Tooltip } from 'antd';
 import { useMediaQuery } from '@mui/material';
 import { IoTime } from 'react-icons/io5';
 import { Can } from '../../context/formContext';
+import Input from '../shared/Input';
 const ProjectOverView = ({ steps }) => {
   const [showProjectInfo, setShowProjectInfo] = React.useState(true);
+  const [reqPermission, setReqPermission] = React.useState(false);
+  const { control } = useFormContext();
   const showSideBar = useMediaQuery('(max-width: 768px)');
   const {
     currentParentIndex,
@@ -89,6 +92,25 @@ const ProjectOverView = ({ steps }) => {
       });
     }
   }, [currentParentIndex]);
+
+  useEffect(() => {
+    const container = document.querySelector('.view-only');
+    if (container) {
+      // Select inputs and buttons
+      const inputs = container.querySelectorAll('input');
+      const buttons = container.querySelectorAll('button');
+
+      // Disable all inputs
+      if (inputs.length) {
+        inputs.forEach((input) => (input.disabled = true));
+      }
+
+      // Disable all buttons
+      if (buttons.length) {
+        buttons.forEach((button) => (button.disabled = true));
+      }
+    }
+  }, [steps, currentParentIndex, currentChildIndex]);
   return (
     <div className="w-full h-full flex flex-col md:flex-row md:p-4 p-2 overflow-hidden transition-all duration-200 ease-in-out relative">
       <motion.div className="relative flex transition-all duration-150 ease-in-out">
@@ -257,13 +279,19 @@ const ProjectOverView = ({ steps }) => {
           {ability.can('edit', steps[currentParentIndex].entity) ? (
             <Can I="edit" a={steps[currentParentIndex].entity}>
               <div className="edit-mode">
-                {/* Editable Content */}
                 {steps[currentParentIndex].children[currentChildIndex].content}
               </div>
             </Can>
           ) : ability.can('view', steps[currentParentIndex].entity) ? (
             <Can I="view" a={steps[currentParentIndex].entity}>
               <div className="view-only">
+                <Alert
+                  message="You can only view this project information, Any action you take will be ignored."
+                  banner
+                  closable
+                  type="info"
+                  className="my-2"
+                />
                 {/* View-Only Content */}
                 {steps[currentParentIndex].children[currentChildIndex].content}
               </div>
@@ -282,11 +310,44 @@ const ProjectOverView = ({ steps }) => {
                     key={'back_Home'}>
                     Back Home
                   </Button>,
-                  <Button type="button" key={'req_permission'}>
+                  <Button
+                    type="button"
+                    key={'req_permission'}
+                    onClick={() => setReqPermission((prev) => !prev)}>
                     Request permissions
                   </Button>,
-                ]}
-              />
+                ]}>
+                {reqPermission && (
+                  <Controller
+                    name="permissionMsg"
+                    control={control}
+                    render={({ field }) => (
+                      <div>
+                        <Input
+                          {...field}
+                          type="textarea"
+                          label="Request Access"
+                          placeHolder="message"
+                          maxLength={60}
+                        />
+                        <Button
+                          className={'mt-3'}
+                          hasIcon
+                          iconPosition="right"
+                          iconName={'sendButton'}
+                          variant="secondary"
+                          onClick={() => {
+                            // Send request to the server
+                            //...
+                          }}
+                          disabled={!field.value}>
+                          Send
+                        </Button>
+                      </div>
+                    )}
+                  />
+                )}
+              </Result>
             </div>
           )}
         </div>
