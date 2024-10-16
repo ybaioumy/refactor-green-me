@@ -230,19 +230,13 @@ function SurveyEvent() {
           childLabel: "Electricity Bill",
           content: (
             <motion.div
-              //   initial={{ opacity: 0 }}
-              //   animate={{ opacity: 1 }}
-              //   exit={{ opacity: 0 }}
-              //   transition={{ duration: 0.5 }}
-              className='flex flex-col gap-4'
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className='flex flex-col gap-6'
             >
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                className='flex flex-col gap-2'
-              >
+              <motion.div className='flex flex-col gap-2'>
                 <Title
                   text={"What is your average monthly electricity bill?"}
                   type='h3'
@@ -262,13 +256,7 @@ function SurveyEvent() {
                   />
                 }
               </motion.div>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                className='flex flex-col gap-2'
-              >
+              <motion.div className='flex flex-col gap-2'>
                 <Title
                   text={
                     "Are you interested in reducing your electricity costs?"
@@ -287,13 +275,7 @@ function SurveyEvent() {
                   />
                 ))}
               </motion.div>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                className='bg-card rounded-lg my-4 p-2'
-              >
+              <motion.div className='bg-card rounded-lg my-4 p-2'>
                 <Title
                   text={
                     "Would you be interested in exploring financial assistance options to help offset the cost of energy-efficient upgrades? Please use our 1 minute loan calculator"
@@ -323,12 +305,7 @@ function SurveyEvent() {
               transition={{ duration: 0.5 }}
               className='flex flex-col gap-4'
             >
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-              >
+              <motion.div>
                 <Controller
                   name='solarPanels'
                   control={methods.control}
@@ -340,13 +317,7 @@ function SurveyEvent() {
                   )}
                 />
               </motion.div>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                className='flex flex-col gap-2'
-              >
+              <motion.div className='flex flex-col gap-2'>
                 <Title
                   text={"How often do you experience power outages?"}
                   type='h3'
@@ -437,14 +408,12 @@ function SurveyEvent() {
           transition={{ duration: 0.5 }}
           className='shadow rounded-lg p-4'
         >
-          <FormProvider {...methods}>
-            <Steps
-              steps={surveySteps}
-              hasLink={false}
-              onSave={methods.handleSubmit(handleSave)}
-              isLoading={false}
-            />
-          </FormProvider>
+          <Steps
+            steps={surveySteps}
+            hasLink={false}
+            onSave={methods.handleSubmit(handleSave)}
+            isLoading={false}
+          />
         </motion.div>
       </motion.div>
     </>
