@@ -36,6 +36,7 @@ import { useDispatch } from 'react-redux';
 import { setInvitaion } from './redux/slices/invitaion';
 import { message } from 'antd';
 import Loader from './components/shared/Loader';
+import SurveyEvent from './routes/SurveyEvent';
 
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
@@ -280,6 +281,11 @@ const AuthRouter = createBrowserRouter([
   {
     path: '/register',
     element: <Register />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/survey",
+    element: <SurveyEvent />,
     errorElement: <ErrorPage />,
   },
 ]);
