@@ -124,11 +124,6 @@ function ProjectESCO() {
           content: <TechnicalStepThree fields={['TechnicalInfo.Documents']} />,
         },
         {
-          stepLabel: (
-            <p className="py-2 border-b border-[#54A967] mb-4 text-[#1E4A28] text-[20px] font-bold">
-              Project Impact & Viability
-            </p>
-          ),
           content: (
             <ViabilityStatus id={id} fields={['TechnicalInfo.Impact']} />
           ),
@@ -144,11 +139,7 @@ function ProjectESCO() {
       info: '5 New',
       children: [
         {
-          stepLabel: (
-            <p className="py-2 capitalize border-b border-[#54A967] mb-4 text-[#1E4A28] text-[20px] font-bold">
-              Energy performance contracts model
-            </p>
-          ),
+         
           content: (
             <StepOneESCO fields={['EconomicViabilty.EconomicViabilty']} />
           ),

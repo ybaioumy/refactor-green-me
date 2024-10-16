@@ -25,7 +25,7 @@ export default function ErrorPage() {
         <p className="italic">
           <i>{error.statusText || error.message}</i>
         </p>
-        <Button type="link" to={'/'}>
+        <Button type="link" to={'/'} className={'md:w-[240px] mx-auto'}>
           Back Home
         </Button>
       </div>

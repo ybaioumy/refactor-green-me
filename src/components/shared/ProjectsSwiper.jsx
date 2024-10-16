@@ -1,12 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import {
-  Navigation,
-  Pagination,
-  Scrollbar,
-  A11y,
-  FreeMode,
-} from 'swiper/modules';
+import { FreeMode } from 'swiper/modules';
 import Ellipse from '../../assets/images/Ellipse.png';
 import Icon from './Icon';
 import SkeltonLoader from './SkeltonLoader';
@@ -56,6 +50,7 @@ const ProjectSwiper = ({ projects, isLoading }) => {
           freeModeSticky: true,
         }}
         grabCursor={true}
+        centeredSlides={true}
         breakpoints={{
           320: {
             slidesPerView: 1,

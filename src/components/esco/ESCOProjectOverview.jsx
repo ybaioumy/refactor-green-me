@@ -284,14 +284,14 @@ const ProjectOverView = ({ steps }) => {
             </Can>
           ) : ability.can('view', steps[currentParentIndex].entity) ? (
             <Can I="view" a={steps[currentParentIndex].entity}>
+              <Alert
+                message={`You can only view ${steps[currentParentIndex].label} data, Any action you take will be ignored.`}
+                banner
+                closable
+                type="info"
+                className="my-2"
+              />
               <div className="view-only">
-                <Alert
-                  message="You can only view this project information, Any action you take will be ignored."
-                  banner
-                  closable
-                  type="info"
-                  className="my-2"
-                />
                 {/* View-Only Content */}
                 {steps[currentParentIndex].children[currentChildIndex].content}
               </div>

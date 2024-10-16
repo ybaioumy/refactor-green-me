@@ -36,37 +36,42 @@ const ViabilityStatus = ({ id }) => {
     );
   if (!data) return null;
   return (
-    <div className="flex w-full items-center justify-between sm:flex-col md:flex-row">
-      {/* <ProjectInfo /> */}
-      <ProjectMetrics metrics={data} />
-      {data?.isViable ? (
-        <div className="flex flex-col items-center md:px-[20px]">
-          <Lottie options={defaultOptions} height={200} width={200} />
-          <p className="text-[#1E4A28] font-bold text-[26px]">Viable</p>
-        </div>
-      ) : (
-        <div className="flex flex-col items-center px-[20px]">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="150"
-            height="214"
-            viewBox="0 0 214 214"
-            fill="none">
-            <path
-              d="M58.4163 81.0956L80.8351 58.6768L106.951 84.7924L133.327 58.4163L155.745 80.8351L129.369 107.211L155.435 133.277L133.017 155.696L106.951 129.63L81.145 155.435L58.7262 133.017L84.5318 107.211L58.4163 81.0956Z"
-              fill="#EF4848"
-            />
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M106.868 213.735C165.889 213.735 213.735 165.889 213.735 106.868C213.735 47.8462 165.889 0 106.868 0C47.8462 0 0 47.8462 0 106.868C0 165.889 47.8462 213.735 106.868 213.735ZM106.868 195.696C155.926 195.696 195.696 155.926 195.696 106.868C195.696 57.8089 155.926 18.039 106.868 18.039C57.8089 18.039 18.039 57.8089 18.039 106.868C18.039 155.926 57.8089 195.696 106.868 195.696Z"
-              fill="#EF4848"
-            />
-          </svg>
-          <p className="text-[#1E4A28] font-bold text-[26px]">Not Viable</p>
-        </div>
-      )}
-    </div>
+    <>
+      <p className="py-2 border-b border-[#54A967] mb-4 text-[#1E4A28] text-[20px] font-bold">
+        Project Impact & Viability
+      </p>
+      <div className="flex w-full items-center justify-between sm:flex-col md:flex-row">
+        {/* <ProjectInfo /> */}
+        <ProjectMetrics metrics={data} />
+        {data?.isViable ? (
+          <div className="flex flex-col items-center md:px-[20px]">
+            <Lottie options={defaultOptions} height={200} width={200} />
+            <p className="text-[#1E4A28] font-bold text-[26px]">Viable</p>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center px-[20px]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="150"
+              height="214"
+              viewBox="0 0 214 214"
+              fill="none">
+              <path
+                d="M58.4163 81.0956L80.8351 58.6768L106.951 84.7924L133.327 58.4163L155.745 80.8351L129.369 107.211L155.435 133.277L133.017 155.696L106.951 129.63L81.145 155.435L58.7262 133.017L84.5318 107.211L58.4163 81.0956Z"
+                fill="#EF4848"
+              />
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M106.868 213.735C165.889 213.735 213.735 165.889 213.735 106.868C213.735 47.8462 165.889 0 106.868 0C47.8462 0 0 47.8462 0 106.868C0 165.889 47.8462 213.735 106.868 213.735ZM106.868 195.696C155.926 195.696 195.696 155.926 195.696 106.868C195.696 57.8089 155.926 18.039 106.868 18.039C57.8089 18.039 18.039 57.8089 18.039 106.868C18.039 155.926 57.8089 195.696 106.868 195.696Z"
+                fill="#EF4848"
+              />
+            </svg>
+            <p className="text-[#1E4A28] font-bold text-[26px]">Not Viable</p>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

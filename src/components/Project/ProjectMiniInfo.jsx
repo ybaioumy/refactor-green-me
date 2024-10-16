@@ -54,7 +54,7 @@ const ProjectInfo = () => {
       {/* Project Details using Item component */}
       <div className="flex flex-col gap-1 flex-1">
         <label className="font-semibold">Projet ID</label>
-        <div className="outline-none px-4 py-2 text-[14px]  font-[400] rounded-[7px] bg-red-200 text-red-500 w-full">
+        <div className="outline-none px-4 py-2 text-[14px]  font-[400] rounded-[7px] bg-[#f9dede] text-red-500 w-full">
           {projectObject.id || 'Not Available'}
         </div>
       </div>

@@ -116,11 +116,6 @@ function OpportunitiyOverview() {
           content: <TechnicalStepOne />,
         },
         {
-          stepLabel: (
-            <p className="py-2 border-b border-[#54A967] mb-4 text-[#1E4A28] text-[20px] font-bold">
-              Resources consumption
-            </p>
-          ),
           content: <TechnicalStepTwo />,
         },
         {
@@ -132,11 +127,7 @@ function OpportunitiyOverview() {
           content: <TechnicalStepThree />,
         },
         {
-          stepLabel: (
-            <p className="py-2 border-b border-[#54A967] mb-4 text-[#1E4A28] text-[20px] font-bold">
-              Project Impact & Viability
-            </p>
-          ),
+         
           content: <ViabilityStatus data={projectObject} />,
           hideButtons: true,
         },
@@ -150,11 +141,6 @@ function OpportunitiyOverview() {
       info: '5 New',
       children: [
         {
-          stepLabel: (
-            <p className="py-2 capitalize border-b border-[#54A967] mb-4 text-[#1E4A28] text-[20px] font-bold">
-              energy performance contracts model
-            </p>
-          ),
           content: <StepOneESCO />,
         },
         {
