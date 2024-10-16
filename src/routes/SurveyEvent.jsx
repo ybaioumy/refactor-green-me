@@ -305,15 +305,22 @@ function SurveyEvent() {
               transition={{ duration: 0.5 }}
               className='flex flex-col gap-4'
             >
-              <motion.div>
+              <motion.div className='flex flex-col gap-2'>
+                <Title
+                  text={
+                    "Are you interested in reducing your electricity costs?"
+                  }
+                  type='h3'
+                  className='font-bold text-[18px]'
+                />
                 <Controller
                   name='solarPanels'
                   control={methods.control}
                   render={({ field }) => (
-                    <>
+                    <div className='flex items-center'>
                       <RadioButton {...field} label='Yes' value='Yes' />
                       <RadioButton {...field} label='No' value='No' />
-                    </>
+                    </div>
                   )}
                 />
               </motion.div>
