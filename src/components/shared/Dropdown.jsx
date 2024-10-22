@@ -57,7 +57,7 @@ export const Dropdown = ({
   };
 
   const filteredOptions = options.filter((option) =>
-    option.name.toLowerCase().includes(searchQuery.toLowerCase())
+    option.name.toLowerCase().includes(searchQuery.toLowerCase()) 
   );
 
   const getVariantStyles = () => {
