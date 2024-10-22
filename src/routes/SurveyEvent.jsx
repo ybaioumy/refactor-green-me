@@ -42,8 +42,8 @@ const StepsSurvey = () => {
     },
   ];
   return (
-    <div className='flex flex-col items-center justify-center h-screen  text-black green-gradinat overflow-y-scroll'>
-      <div className='w-full max-w-[1500px] p-6 rounded-lg my-4 shadow-lg bg-gray-200 overflow-y-scroll'>
+    <div className='flex flex-col items-center justify-center h-screen  text-black green-gradinat '>
+      <div className='w-full max-w-[1500px] p-3 md:p-6 rounded-lg my-4 shadow-lg bg-gray-200 overflow-y-scroll no-scrollbar'>
         {showResult ? (
           <Results setShowResult={setShowResult} />
         ) : (
@@ -62,7 +62,7 @@ const EmailStep = () => {
   };
 
   return (
-    <div className='flex flex-col lg:flex-row m-auto items-center justify-between  p-6 rounded-lg '>
+    <div className='flex flex-col-reverse lg:flex-row m-auto items-center justify-between  p-6 rounded-lg '>
       {/* Left Section - Form Inputs */}
       <div className='w-full lg:w-1/2 flex flex-col space-y-4'>
         <div className=''>
@@ -122,11 +122,11 @@ const EmailStep = () => {
           )}
         />
       </div>
-      <div className='w-full lg:w-1/2 flex justify-end mt-6 lg:mt-0'>
+      <div className='w-full lg:w-1/2 flex md:justify-end mb-6 md:mt-6 lg:mt-0'>
         <img
           src={require("../assets/images/survey/cal-1.jpg")}
           alt='Right section visual'
-          className='object-cover rounded-lg w-[70%]  h-64 lg:h-auto '
+          className='object-cover rounded-lg  w-full md:w-[70%]  h-64 lg:h-auto '
         />
       </div>
     </div>
@@ -211,7 +211,7 @@ const ElectricityConsumption = () => {
           />
         )}
 
-        <div className='flex justify-between gap-10 mt-[20px] mb-[40px]'>
+        <div className='flex justify-between gap-10 mt-[20px] mb-[40px] flex-wrap'>
           {numberOfPeople.map((option) => (
             <div
               key={option.label}
@@ -350,7 +350,7 @@ const Appliances = () => {
             control={control}
             defaultValue={[]}
             render={({ field }) => (
-              <>
+              <div className='flex flex-wrap justify-between'>
                 {appliancesOptions.map((option) => (
                   <div
                     key={option.label}
@@ -389,7 +389,7 @@ const Appliances = () => {
                     />
                   </div>
                 ))}
-              </>
+              </div>
             )}
           />
         </div>
@@ -570,7 +570,7 @@ const Heating = () => {
                   "51-100",
                   "101-150",
                   "Above 150",
-                  'Non-LED'
+                  "Non-LED",
                 ].map((option) => (
                   <option key={option} value={option}>
                     {option}
@@ -1052,7 +1052,7 @@ const Results = ({ setShowResult }) => {
 
   return (
     <div className='max-w-7xl mx-auto text-black rounded-lg'>
-      <h2 className='font-bold text-[45px]'>Your results </h2>
+      <h2 className='font-bold text-[35px] md:text-[45px]'>Your results </h2>
       <p className='text-[1.5rem] font-semibold border-b-2 border-black pb-3'>
         Your system's technical data
       </p>
