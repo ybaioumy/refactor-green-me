@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Bar, Doughnut } from "react-chartjs-2";
 import "chart.js/auto"; // Ensure this is imported for Chart.js to work
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+  EmailShareButton,
+  FacebookIcon,
+  TwitterIcon,
+  WhatsappIcon,
+  EmailIcon,
+} from "react-share";
+import Box from "@mui/material/Box";
+import Popper from "@mui/material/Popper";
+import Fade from "@mui/material/Fade";
 
 import {
   useFormContext,
@@ -980,6 +993,19 @@ const Button = ({ label, onClick, isLoading, disabled }) => {
 };
 
 const Results = ({ setShowResult }) => {
+  const [showShareOptions, setShowShareOptions] = useState(false);
+  const shareUrl = window.location.href; // Current page URL or replace with specific URL
+  const [open, setOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const toggleShareOptions = (event) => {
+    setShowShareOptions(!showShareOptions);
+    setAnchorEl(event.currentTarget);
+    setOpen((previousOpen) => !previousOpen);
+  };
+
+  const canBeOpen = open && Boolean(anchorEl);
+  const id = canBeOpen ? "transition-popper" : undefined;
+
   // Data for bar chart
   const barChartData = {
     labels: [
@@ -1167,12 +1193,42 @@ const Results = ({ setShowResult }) => {
             </tr>
           </tbody>
         </table>
-        <div className='mt-5 flex items-center gap-4'>
-          <Button label={"Share Result"} />
-          <Button
-            label={"Previous"}
-            onClick={() => setShowResult((prev) => !prev)}
-          />
+        <div className='mt-5 flex flex-col items-center gap-4'>
+          <div className='flex items-center gap-2 md:gap-4'>
+            {" "}
+            <Button label={"Share Result"} onClick={toggleShareOptions} />
+            <Button
+              label={"Previous"}
+              onClick={() => setShowResult((prev) => !prev)}
+            />
+          </div>
+          <Popper id={id} open={open} anchorEl={anchorEl} transition>
+            {({ TransitionProps }) => (
+              <Fade {...TransitionProps} timeout={350}>
+                <Box
+                  sx={{
+                    border: 1,
+                    p: 2,
+
+                    bgcolor: "background.paper",
+                  }}
+                >
+                  <FacebookShareButton url={shareUrl}>
+                    <FacebookIcon size={40} round />
+                  </FacebookShareButton>
+                  <TwitterShareButton url={shareUrl}>
+                    <TwitterIcon size={40} round />
+                  </TwitterShareButton>
+                  <WhatsappShareButton url={shareUrl}>
+                    <WhatsappIcon size={40} round />
+                  </WhatsappShareButton>
+                  <EmailShareButton url={shareUrl}>
+                    <EmailIcon size={40} round />
+                  </EmailShareButton>
+                </Box>
+              </Fade>
+            )}
+          </Popper>
         </div>
       </div>
     </div>
