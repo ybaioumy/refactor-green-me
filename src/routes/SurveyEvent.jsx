@@ -21,15 +21,19 @@ import {
   useForm,
   FormProvider,
 } from "react-hook-form";
-import { Checkbox, Radio, Select, Input } from "antd";
+import { Checkbox, Radio, Select, Input, message } from "antd";
 import RadioButton from "../components/shared/RadioButton";
-import { Dropdown } from "../components/shared/Dropdown";
 import { Link } from "react-router-dom";
 import Title from "../components/shared/Title";
 import { useLocation } from "react-router-dom";
 import alertValidationMessage from "../utilits/alertMessage";
+import { useGetSolarSystemResultsMutation } from "../redux/features/auth";
+import Loader from "../components/shared/Loader";
 const StepsSurvey = () => {
   const [showResult, setShowResult] = useState(false);
+  const [solarSystemMutaion, { data, isLoading, isError, error }] =
+    useGetSolarSystemResultsMutation();
+  const [surveyResults, setSurveyResult] = useState(false);
   const steps = [
     {
       children: [
@@ -54,13 +58,30 @@ const StepsSurvey = () => {
       ],
     },
   ];
+  const onSubmit = async (data) => {
+    try {
+      const result = await solarSystemMutaion(data).unwrap();
+      console.log(result);
+      setShowResult(true);
+      setSurveyResult(result.solarSystem);
+      message.success(result.message);
+    } catch (error) {
+      console.error(error);
+      message.error(error.message || "Failed to submit survey");
+    }
+  };
+  if (isError) return <Loader />;
   return (
     <div className='flex flex-col items-center justify-center h-screen  text-black green-gradinat '>
       <div className='w-full max-w-[1500px] p-3 md:p-6 rounded-lg my-4 shadow-lg bg-gray-200 overflow-y-scroll no-scrollbar'>
         {showResult ? (
-          <Results setShowResult={setShowResult} />
+          <Results
+            setShowResult={setShowResult}
+            isLoading={isLoading}
+            data={surveyResults}
+          />
         ) : (
-          <Steps steps={steps} onSave={() => setShowResult(true)} />
+          <Steps steps={steps} onSave={onSubmit} />
         )}
       </div>
     </div>
@@ -70,12 +91,8 @@ export default StepsSurvey;
 const EmailStep = () => {
   const { control, handleSubmit } = useFormContext();
 
-  const onSubmit = (data) => {
-    console.log(data);
-  };
-
   return (
-    <div className='flex flex-col-reverse lg:flex-row m-auto items-center justify-between  p-6 rounded-lg '>
+    <div className='flex flex-col-reverse lg:flex-row m-auto items-center justify-between  p-6 rounded-lg h-[60vh] '>
       {/* Left Section - Form Inputs */}
       <div className='w-full lg:w-1/2 flex flex-col space-y-4'>
         <div className=''>
@@ -88,7 +105,7 @@ const EmailStep = () => {
         </div>
         {/* Email Input */}
         <Controller
-          name='email'
+          name='gmail'
           control={control}
           rules={{
             required: "Email is required",
@@ -112,7 +129,7 @@ const EmailStep = () => {
         />
         {/* Mobile Number Input */}
         <Controller
-          name='mobile'
+          name='mobileNumber'
           control={control}
           defaultValue=''
           rules={{
@@ -148,10 +165,7 @@ const EmailStep = () => {
 const { Option } = Select;
 
 const ElectricityConsumption = () => {
-  const [noOfPeople, setNoOffPeople] = useState("1 Person");
-  const [noOfBedrooms, setNoOfBedrooms] = useState("1");
-  const [customPeople, setCustomPeople] = useState("");
-  const [customBedrooms, setCustomBedrooms] = useState("");
+  const { control, setValue, watch } = useFormContext();
 
   const numberOfPeople = [
     {
@@ -176,20 +190,6 @@ const ElectricityConsumption = () => {
     },
   ];
 
-  const handlePeopleChange = (value) => {
-    setNoOffPeople(value);
-    if (value === "More than 5") {
-      setCustomPeople(""); // Reset if showing input
-    }
-  };
-
-  const handleBedroomsChange = (value) => {
-    setNoOfBedrooms(value);
-    if (value === "More than 5") {
-      setCustomBedrooms(""); // Reset if showing input
-    }
-  };
-
   return (
     <div className='max-w-5xl p-6'>
       <h2 className='text-2xl font-bold mb-4'>
@@ -202,25 +202,40 @@ const ElectricityConsumption = () => {
         <label className='block mb-2'>
           Number of people living in the household:
         </label>
-        <Select
-          value={noOfPeople}
-          onChange={handlePeopleChange}
-          className='w-full max-w-2xl'
-        >
-          {numberOfPeople.map((option) => (
-            <Option key={option.label} value={option.label}>
-              {option.label}
-            </Option>
-          ))}
-        </Select>
+        <Controller
+          name='numberOfPeopleLivingInTheHousehold'
+          control={control}
+          render={({ field }) => (
+            <Select
+              {...field}
+              onChange={(value) => {
+                field.onChange(value);
+                if (value !== "More than 5") {
+                  setValue("numberOfPeopleLivingInTheHouseholdOther", ""); // Reset if not showing input
+                }
+              }}
+              className='w-full max-w-2xl'
+            >
+              {numberOfPeople.map((option) => (
+                <Option key={option.label} value={option.label}>
+                  {option.label}
+                </Option>
+              ))}
+            </Select>
+          )}
+        />
 
-        {noOfPeople === "More than 5" && (
-          <Input
-            type='text'
-            value={customPeople}
-            onChange={(e) => setCustomPeople(e.target.value)}
-            placeholder='Specify the number of people'
-            className='mt-2 w-full max-w-2xl'
+        {watch("numberOfPeopleLivingInTheHousehold") === "More than 5" && (
+          <Controller
+            name='numberOfPeopleLivingInTheHouseholdOther'
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                placeholder='Specify the number of people'
+                className='mt-2 w-full max-w-2xl'
+              />
+            )}
           />
         )}
 
@@ -228,10 +243,10 @@ const ElectricityConsumption = () => {
           {numberOfPeople.map((option) => (
             <div
               key={option.label}
-              className={`relative flex flex-col items-center justify-between gap-3 cursor-default rounded ${
-                noOfPeople === option.label ? "" : ""
-              }`}
-              onClick={() => handlePeopleChange(option.label)}
+              className={`relative flex flex-col items-center justify-between gap-3 cursor-default rounded`}
+              onClick={() =>
+                setValue("numberOfPeopleLivingInTheHousehold", option.label)
+              }
             >
               <img
                 width={120}
@@ -239,14 +254,19 @@ const ElectricityConsumption = () => {
                 src={option.image}
                 alt={option.label}
                 className={`w-full h-full object-scale-down ${
-                  noOfPeople === option.label
+                  watch("numberOfPeopleLivingInTheHousehold") === option.label
                     ? "filter brightness-[1111]"
                     : "brightness-100"
                 }`}
               />
               <RadioButton
                 label={option.label}
-                checked={noOfPeople === option.label}
+                onClick={() =>
+                  setValue("numberOfPeopleLivingInTheHousehold", option.label)
+                }
+                checked={
+                  watch("numberOfPeopleLivingInTheHousehold") === option.label
+                }
               />
             </div>
           ))}
@@ -256,23 +276,38 @@ const ElectricityConsumption = () => {
       {/* Number of Bedrooms Dropdown */}
       <div className='mb-4 mt-[40px]'>
         <label className='block mb-2'>Number of bedrooms in your home:</label>
-        <Select
-          value={noOfBedrooms}
-          onChange={handleBedroomsChange}
-          className='w-full max-w-2xl'
-        >
-          <Option value='1-2'>1-2</Option>
-          <Option value='3-4'>3-4</Option>
-          <Option value='More than 5'>More than 5</Option>
-        </Select>
+        <Controller
+          name='numberOfBedroomsInYourHome'
+          control={control}
+          render={({ field }) => (
+            <Select
+              {...field}
+              onChange={(value) => {
+                field.onChange(value);
+                if (value !== "More than 5") {
+                  setValue("numberOfBedroomsInYourHomeOther", ""); // Reset if not showing input
+                }
+              }}
+              className='w-full max-w-2xl'
+            >
+              <Option value='1-2'>1-2</Option>
+              <Option value='3-4'>3-4</Option>
+              <Option value='More than 5'>More than 5</Option>
+            </Select>
+          )}
+        />
 
-        {noOfBedrooms === "More than 5" && (
-          <Input
-            type='text'
-            value={customBedrooms}
-            onChange={(e) => setCustomBedrooms(e.target.value)}
-            placeholder='Specify the number of bedrooms'
-            className='mt-2 w-full max-w-2xl'
+        {watch("numberOfBedroomsInYourHome") === "More than 5" && (
+          <Controller
+            name='numberOfBedroomsInYourHomeOther'
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                placeholder='Specify the number of bedrooms'
+                className='mt-2 w-full max-w-2xl'
+              />
+            )}
           />
         )}
       </div>
@@ -283,72 +318,55 @@ const ElectricityConsumption = () => {
 const Appliances = () => {
   const appliancesOptions = [
     {
-      label: "Refrigerator",
+      name: "Refrigerator",
       image: require("../assets/images/survey/refrigerator.png"),
-      kWh: 150,
     },
     {
-      label: "Electric stove",
+      name: "Electric stove",
       image: require("../assets/images/survey/stove.png"),
-      kWh: 100,
     },
     {
-      label: "Microwaves",
+      name: "Microwaves",
       image: require("../assets/images/survey/microwave-oven.png"),
-      kWh: 60,
     },
     {
-      label: "Dishwasher",
+      name: "Dishwasher",
       image: require("../assets/images/survey/dishwasher.png"),
-      kWh: 70,
     },
     {
-      label: "Washing machine",
+      name: "Washing machine",
       image: require("../assets/images/survey/washing-machine.png"),
-      kWh: 90,
     },
     {
-      label: "Pool pump",
+      name: "Pool pump",
       image: require("../assets/images/survey/pump.png"),
-      kWh: 200,
     },
     {
-      label: "Dryer",
+      name: "Dryer",
       image: require("../assets/images/survey/tumble-dry.png"),
-      kWh: 120,
     },
     {
-      label: "Air condition",
+      name: "Air condition",
       image: require("../assets/images/survey/air-conditioner.png"),
-      kWh: 150,
     },
   ];
 
-  const { control, watch } = useFormContext();
+  const { control, watch, setValue } = useFormContext();
 
-  const selectedAppliances = watch("appliances") || [];
-  const numberOfRooms =
-    watch("HCSystems") === "1-2" ? 2 : watch("HCSystems") === "3-4" ? 4 : 5;
+  const [customAppliance, setCustomAppliance] = useState("");
+  const appliances = watch("appliances") || [];
 
-  const calculateTotalKWh = () => {
-    let totalKWh = 0;
+  const isSelected = (value, option) =>
+    value.some((appliance) => appliance.name === option.name);
 
-    selectedAppliances.forEach((appliance) => {
-      const applianceOption = appliancesOptions.find(
-        (option) => option.label === appliance
-      );
-      if (applianceOption) {
-        totalKWh += applianceOption.kWh * numberOfRooms;
-      }
-    });
-
-    return totalKWh;
+  const handleAddCustomAppliance = () => {
+    if (customAppliance.trim()) {
+      setValue("appliances", [...appliances, { name: customAppliance.trim() }]);
+      setCustomAppliance("");
+    }
   };
-
-  const totalKWh = calculateTotalKWh();
-
   return (
-    <div className='max-w-6xl p-6'>
+    <div className='max-w-7xl p-6'>
       <h2 className='text-2xl font-bold mb-4'>Major Appliances:</h2>
 
       {/* Appliances Selection */}
@@ -363,17 +381,19 @@ const Appliances = () => {
             control={control}
             defaultValue={[]}
             render={({ field }) => (
-              <div className='flex flex-wrap justify-between'>
+              <div className='flex flex-wrap justify-between w-full'>
                 {appliancesOptions.map((option) => (
                   <div
-                    key={option.label}
+                    key={option.name}
                     className={`relative w-[119px] flex flex-col items-center gap-5 text-center truncate cursor-pointer rounded ${
-                      field.value?.includes(option.label) ? "bg-gray-200" : ""
+                      isSelected(field.value, option) ? "bg-gray-200" : ""
                     }`}
                     onClick={() => {
-                      const newValues = field.value?.includes(option.label)
-                        ? field.value.filter((label) => label !== option.label)
-                        : [...field.value, option.label];
+                      const newValues = isSelected(field.value, option)
+                        ? field.value.filter(
+                            (appliance) => appliance.name !== option.name
+                          )
+                        : [...field.value, { name: option.name }];
                       field.onChange(newValues);
                     }}
                   >
@@ -383,20 +403,18 @@ const Appliances = () => {
                       height={120}
                       alt={option.label}
                       className={`w-full h-full object-scale-down ${
-                        field.value?.includes(option.label)
-                          ? "filter invert"
-                          : ""
+                        isSelected(field.value, option) ? "" : ""
                       }`}
                     />
-                    <span className='w-full'>{option.label}</span>
+                    <span className='w-full'>{option.name}</span>
                     <Checkbox
-                      checked={field.value?.includes(option.label)}
+                      checked={isSelected(field.value, option)}
                       onChange={() => {
-                        const newValues = field.value?.includes(option.label)
+                        const newValues = isSelected(field.value, option)
                           ? field.value.filter(
-                              (label) => label !== option.label
+                              (appliance) => appliance.name !== option.name
                             )
-                          : [...field.value, option.label];
+                          : [...field.value, { name: option.name }];
                         field.onChange(newValues);
                       }}
                     />
@@ -406,39 +424,40 @@ const Appliances = () => {
             )}
           />
         </div>
-      </div>
-
-      {/* Heating and Cooling Systems Dropdown */}
-      <div className='mb-4 '>
-        <label className='block mb-2'>Heating and Cooling Systems:</label>
-        <Controller
-          name='HCSystems'
-          control={control}
-          defaultValue='1-2'
-          render={({ field }) => (
-            <Select
-              {...field}
-              onChange={(value) => field.onChange(value)}
-              className='max-w-2xl w-full'
-            >
-              <Option value='1-2'>1-2</Option>
-              <Option value='3-4'>3-4</Option>
-              <Option value='More than 5'>More than 5</Option>
-            </Select>
-          )}
-        />
-      </div>
-
-      {/* Total kWh Display */}
-      <div className='mb-4 border-t-2 border-black py-[20px] mt-[50px]'>
-        <h3 className='text-lg font-bold'>Total Estimated kWh: {totalKWh}</h3>
-        <Input value={totalKWh} className='max-w-2xl' />
+        <div className='max-w-2xl flex  items-center gap-5 text-center truncate cursor-pointer rounded py-5'>
+          <Input
+            value={customAppliance}
+            onChange={(e) => setCustomAppliance(e.target.value)}
+            placeholder='Other appliances'
+            className=' w-full'
+          />
+          <button
+            type='button'
+            onClick={handleAddCustomAppliance}
+            className='bg-blue-500 text-white px-3 py-1 rounded'
+          >
+            Add
+          </button>
+        </div>
+        <ul>
+          {appliances?.map((appliance) => (
+            <li className='text-[18px]'>{appliance.name}</li>
+          ))}
+        </ul>
       </div>
     </div>
   );
 };
 const Heating = () => {
-  const { control, watch } = useFormContext();
+  const { control, watch } = useForm({
+    defaultValues: {
+      heating: "",
+      cooling: "",
+      coolingOther: "",
+      lightBulbs: "",
+      lightBulbsOther: "",
+    },
+  });
 
   // Watch specific fields to handle "Other" input visibility
   const selectedHeating = watch("heating");
@@ -453,6 +472,10 @@ const Heating = () => {
     {
       label: "Electric",
       image: require("../assets/images/survey/electric.png"),
+    },
+    {
+      label: "Other",
+      image: require("../assets/images/survey/other.png"),
     },
   ];
 
@@ -470,47 +493,57 @@ const Heating = () => {
           name='heating'
           control={control}
           render={({ field }) => (
-            <div className='flex gap-6'>
-              {gasElectricData.map((option) => (
-                <label
-                  key={option.label}
-                  className='flex items-center text-center flex-col gap-4'
-                >
-                  <img
-                    src={option.image}
-                    alt={option.label}
-                    width={120}
-                    height={50}
-                    className={` object-scale-down ${
-                      field.value?.includes(option.label) ? "filter invert" : ""
-                    }`}
+            <>
+              <div className='flex gap-6'>
+                {gasElectricData.map((option) => (
+                  <label
+                    key={option.label}
+                    className='flex items-center text-center flex-col gap-4'
+                  >
+                    <img
+                      src={option.image}
+                      alt={option.label}
+                      width={120}
+                      height={50}
+                      className={`object-scale-down ${
+                        field.value === option.label ? "filter invert" : ""
+                      }`}
+                    />
+                    <RadioButton
+                      name='heating'
+                      label={option.label}
+                      value={option.label}
+                      checked={field.value === option.label}
+                      onChange={() => {
+                        field.onChange(option.label);
+                        if (option.label !== "Other") setOtherHeating(""); // Reset "Other" input when not selected
+                      }}
+                    />
+                  </label>
+                ))}
+              </div>
+              <div>
+                {selectedHeating === "Other" && (
+                  <Controller
+                    name='heatingOther'
+                    control={control}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        type='text'
+                        placeholder='Specify other heating type'
+                        className='w-full p-2 border border-black rounded my-3'
+                        value={otherHeating}
+                        onChange={(e) => {
+                          setOtherHeating(e.target.value);
+                          field.onChange(e.target.value);
+                        }}
+                      />
+                    )}
                   />
-                  <RadioButton
-                    name='heating'
-                    label={option.label}
-                    value={option.label}
-                    checked={field.value === option.label}
-                    onChange={() => {
-                      field.onChange(option.label);
-                      if (option.label !== "Other") setOtherHeating(""); // Reset other input when not selected
-                    }}
-                  />
-                </label>
-              ))}
-              {/* Show input when "Other" is selected */}
-              {selectedHeating === "Other" && (
-                <input
-                  type='text'
-                  placeholder='Specify other heating type'
-                  className='w-full p-2 border border-black rounded'
-                  value={otherHeating}
-                  onChange={(e) => {
-                    setOtherHeating(e.target.value);
-                    field.onChange("Other"); // Keep the value as "Other" to ensure input stays visible
-                  }}
-                />
-              )}
-            </div>
+                )}
+              </div>
+            </>
           )}
         />
       </div>
@@ -537,22 +570,25 @@ const Heating = () => {
                     checked={field.value === option}
                     onChange={() => {
                       field.onChange(option);
-                      if (option !== "Other") setOtherCooling(""); // Reset other input when not selected
+                      if (option !== "Other") setOtherCooling(""); // Reset "Other" input when not selected
                     }}
                   />
                 </label>
               ))}
               {/* Show input when "Other" is selected */}
               {selectedCooling === "Other" && (
-                <input
-                  type='text'
-                  placeholder='Specify other cooling system'
-                  className='w-full p-2 border border-black rounded'
-                  value={otherCooling}
-                  onChange={(e) => {
-                    setOtherCooling(e.target.value);
-                    field.onChange("Other"); // Keep the value as "Other" to ensure input stays visible
-                  }}
+                <Controller
+                  name='coolingOther'
+                  control={control}
+                  render={({ field }) => (
+                    <input
+                      type='text'
+                      placeholder='Specify other cooling system'
+                      className='w-full p-2 border border-black rounded'
+                      value={otherCooling}
+                      onChange={(e) => setOtherCooling(e.target.value)}
+                    />
+                  )}
                 />
               )}
             </div>
@@ -573,7 +609,7 @@ const Heating = () => {
                 className='w-full p-2 border border-black rounded'
                 onChange={(e) => {
                   field.onChange(e.target.value);
-                  if (e.target.value !== "Above 150") setOtherLightBulbs(""); // Reset other input when not selected
+                  if (e.target.value !== "Above 150") setOtherLightBulbs(""); // Reset "Above 150" input when not selected
                 }}
               >
                 {[
@@ -592,15 +628,18 @@ const Heating = () => {
               </select>
               {/* Show input when "Above 150" is selected */}
               {selectedLightBulbs === "Above 150" && (
-                <input
-                  type='number'
-                  placeholder='Specify exact number'
-                  className='w-full p-2 border border-black rounded mt-2'
-                  value={otherLightBulbs}
-                  onChange={(e) => {
-                    setOtherLightBulbs(e.target.value);
-                    field.onChange("Above 150"); // Keep the value as "Above 150" to ensure input stays visible
-                  }}
+                <Controller
+                  name='lightBulbsOther'
+                  control={control}
+                  render={({ field }) => (
+                    <input
+                      type='number'
+                      placeholder='Specify exact number'
+                      className='w-full p-2 border border-black rounded mt-2'
+                      value={otherLightBulbs}
+                      onChange={(e) => setOtherLightBulbs(e.target.value)}
+                    />
+                  )}
                 />
               )}
             </>
@@ -612,7 +651,6 @@ const Heating = () => {
 };
 const Electricity = () => {
   const { control, watch } = useFormContext();
-  const ifMore = watch("electricityBill") === "More than 20,000";
   return (
     <div className='max-w-5xl h-[60vh] flex flex-col justify-center my-auto'>
       {/* Electricity Bill Section */}
@@ -621,49 +659,18 @@ const Electricity = () => {
           What is your average monthly electricity bill?
         </label>
         <Controller
-          name='electricityBill'
+          name='averageMonthlyElectricityBill'
           control={control}
           render={({ field }) => (
-            <select
+            <input
               {...field}
-              className='w-full p-2 border border-black rounded max-w-2xl'
-            >
-              {[
-                "Less than 500",
-                "500-1,000",
-                "1,000-5,000",
-                "5,000-10,000",
-                "10,000-20,000",
-                "More than 20,000",
-              ].map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
+              type='number'
+              placeholder='Specify your average monthly electricity bill'
+              className='w-full p-2 border border-black rounded my-3'
+              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+            />
           )}
         />
-
-        {/* Additional input field if "More than 20,000" is selected */}
-        {ifMore && (
-          <div className='mt-4'>
-            <label className='block text-[16px] font-semibold mb-2'>
-              Please specify your exact average monthly electricity bill:
-            </label>
-            <Controller
-              name='exactElectricityBill'
-              control={control}
-              render={({ field }) => (
-                <input
-                  type='number'
-                  {...field}
-                  className='w-full p-2 border border-black rounded max-w-2xl'
-                  placeholder='Enter amount in your currency'
-                />
-              )}
-            />
-          </div>
-        )}
       </div>
 
       {/* Interested in Reducing Costs Section */}
@@ -672,7 +679,7 @@ const Electricity = () => {
           Are you interested in reducing your electricity costs?
         </label>
         <Controller
-          name='interestedReducingCost'
+          name='reducingYourElectricityCosts'
           control={control}
           render={({ field }) => (
             <div className='flex gap-4'>
@@ -710,8 +717,8 @@ const Electricity = () => {
 
 const StepFive = () => {
   const { control, watch } = useFormContext();
-  const selectedPowerOutages = watch("powerOutages"); // Watch the powerOutages field
-  const selectedPowerOutageDuration = watch("powerOutageDuration"); // Watch the powerOutageDuration field
+  const selectedPowerOutages = watch("experiencePowerOutages"); // Watch the powerOutages field
+  const selectedPowerOutageDuration = watch("powerOutageLast"); // Watch the powerOutageDuration field
 
   return (
     <div className='max-w-5xl'>
@@ -722,7 +729,7 @@ const StepFive = () => {
           your home?
         </label>
         <Controller
-          name='renewableEnergy'
+          name='solarPanelsOrRenewableEnergySystems'
           control={control}
           render={({ field }) => (
             <div className='flex gap-4'>
@@ -747,7 +754,7 @@ const StepFive = () => {
           How often do you experience power outages?
         </label>
         <Controller
-          name='powerOutages'
+          name='experiencePowerOutages'
           control={control}
           render={({ field }) => (
             <select
@@ -791,7 +798,7 @@ const StepFive = () => {
           On average, how long do power outages last?
         </label>
         <Controller
-          name='powerOutageDuration'
+          name='powerOutageLast'
           control={control}
           render={({ field }) => (
             <select
@@ -809,7 +816,7 @@ const StepFive = () => {
         {/* Show input when "Above 3" is selected */}
         {selectedPowerOutageDuration === "Above 3" && (
           <Controller
-            name='exactPowerOutageDuration'
+            name='experiencePowerOutagesOther'
             control={control}
             render={({ field }) => (
               <input
@@ -992,7 +999,7 @@ const Button = ({ label, onClick, isLoading, disabled }) => {
   );
 };
 
-const Results = ({ setShowResult }) => {
+const Results = ({ setShowResult, isLoading, data }) => {
   const [showShareOptions, setShowShareOptions] = useState(false);
   const shareUrl = window.location.href; // Current page URL or replace with specific URL
   const [open, setOpen] = React.useState(false);
@@ -1002,7 +1009,7 @@ const Results = ({ setShowResult }) => {
     setAnchorEl(event.currentTarget);
     setOpen((previousOpen) => !previousOpen);
   };
-
+  console.log(data);
   const canBeOpen = open && Boolean(anchorEl);
   const id = canBeOpen ? "transition-popper" : undefined;
 
@@ -1075,7 +1082,7 @@ const Results = ({ setShowResult }) => {
       },
     },
   };
-
+  if (isLoading) return <Loader />;
   return (
     <div className='max-w-7xl mx-auto text-black rounded-lg'>
       <h2 className='font-bold text-[35px] md:text-[45px]'>Your results </h2>
