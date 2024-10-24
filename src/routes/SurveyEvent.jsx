@@ -1,39 +1,74 @@
-import React, { useState, useEffect } from "react";
-import { Bar, Doughnut } from "react-chartjs-2";
-import "chart.js/auto"; // Ensure this is imported for Chart.js to work
-import {
-  FacebookShareButton,
-  TwitterShareButton,
-  WhatsappShareButton,
-  EmailShareButton,
-  FacebookIcon,
-  TwitterIcon,
-  WhatsappIcon,
-  EmailIcon,
-} from "react-share";
-import Box from "@mui/material/Box";
-import Popper from "@mui/material/Popper";
-import Fade from "@mui/material/Fade";
-
+import React, { useState, useEffect, useRef } from "react";
+import { Bar } from "react-chartjs-2";
+import "chart.js/auto";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import { formatCurrency } from "../utilits/helpers";
 import {
   useFormContext,
   Controller,
   useForm,
   FormProvider,
 } from "react-hook-form";
-import { Checkbox, Radio, Select, Input, message } from "antd";
+import {
+  Checkbox,
+  Select,
+  Input,
+  message,
+  Result,
+  Spin,
+  Card,
+  List,
+  Typography,
+  Tooltip,
+  Table,
+} from "antd";
 import RadioButton from "../components/shared/RadioButton";
 import { Link } from "react-router-dom";
 import Title from "../components/shared/Title";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import alertValidationMessage from "../utilits/alertMessage";
-import { useGetSolarSystemResultsMutation } from "../redux/features/auth";
+import {
+  useGetSolarSystemResultsMutation,
+  useLoanCalculationsMutation,
+} from "../redux/features/auth";
+import { CloseOutlined, QuestionOutlined } from "@ant-design/icons";
+
 import Loader from "../components/shared/Loader";
+import Person1 from "../assets/images/survey/1people-default.svg";
+import Person2 from "../assets/images/survey/2people-default.svg";
+import Person3 from "../assets/images/survey/3people-default.svg";
+import Person4 from "../assets/images/survey/4people-default.svg";
+import Person5 from "../assets/images/survey/+5people-default.svg";
+
 const StepsSurvey = () => {
   const [showResult, setShowResult] = useState(false);
-  const [solarSystemMutaion, { data, isLoading, isError, error }] =
+  const [solarSystemMutaion, { isLoading, isError, error }] =
     useGetSolarSystemResultsMutation();
+  const [
+    loanCalculationsMutation,
+    { isLoading: loanLoading, error: loanError },
+  ] = useLoanCalculationsMutation();
   const [surveyResults, setSurveyResult] = useState(false);
+  const installmentOptions = [
+    { label: "1 Year", value: 1 },
+    { label: "2 Years", value: 2 },
+    { label: "3 Years", value: 3 },
+    { label: "4 Years", value: 4 },
+    { label: "5 Years", value: 5 },
+    { label: "10 Years", value: 10 },
+  ];
+  const [downPayment, setDownPayment] = useState(null); // Add state for down payment
+
+  // Function to handle changes in down payment input
+  const handleDownPaymentChange = (event) => {
+    const value = event.target.value ? Number(event.target.value) : null;
+    setDownPayment(value);
+  };
+  const [selectedInstallment, setSelectedInstallment] = useState(
+    installmentOptions[0].value || 4
+  );
+  const [loanResult, setLoanResult] = useState([]);
   const steps = [
     {
       children: [
@@ -58,18 +93,41 @@ const StepsSurvey = () => {
       ],
     },
   ];
+
   const onSubmit = async (data) => {
     try {
       const result = await solarSystemMutaion(data).unwrap();
-      console.log(result);
-      setShowResult(true);
       setSurveyResult(result.solarSystem);
-      message.success(result.message);
+      setShowResult(true);
+      setLoanResult(result.solarSystem.loanCalculatorResponse);
     } catch (error) {
       console.error(error);
       message.error(error.message || "Failed to submit survey");
     }
   };
+
+  const handleInstallmentChange = (event) => {
+    const newInstallment = event.target.value;
+    setSelectedInstallment(newInstallment);
+    calculateLoan(newInstallment); // Pass the updated value directly to the function
+  };
+
+  const calculateLoan = async (installment = selectedInstallment) => {
+    const { sumOfElectricityBillOverYears } = surveyResults || {};
+    const calculateData = {
+      loanAmount: sumOfElectricityBillOverYears,
+      loanTermInYears: installment, // Use the passed parameter or fallback to state
+      downPaymentPercentage: downPayment,
+    };
+    try {
+      const result = await loanCalculationsMutation(calculateData).unwrap();
+      setLoanResult(result.loanCalculators || result);
+    } catch (error) {
+      console.error(error);
+      message.error(error.message || "Failed to calculate loan");
+    }
+  };
+
   if (isError) return <Loader />;
   return (
     <div className='flex flex-col items-center justify-center h-screen  text-black green-gradinat '>
@@ -79,9 +137,17 @@ const StepsSurvey = () => {
             setShowResult={setShowResult}
             isLoading={isLoading}
             data={surveyResults}
+            handleInstallmentChange={handleInstallmentChange}
+            installmentOptions={installmentOptions}
+            selectedInstallment={selectedInstallment}
+            loanResult={loanResult}
+            downPayment={downPayment}
+            handleDownPaymentChange={handleDownPaymentChange}
+            calculateLoan={calculateLoan}
+            loanLoading={loanLoading}
           />
         ) : (
-          <Steps steps={steps} onSave={onSubmit} />
+          <Steps steps={steps} onSave={onSubmit} isLoading={isLoading} />
         )}
       </div>
     </div>
@@ -97,7 +163,7 @@ const EmailStep = () => {
       <div className='w-full lg:w-1/2 flex flex-col space-y-4'>
         <div className=''>
           <strong className='text-2xl font-bold mb-2'> Start saving! </strong>{" "}
-          <p>
+          <p className="text-[#1E4A28]">
             {" "}
             Leave us your email address and we will send you a copy of the
             results and advice on the product best suited to your needs.
@@ -170,23 +236,23 @@ const ElectricityConsumption = () => {
   const numberOfPeople = [
     {
       label: "1 Person",
-      image: require("../assets/images/survey/1people-default.png"),
+      image: Person1,
     },
     {
       label: "2 Persons",
-      image: require("../assets/images/survey/2people-default.png"),
+      image: Person2,
     },
     {
       label: "3 Persons",
-      image: require("../assets/images/survey/3people-default.png"),
+      image: Person3,
     },
     {
       label: "4 People",
-      image: require("../assets/images/survey/4people-default.png"),
+      image: Person4,
     },
     {
       label: "More than 5",
-      image: require("../assets/images/survey/+5people-default.png"),
+      image: Person5,
     },
   ];
 
@@ -255,8 +321,8 @@ const ElectricityConsumption = () => {
                 alt={option.label}
                 className={`w-full h-full object-scale-down ${
                   watch("numberOfPeopleLivingInTheHousehold") === option.label
-                    ? "filter brightness-[1111]"
-                    : "brightness-100"
+                    ? ""
+                    : ""
                 }`}
               />
               <RadioButton
@@ -361,10 +427,21 @@ const Appliances = () => {
 
   const handleAddCustomAppliance = () => {
     if (customAppliance.trim()) {
-      setValue("appliances", [...appliances, { name: customAppliance.trim() }]);
+      setValue("appliances", [
+        ...appliances,
+        { name: customAppliance.trim(), custom: true },
+      ]);
       setCustomAppliance("");
     }
   };
+
+  const handleDeleteCustomAppliance = (applianceName) => {
+    const updatedAppliances = appliances.filter(
+      (appliance) => appliance.name !== applianceName || !appliance.custom
+    );
+    setValue("appliances", updatedAppliances);
+  };
+
   return (
     <div className='max-w-7xl p-6'>
       <h2 className='text-2xl font-bold mb-4'>Major Appliances:</h2>
@@ -381,11 +458,11 @@ const Appliances = () => {
             control={control}
             defaultValue={[]}
             render={({ field }) => (
-              <div className='flex flex-wrap justify-between w-full'>
+              <div className='flex flex-wrap justify-between w-full gap-6 md:gap-10'>
                 {appliancesOptions.map((option) => (
                   <div
                     key={option.name}
-                    className={`relative w-[119px] flex flex-col items-center gap-5 text-center truncate cursor-pointer rounded ${
+                    className={`relative w-[119px] flex flex-col items-center gap-2 md:gap-5 text-center truncate cursor-pointer rounded ${
                       isSelected(field.value, option) ? "bg-gray-200" : ""
                     }`}
                     onClick={() => {
@@ -439,15 +516,37 @@ const Appliances = () => {
             Add
           </button>
         </div>
-        <ul>
-          {appliances?.map((appliance) => (
-            <li className='text-[18px]'>{appliance.name}</li>
-          ))}
-        </ul>
+
+        <List
+          className='max-w-2xl'
+          header={<Typography.Text>Selected Appliances:</Typography.Text>}
+          bordered
+          dataSource={appliances}
+          renderItem={(item) => (
+            <List.Item
+              actions={
+                item.custom
+                  ? [
+                      <button
+                        type='button'
+                        onClick={() => handleDeleteCustomAppliance(item.name)}
+                        className='text-red-500'
+                      >
+                        Delete
+                      </button>,
+                    ]
+                  : []
+              }
+            >
+              <Typography.Text>{item.name}</Typography.Text>
+            </List.Item>
+          )}
+        />
       </div>
     </div>
   );
 };
+
 const Heating = () => {
   const { control, watch } = useForm({
     defaultValues: {
@@ -487,14 +586,14 @@ const Heating = () => {
   return (
     <div className='max-w-4xl p-6'>
       {/* Heating Section */}
-      <div className='mb-6 border-b-2 border-black w-full pb-10'>
+      <div className='mb-6 border-b-2 border-black w-full '>
         <h2 className='text-2xl font-bold mb-4'>Heating:</h2>
         <Controller
           name='heating'
           control={control}
           render={({ field }) => (
             <>
-              <div className='flex gap-6'>
+              <div className='flex gap-6 mb-3 md:mb-6'>
                 {gasElectricData.map((option) => (
                   <label
                     key={option.label}
@@ -503,11 +602,7 @@ const Heating = () => {
                     <img
                       src={option.image}
                       alt={option.label}
-                      width={120}
-                      height={50}
-                      className={`object-scale-down ${
-                        field.value === option.label ? "filter invert" : ""
-                      }`}
+                      className={`object-scale-down w-[100px] md:w-[100px]`}
                     />
                     <RadioButton
                       name='heating'
@@ -532,7 +627,7 @@ const Heating = () => {
                         {...field}
                         type='text'
                         placeholder='Specify other heating type'
-                        className='w-full p-2 border border-black rounded my-3'
+                        className='w-full p-2 border border-black rounded mb-6 mt-0'
                         value={otherHeating}
                         onChange={(e) => {
                           setOtherHeating(e.target.value);
@@ -598,7 +693,7 @@ const Heating = () => {
 
       {/* Light Bulbs Count Section */}
       <div className='mb-6'>
-        <label className='block mb-2'>Light Bulbs (Count):</label>
+        <label className='block mb-2'>Light Bulbs - non-LED (Count):</label>
         <Controller
           name='lightBulbs'
           control={control}
@@ -619,7 +714,6 @@ const Heating = () => {
                   "51-100",
                   "101-150",
                   "Above 150",
-                  "Non-LED",
                 ].map((option) => (
                   <option key={option} value={option}>
                     {option}
@@ -654,13 +748,21 @@ const Electricity = () => {
   return (
     <div className='max-w-5xl h-[60vh] flex flex-col justify-center my-auto'>
       {/* Electricity Bill Section */}
-      <div className='mb-6 border-b-2 border-black pb-[50px]'>
+      <div className='mb-6 border-b-2 border-black md:pb-[30px]'>
         <label className='block text-[18px] font-semibold mb-2'>
           What is your average monthly electricity bill?
         </label>
         <Controller
           name='averageMonthlyElectricityBill'
           control={control}
+          rules={{
+            required: "Please enter your average monthly electricity bill",
+            min: {
+              value: 0,
+              message:
+                "The average monthly electricity bill must be at least $0",
+            },
+          }}
           render={({ field }) => (
             <input
               {...field}
@@ -674,7 +776,7 @@ const Electricity = () => {
       </div>
 
       {/* Interested in Reducing Costs Section */}
-      <div className='mb-6 border-b-2 border-black pb-[50px]'>
+      <div className='mb-6 border-b-2 border-black pb-[30px]'>
         <label className='block text-[18px] font-semibold mb-2'>
           Are you interested in reducing your electricity costs?
         </label>
@@ -696,20 +798,6 @@ const Electricity = () => {
             </div>
           )}
         />
-      </div>
-
-      <div className='mb-6 text-lg font-semibold '>
-        Would you be interested in exploring financial assistance options to
-        help offset the cost of energy-efficient upgrades? Please use our 1
-        minute loan calculator{" "}
-        <a
-          target='_blank'
-          rel='noreferrer'
-          href='https://www.yallakora.com/'
-          className='text-blue-500 hover:text-blue-400'
-        >
-          ( Yallakora )
-        </a>
       </div>
     </div>
   );
@@ -838,6 +926,7 @@ export { Electricity, StepFive };
 const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
   const methods = useForm();
   const location = useLocation();
+  const navigate = useNavigate();
   const {
     trigger,
     getValues,
@@ -846,7 +935,6 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
   const [currentParentIndex, setCurrentParentIndex] = useState(0);
   const [currentChildIndex, setCurrentChildIndex] = useState(0);
 
-  const childrenLength = steps[currentParentIndex]?.children?.length || 0;
   const currentChildContent =
     steps[currentParentIndex]?.children[currentChildIndex]?.content;
 
@@ -891,25 +979,14 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
   return (
     <FormProvider {...methods}>
       <div className='w-full h-full '>
-        <div className='flex flex-col gap-2'>
-          <div className='flex justify-between'>
-            <Title
-              text={steps[currentParentIndex]?.label}
-              type='h3'
-              className={"font-bold text-[24px]"}
-            />
-            {steps[currentParentIndex]?.icon}
-          </div>
-          <div className='flex gap-2 w-fit mb-2'>
-            {Array.from({ length: childrenLength }).map((_, index) => (
-              <span
-                key={index}
-                className={`h-1 w-10 rounded-lg ${
-                  currentChildIndex === index ? "stepsSpan" : "bg-gray-300"
-                }`}
-              ></span>
-            ))}
-          </div>
+        <div className='flex border-b border-black pb-2'>
+          <button
+            className='ml-auto'
+            type='button'
+            onClick={() => navigate("/")}
+          >
+            <CloseOutlined />
+          </button>
         </div>
         <form
           onSubmit={methods.handleSubmit(onSubmit)}
@@ -934,13 +1011,14 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
           </div>
 
           {/* Navigation Buttons */}
-          <div className='flex flex-col md:flex-row-reverse mt-4 gap-3 justify-between items-center justify-self-end pb-2'>
+          <div className='flex flex-col md:flex-row-reverse mt-4 gap-3 justify-between items-center justify-self-end py-2 pt-4 border-t border-black'>
             <div className='flex items-center gap-5'>
               {(currentChildIndex > 0 || currentParentIndex > 0) && (
                 <Button
                   label={"Previous"}
                   onClick={handlePrevious}
                   disabled={!currentChildContent || isLoading} // Disable if no content
+                  isLoading={isLoading}
                 />
               )}
 
@@ -963,18 +1041,6 @@ const Steps = ({ steps, hasLink = false, onSave, isLoading = false }) => {
                 </Button>
               )}
             </div>
-
-            {hasLink && (
-              <p className='text-[#809F87] gap-2 items-center font-abel inline-flex'>
-                Already have an account?
-                <Link
-                  className='underline font-semibold text-[#1E4A28] font-abel'
-                  to='/'
-                >
-                  Login
-                </Link>
-              </p>
-            )}
           </div>
         </form>
       </div>
@@ -986,7 +1052,7 @@ const Button = ({ label, onClick, isLoading, disabled }) => {
   return (
     <button
       type='button'
-      disabled={disabled}
+      disabled={disabled || isLoading}
       onClick={onClick}
       className='relative coolBeans inline-block px-6 py-3 font-bold text-black border rounded-lg overflow-hidden group'
     >
@@ -999,46 +1065,27 @@ const Button = ({ label, onClick, isLoading, disabled }) => {
   );
 };
 
-const Results = ({ setShowResult, isLoading, data }) => {
-  const [showShareOptions, setShowShareOptions] = useState(false);
-  const shareUrl = window.location.href; // Current page URL or replace with specific URL
-  const [open, setOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const toggleShareOptions = (event) => {
-    setShowShareOptions(!showShareOptions);
-    setAnchorEl(event.currentTarget);
-    setOpen((previousOpen) => !previousOpen);
-  };
-  console.log(data);
-  const canBeOpen = open && Boolean(anchorEl);
-  const id = canBeOpen ? "transition-popper" : undefined;
-
+const Results = ({
+  setShowResult,
+  isLoading,
+  data,
+  installmentOptions,
+  handleInstallmentChange,
+  selectedInstallment,
+  loanResult,
+  handleDownPaymentChange,
+  downPayment,
+  calculateLoan,
+  loanLoading,
+}) => {
   // Data for bar chart
   const barChartData = {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
+    labels: ["Year 1", "Year 2", "Year 3", "Year 4", "Year 5"], // Representing each year
     datasets: [
       {
-        label: "Whole year",
-        backgroundColor: "#1f77b4", // Blue
-        data: [150, 200, 250, 300, 450, 500, 550, 520, 400, 350, 200, 150],
-      },
-      {
-        label: "Winter",
-        backgroundColor: "#2ca02c", // Green
-        data: [50, 60, 70, 80, 90, 100, 110, 120, 100, 90, 60, 50],
+        label: "Yearly Electricity Bill (EGP)",
+        backgroundColor: "#2b6338", // Blue
+        data: data?.yearlyElectricityBill, // Your provided data
       },
     ],
   };
@@ -1047,197 +1094,250 @@ const Results = ({ setShowResult, isLoading, data }) => {
     responsive: true,
     plugins: {
       legend: {
-        display: true,
-        position: "bottom",
+        display: false,
+      },
+      tooltip: {
+        callbacks: {
+          label: (tooltipItem) => {
+            // Format the tooltip to show the value with EGP
+            return `EGP ${tooltipItem.raw.toLocaleString()}`;
+          },
+        },
       },
     },
   };
 
-  // Data for donut charts
-  const selfConsumptionData = {
-    labels: ["Direct Consumption", "Battery", "Energy Exported"],
-    datasets: [
-      {
-        data: [76.4, 14.9, 8.7],
-        backgroundColor: ["#1f77b4", "#2ca02c", "#ff7f0e"],
-      },
-    ],
-  };
+  const [showSuccessMessage, setShowSuccessMessage] = useState(true);
 
-  const energyIndependenceData = {
-    labels: ["Direct Consumption", "Battery", "Energy Imported"],
-    datasets: [
-      {
-        data: [43.9, 8.6, 47.5],
-        backgroundColor: ["#1f77b4", "#2ca02c", "#ff7f0e"],
-      },
-    ],
-  };
+  useEffect(() => {
+    // Hide the success message after 1.5 seconds and show the actual results
+    const timer = setTimeout(() => {
+      setShowSuccessMessage(false);
+    }, 3000);
 
-  const donutOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "bottom",
-      },
-    },
+    // Clean up the timer on component unmount
+    return () => clearTimeout(timer);
+  }, []);
+  const resultsRef = useRef();
+
+  const generatePDF = () => {
+    const element = document.getElementById("results-container");
+    html2canvas(element, { scale: 2, useCORS: true }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgWidth = 210;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let position = 10; // Add padding to the top of the PDF
+      pdf.addImage(imgData, "PNG", 10, position, imgWidth - 20, imgHeight); // Apply padding on the left and right
+      pdf.save("Survey Result.pdf");
+    });
   };
   if (isLoading) return <Loader />;
   return (
-    <div className='max-w-7xl mx-auto text-black rounded-lg'>
-      <h2 className='font-bold text-[35px] md:text-[45px]'>Your results </h2>
-      <p className='text-[1.5rem] font-semibold border-b-2 border-black pb-3'>
-        Your system's technical data
-      </p>
-      <div className='flex justify-between mb-8 pt-8'>
-        <div className='text-center'>
-          <p className='text-4xl font-bold'>7800 kWh</p>
-          <p>Your annual energy needs</p>
+    <>
+      {showSuccessMessage ? (
+        <div className='md:w-[50%] mx-auto'>
+          <Result
+            status='success'
+            title='Thank you for your participation! Your answers will help us better understand peak load and develop strategies for more efficient energy consumption.'
+            subTitle='Here is a list of your results'
+            extra={[<Spin />]}
+          />
         </div>
-        <div className='text-center'>
-          <p className='text-4xl font-bold'>10 kWh</p>
-          <p>Storage battery capacity</p>
-        </div>
-        <div className='text-center'>
-          <p className='text-4xl font-bold'>4 kW</p>
-          <p>Sizing your Photovoltaic System</p>
-        </div>
-      </div>
+      ) : (
+        <>
+          <div
+            className='max-w-7xl mx-auto text-black rounded-lg'
+            ref={resultsRef}
+            id='results-container'
+          >
+            <h2 className='font-bold text-[35px] md:text-[45px]'>
+              Your results{" "}
+            </h2>
+            <p className='text-[1.5rem] font-semibold border-b-2 border-black pb-3'>
+              Your system's technical data
+            </p>
+            <div className='flex  flex-col md:flex-row mb-8 pt-8 gap-4'>
+              <Card className='text-center'>
+                <p className='text-4xl font-bold'>
+                  {Number.parseFloat(data?.monthlyConsumptionInKWh).toFixed(2)}
+                  <span className='text-[18px] text-[#1E4A28] font-semibold'></span>
+                </p>{" "}
+                <p className="text-[#1E4A28]">Monthly consumption in KWh</p>
+              </Card>
 
-      {/* Estimated Economic Efficiency Section */}
-      <div className='flex justify-between mb-8'>
-        <div className='text-center'>
-          <p className='text-4xl font-bold'>1272 EUR</p>
-          <p>Estimated annual savings</p>
-        </div>
-        <div className='text-center'>
-          <p className='text-4xl font-bold'>31778 EUR</p>
-          <p>Estimated savings over 25 years</p>
-        </div>
-      </div>
+              <Card className='text-center'>
+                <p className='text-4xl font-bold'>
+                  {formatCurrency(data.sumOfElectricityBillOverYears)}
+                  <span className='text-[18px] text-[#1E4A28] font-semibold'></span>
+                </p>
+                <p className="text-[#1E4A28]">Sum Of Electricity Bill Over Years</p>
+              </Card>
+            </div>
 
-      {/* Chart Section */}
-      <div>
-        <p className='text-2xl font-bold mb-4'>Annual energy production</p>
-        <Bar data={barChartData} options={barChartOptions} />
-      </div>
+            {/* Estimated Economic Efficiency Section */}
 
-      {/* Self-Consumption and Energy Independence Section */}
-      <div className='flex justify-between my-8'>
-        <div className='w-1/2 px-4 text-center'>
-          <p className='text-2xl font-bold mb-4'>Self-consumption</p>
-          <Doughnut data={selfConsumptionData} options={donutOptions} />
-        </div>
-        <div className='w-1/2 px-4 text-center'>
-          <p className='text-2xl font-bold mb-4'>Energy independence</p>
-          <Doughnut data={energyIndependenceData} options={donutOptions} />
-        </div>
-      </div>
+            {/* Chart Section */}
+            <div className='mt-8'>
+              <p className='text-2xl font-bold mb-4'>
+                Yearly Electricity Bill{" "}
+                <span className='text-[14px] text-gray-600 font-abel'>
+                  - Respecting the Inflation Rate
+                </span>
+              </p>
+              <div className='md:w-[1500px] md:h-64 flex flex-col md:flex-row items-center gap-10 '>
+                {" "}
+                {/* Adjust width and height */}
+                <Bar data={barChartData} options={barChartOptions} />
+                <div className='flex flex-col gap-4'>
+                  <Card className='text-center h-fit'>
+                    <p className='text-4xl font-bold'>
+                      {data.selectedRecommendedSolarStation}
+                      <span className='text-[18px] text-[#1E4A28] font-semibold'></span>
+                    </p>
+                    <p className="text-[#1E4A28]">Equivalent Solar Systems to Cover 100% </p>
+                  </Card>
+                  <Card className='text-center'>
+                    <p className='text-4xl font-bold'>
+                      {formatCurrency(data.selectedSellingPriceforSolarStation)}{" "}
+                      <span className='text-[18px] text-[#1E4A28] font-semibold'></span>
+                    </p>
+                    <p className="text-[#1E4A28]">Selected Selling Price for Solar Station</p>
+                  </Card>
+                </div>
+              </div>
+            </div>
 
-      {/* Numerical Results Table */}
-      <div className='mt-8'>
-        <p className='text-2xl font-bold mb-4'>
-          Presentation of numerical results
-        </p>
-        <table className='table-auto w-full bg-white text-black rounded-lg'>
-          <thead>
-            <tr className='bg-gray-200'>
-              <th className='px-4 py-2'>Name</th>
-              <th className='px-4 py-2'>Unit</th>
-              <th className='px-4 py-2'>Calculation or Source</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className='border px-4 py-2'>
-                Annual production of your photovoltaic system
-              </td>
-              <td className='border px-4 py-2'>kWh</td>
-              <td className='border px-4 py-2'>4499</td>
-            </tr>
-            <tr>
-              <td className='border px-4 py-2'>
-                Energy used for self-consumption
-              </td>
-              <td className='border px-4 py-2'>kWh</td>
-              <td className='border px-4 py-2'>4107</td>
-            </tr>
-            <tr>
-              <td className='border px-4 py-2'>Energy sold to the grid</td>
-              <td className='border px-4 py-2'>kWh</td>
-              <td className='border px-4 py-2'>393</td>
-            </tr>
-            <tr>
-              <td className='border px-4 py-2'>
-                Energy still to be purchased from the grid
-              </td>
-              <td className='border px-4 py-2'>kWh</td>
-              <td className='border px-4 py-2'>3694</td>
-            </tr>
-            <tr>
-              <td className='border px-4 py-2'>Annual CO2 reduction</td>
-              <td className='border px-4 py-2'>Kg</td>
-              <td className='border px-4 py-2'>1139</td>
-            </tr>
-            <tr>
-              <td className='border px-4 py-2'>
-                Equivalent to mileage traveled by car
-              </td>
-              <td className='border px-4 py-2'>Km</td>
-              <td className='border px-4 py-2'>6118</td>
-            </tr>
-            <tr>
-              <td className='border px-4 py-2'>
-                Equivalent to number of trees planted
-              </td>
-              <td className='border px-4 py-2'>trees</td>
-              <td className='border px-4 py-2'>46</td>
-            </tr>
-            <tr>
-              <td className='border px-4 py-2'>Carbon impact reduction</td>
-              <td className='border px-4 py-2'>%</td>
-              <td className='border px-4 py-2'>18</td>
-            </tr>
-          </tbody>
-        </table>
-        <div className='mt-5 flex flex-col items-center gap-4'>
-          <div className='flex items-center gap-2 md:gap-4'>
-            {" "}
-            <Button label={"Share Result"} onClick={toggleShareOptions} />
-            <Button
-              label={"Previous"}
-              onClick={() => setShowResult((prev) => !prev)}
-            />
-          </div>
-          <Popper id={id} open={open} anchorEl={anchorEl} transition>
-            {({ TransitionProps }) => (
-              <Fade {...TransitionProps} timeout={350}>
-                <Box
-                  sx={{
-                    border: 1,
-                    p: 2,
-
-                    bgcolor: "background.paper",
-                  }}
+            {/* Numerical Results Table */}
+            <div className='mt-8'>
+              <p className='text-2xl font-bold mb-4'>
+                Installments Plan with{" "}
+                <span className='font-typeMono'>CIB</span>
+              </p>
+              {/* Installment Options */}
+              <div className='my-5 flex-col flex gap-2'>
+                <div className='flex gap-4 items-center'>
+                  <img
+                    src={require("../assets/images/survey/cib.png")}
+                    alt='CIB_LOGO'
+                    className='w-16 h-16 mb-2'
+                  />
+                  <Tooltip title={"Interest Rate: 26% Decreasing "}>
+                    <button
+                      type='button'
+                      className='p-2 bg-white  border border-gray-400 h-10  rounded-full flex items-center gap-2'
+                    >
+                      {" "}
+                      <QuestionOutlined /> <span>Info</span>
+                    </button>
+                  </Tooltip>
+                </div>
+                <label className='text-[18px] font-bold '>
+                  Select Installment Duration:
+                </label>
+                <select
+                  value={selectedInstallment}
+                  onChange={handleInstallmentChange}
+                  displayEmpty
+                  className='w-full p-2 border border-black rounded max-w-2xl'
                 >
-                  <FacebookShareButton url={shareUrl}>
-                    <FacebookIcon size={40} round />
-                  </FacebookShareButton>
-                  <TwitterShareButton url={shareUrl}>
-                    <TwitterIcon size={40} round />
-                  </TwitterShareButton>
-                  <WhatsappShareButton url={shareUrl}>
-                    <WhatsappIcon size={40} round />
-                  </WhatsappShareButton>
-                  <EmailShareButton url={shareUrl}>
-                    <EmailIcon size={40} round />
-                  </EmailShareButton>
-                </Box>
-              </Fade>
-            )}
-          </Popper>
-        </div>
-      </div>
-    </div>
+                  {installmentOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className='my-5 flex-col flex gap-2'>
+                <label className='text-[18px] font-bold'>
+                  Enter Down Payment Percentage:
+                </label>
+                <div className='flex items-center gap-4'>
+                  <input
+                    type='number'
+                    min='0'
+                    max='100'
+                    placeholder='e.g., 20 for 20%'
+                    value={downPayment || ""}
+                    onChange={handleDownPaymentChange}
+                    className='w-full p-2 border border-black rounded max-w-2xl '
+                  />
+                  <button
+                    type='button'
+                    onClick={() => calculateLoan()}
+                    className='bg-[#2b6338] p-2 rounded text-white '
+                  >
+                    calculate
+                  </button>
+                </div>
+              </div>
+
+              <PaymentSchedule
+                loanData={loanResult}
+                loanLoading={loanLoading}
+              />
+            </div>
+          </div>
+          <div className='mt-5 flex flex-col items-center gap-4'>
+            <div className='flex items-center gap-2 md:gap-4'>
+              {" "}
+              {/* <Button label={"Share Result"} onClick={toggleShareOptions} /> */}
+              <Button
+                label={"Previous"}
+                onClick={() => setShowResult((prev) => !prev)}
+              />
+              <Button
+                onClick={generatePDF}
+                className='p-2 bg-blue-500 text-white rounded'
+                label={"Generate PDF"}
+              />
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
+};
+
+const PaymentSchedule = ({ loanData, loanLoading }) => {
+  const normalizedData = Array.isArray(loanData) ? loanData : [loanData];
+  const columns = [
+    {
+      title: "Down Payment Percentage (%)",
+      dataIndex: "downPaymentPercentage",
+      key: "downPaymentPercentage",
+    },
+    {
+      title: "Monthly Payment (EGP)",
+      dataIndex: "monthlyPayment",
+      key: "monthlyPayment",
+      render: (value) => formatCurrency(value), // Format to two decimal places
+    },
+    {
+      title: "Total Interest (EGP)",
+      dataIndex: "totalInterest",
+      key: "totalInterest",
+      render: (value) => formatCurrency(value),
+    },
+    {
+      title: "Total Payment (EGP)",
+      dataIndex: "totalPayment",
+      key: "totalPayment",
+      render: (value) => formatCurrency(value), // Format to two decimal places
+    },
+  ];
+
+  // Columns for the expanded row showing months
+
+  return (
+    <Table
+      dataSource={normalizedData}
+      columns={columns}
+      pagination={false}
+      scroll={{ x: "max-content" }}
+      rowKey='downPaymentPercentage'
+      loading={loanLoading}
+    />
   );
 };

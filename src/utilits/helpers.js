@@ -143,3 +143,12 @@ export const beforeUpload = (file) => {
     }
     return isJpgOrPng && isLt2M;
 };
+
+export const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'EGP',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };

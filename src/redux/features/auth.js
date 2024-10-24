@@ -157,6 +157,13 @@ export const authApi = createApi({
         body: solarSystemData,
       }),
     }),
+    loanCalculations: builder.mutation({
+      query: (loanCalculationsData) => ({
+        url: "LoanCalculator",
+        method: "POST",
+        body: loanCalculationsData,
+      }),
+    }),
   }),
 });
 
@@ -176,4 +183,5 @@ export const {
   useUpdateEscoProfileMutation,
   useUpdateExpertProfileMutation,
   useGetSolarSystemResultsMutation,
+  useLoanCalculationsMutation,
 } = authApi;
