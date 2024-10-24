@@ -859,3 +859,9 @@ input[type="checkbox"] {
   /* transform: scale(1.05); */
   will-change: transform;
 }
+
+/* Add this to your CSS file */
+.pdf-layout {
+  width: 100%; /* Adjust to fit better within the PDF */
+  padding: 10px; /* Ensure there are no overflowing elements */
+} 

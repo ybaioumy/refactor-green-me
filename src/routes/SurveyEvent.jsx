@@ -66,7 +66,7 @@ const StepsSurvey = () => {
     setDownPayment(value);
   };
   const [selectedInstallment, setSelectedInstallment] = useState(
-    installmentOptions[0].value || 4
+    installmentOptions[3].value || 4
   );
   const [loanResult, setLoanResult] = useState([]);
   const steps = [
@@ -162,8 +162,11 @@ const EmailStep = () => {
       {/* Left Section - Form Inputs */}
       <div className='w-full lg:w-1/2 flex flex-col space-y-4'>
         <div className=''>
-          <strong className='text-2xl font-bold mb-2'> Start saving! </strong>{" "}
-          <p className="text-[#1E4A28]">
+          <strong className='text-4xl font-bold mb-2 text-[#1E4A28]'>
+            {" "}
+            Start saving!{" "}
+          </strong>{" "}
+          <p className=''>
             {" "}
             Leave us your email address and we will send you a copy of the
             results and advice on the product best suited to your needs.
@@ -1122,15 +1125,21 @@ const Results = ({
 
   const generatePDF = () => {
     const element = document.getElementById("results-container");
+    
+    // Apply a temporary class for better layout in PDF
+    element.classList.add("pdf-layout");
+  
     html2canvas(element, { scale: 2, useCORS: true }).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
       const imgWidth = 210;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      let position = 10; // Add padding to the top of the PDF
-      pdf.addImage(imgData, "PNG", 10, position, imgWidth - 20, imgHeight); // Apply padding on the left and right
+  
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth - 20, imgHeight);
       pdf.save("Survey Result.pdf");
+  
+      // Remove the temporary class
+      element.classList.remove("pdf-layout");
     });
   };
   if (isLoading) return <Loader />;
@@ -1164,7 +1173,7 @@ const Results = ({
                   {Number.parseFloat(data?.monthlyConsumptionInKWh).toFixed(2)}
                   <span className='text-[18px] text-[#1E4A28] font-semibold'></span>
                 </p>{" "}
-                <p className="text-[#1E4A28]">Monthly consumption in KWh</p>
+                <p className='text-[#1E4A28]'>Monthly consumption in KWh</p>
               </Card>
 
               <Card className='text-center'>
@@ -1172,7 +1181,9 @@ const Results = ({
                   {formatCurrency(data.sumOfElectricityBillOverYears)}
                   <span className='text-[18px] text-[#1E4A28] font-semibold'></span>
                 </p>
-                <p className="text-[#1E4A28]">Sum Of Electricity Bill Over Years</p>
+                <p className='text-[#1E4A28]'>
+                  Sum Of Electricity Bill Over Years
+                </p>
               </Card>
             </div>
 
@@ -1196,14 +1207,18 @@ const Results = ({
                       {data.selectedRecommendedSolarStation}
                       <span className='text-[18px] text-[#1E4A28] font-semibold'></span>
                     </p>
-                    <p className="text-[#1E4A28]">Equivalent Solar Systems to Cover 100% </p>
+                    <p className='text-[#1E4A28]'>
+                      Equivalent Solar Systems to Cover 100%{" "}
+                    </p>
                   </Card>
                   <Card className='text-center'>
                     <p className='text-4xl font-bold'>
                       {formatCurrency(data.selectedSellingPriceforSolarStation)}{" "}
                       <span className='text-[18px] text-[#1E4A28] font-semibold'></span>
                     </p>
-                    <p className="text-[#1E4A28]">Selected Selling Price for Solar Station</p>
+                    <p className='text-[#1E4A28]'>
+                      Selected Selling Price for Solar Station
+                    </p>
                   </Card>
                 </div>
               </div>
@@ -1284,7 +1299,7 @@ const Results = ({
               {" "}
               {/* <Button label={"Share Result"} onClick={toggleShareOptions} /> */}
               <Button
-                label={"Previous"}
+                label={"Start Again"}
                 onClick={() => setShowResult((prev) => !prev)}
               />
               <Button
