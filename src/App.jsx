@@ -272,23 +272,31 @@ const expertRouter = createBrowserRouter([
   },
 ]);
 
+
 const AuthRouter = createBrowserRouter([
-  {
-    path: '/',
-    element: <Login />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: '/register',
-    element: <Register />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/survey",
-    element: <SurveyEvent />,
-    errorElement: <ErrorPage />,
-  },
+  ...(process.env.REACT_APP_ONLY_SURVEY_ROUTE === 'true'
+    ? [
+        {
+          path: '/survey',
+          element: <SurveyEvent />,
+          errorElement: <ErrorPage />,
+        },
+      ]
+    : [
+        {
+          path: '/',
+          element: <Login />, // Include other routes if needed
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: '/register',
+          element: <Register />, // Include other routes if needed
+          errorElement: <ErrorPage />,
+        },
+      ]),
 ]);
+
+
 
 function App() {
   const typeId = useTypeId();
